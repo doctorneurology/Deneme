@@ -36,6 +36,96 @@
       min-height: 100vh;
     }
 
+    /* GİRİŞ KİLİT EKRANI STİLLERİ */
+    #loginScreen {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      z-index: 20000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .login-card {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 36px 28px;
+      max-width: 420px;
+      width: 100%;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.3);
+      text-align: center;
+    }
+
+    .login-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      color: #0f172a;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .login-desc {
+      font-size: 0.88rem;
+      color: #64748b;
+      margin-bottom: 24px;
+      line-height: 1.5;
+    }
+
+    .btn-google-login {
+      width: 100%;
+      background: #2563eb;
+      color: white;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: background 0.2s, transform 0.15s;
+    }
+
+    .btn-google-login:hover {
+      background: #1d4ed8;
+      transform: translateY(-1px);
+    }
+
+    .user-profile-badge {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #f1f5f9;
+      padding: 6px 12px;
+      border-radius: 20px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #334155;
+    }
+
+    .btn-logout-sm {
+      background: #ef4444;
+      color: white;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-logout-sm:hover {
+      background: #dc2626;
+    }
+
     .loading-overlay, .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -154,6 +244,8 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .panel-title {
@@ -794,7 +886,7 @@
         padding: 0 !important;
       }
 
-      .action-bar, .config-screen, .no-print, .loading-overlay, .modal-overlay, .q-status-badge, .blank-tag, #bottomFinishBtn {
+      .action-bar, .config-screen, .no-print, .loading-overlay, .modal-overlay, .q-status-badge, .blank-tag, #bottomFinishBtn, #loginScreen {
         display: none !important;
       }
 
@@ -865,224 +957,253 @@
 </head>
 <body>
 
-  <div id="loadingOverlay" class="loading-overlay">
-    <div id="loadingSpinner" class="spinner"></div>
-    <p id="loadingText" style="font-weight: 600; font-size: 1.05rem;">Sorular Buluttan Çekiliyor...</p>
-    
-    <div id="retryGroup" class="retry-btn-group" style="display: none;">
-      <button class="btn-action btn-toggle-on" onclick="retryConnection()">🔄 Yeniden Dene</button>
-      <button class="btn-action" onclick="useFallbackData()">📂 Yerel Modda Devam Et</button>
-    </div>
-  </div>
-
-  <div id="confirmModal" class="modal-overlay no-print" style="display: none;">
-    <div class="modal-card">
-      <div class="modal-title">⚠️ Testten Çıkılsın mı?</div>
-      <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">
-        Devam eden testiniz sonlandırılacak ve verdiğiniz yanıtlar sıfırlanacaktır. Ayarlara dönmek istediğinizden emin misiniz?
-      </p>
-      <div style="display: flex; gap: 10px;">
-        <button class="btn-action btn-finish-test" style="flex: 1; justify-content: center;" onclick="confirmBackToConfig()">Evet, Çık</button>
-        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeConfirmModal()">Vazgeç</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="testConfigModal" class="modal-overlay no-print" style="display: none;">
-    <div class="modal-card">
-      <div class="modal-title">📝 Test Modu Ayarları</div>
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-        Testi başlatmadan önce süre ve zamanlayıcı seçeneklerinizi belirleyin.
-      </p>
-
-      <div class="toggle-tile" style="margin-bottom: 12px;">
-        <span>Süre Belirle</span>
-        <label class="switch">
-          <input type="checkbox" id="testTimerToggle" onchange="toggleTimerInput(this)">
-          <span class="slider"></span>
-        </label>
-      </div>
-
-      <div id="timerInputGroup" class="input-control" style="display: none;">
-        <label for="testDurationInput">Süre (Dakika):</label>
-        <input type="number" id="testDurationInput" class="modern-input" value="15" min="1" max="180">
-      </div>
-
-      <div style="display: flex; gap: 10px; margin-top: 20px;">
-        <button class="btn-action btn-print" style="flex: 1; justify-content: center;" onclick="startInteractiveTest()">🚀 Testi Başlat</button>
-        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeTestConfigModal()">İptal</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="testResultModal" class="modal-overlay no-print" style="display: none;">
-    <div class="modal-card">
-      <div class="modal-title" id="resultModalTitle">📊 Test Tamamlandı!</div>
-      <p style="font-size: 0.9rem; color: var(--text-muted);" id="resultModalSubtitle">Performans özetiniz aşağıdadır:</p>
-
-      <div class="result-summary-grid">
-        <div class="result-card-item correct">
-          <div style="font-size: 1.4rem;" id="resCorrectCount">0</div>
-          <div style="font-size: 0.75rem;">Doğru</div>
-        </div>
-        <div class="result-card-item wrong">
-          <div style="font-size: 1.4rem;" id="resWrongCount">0</div>
-          <div style="font-size: 0.75rem;">Yanlış</div>
-        </div>
-        <div class="result-card-item blank">
-          <div style="font-size: 1.4rem;" id="resBlankCount">0</div>
-          <div style="font-size: 0.75rem;">Boş</div>
-        </div>
-      </div>
-
-      <div style="display: flex; gap: 10px; margin-top: 20px;">
-        <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="activateAnalysisMode()">🔍 Analiz Et</button>
-        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeResultModal()">Kapat</button>
-      </div>
-    </div>
-  </div>
-
-  <div id="toastContainer" class="toast-container"></div>
-
-  <div id="configScreen" class="config-screen">
-    <div class="config-card">
-      
-      <div class="panel-header">
-        <div class="panel-title">
-          <span>🧠</span> Nöroloji Soru Hazırlama Paneli
-        </div>
-        <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Ediliyor"></span>
-      </div>
-
-      <div class="config-grid">
-        <div class="section-card topics-card">
-          <div class="section-title">
-            <span>Konular</span>
-            <button type="button" class="select-all-btn" onclick="toggleAllTopics()">Tümünü Seç / Kaldır</button>
-          </div>
-          <div id="topicContainer" class="custom-checkbox-group"></div>
-        </div>
-
-        <div class="section-card">
-          <div class="section-title">Zorluk Seviyesi</div>
-          <div id="diffContainer" class="custom-checkbox-group"></div>
-        </div>
-
-        <div class="section-card">
-          <div class="section-title">Test Parametreleri</div>
-          
-          <div class="input-control">
-            <label for="questionCount" id="qCountLabel">Soru Sayısı</label>
-            <input type="number" id="questionCount" class="modern-input" value="10" min="1" max="100">
-          </div>
-
-          <div class="toggle-tile">
-            <span>Soruları Konulara Göre Eşit Dağıt</span>
-            <label class="switch"><input type="checkbox" id="equalTopicToggle" checked><span class="slider"></span></label>
-          </div>
-
-          <div class="toggle-tile">
-            <span>Soruları Karıştır</span>
-            <label class="switch"><input type="checkbox" id="shuffleToggle" checked><span class="slider"></span></label>
-          </div>
-
-          <div class="input-control" style="margin-top: 10px;">
-            <label for="keyModeSelect">Cevap Anahtarı Konumu</label>
-            <select id="keyModeSelect" class="modern-input">
-              <option value="none" selected>Gizli</option>
-              <option value="inline">Her Sorunun Altında</option>
-              <option value="bottom">Soruların En Altında</option>
-            </select>
-          </div>
-
-          <div class="input-control">
-            <label for="expModeSelect">Çözüm Açıklamaları Konumu</label>
-            <select id="expModeSelect" class="modern-input">
-              <option value="none" selected>Gizli</option>
-              <option value="inline">Her Sorunun Altında</option>
-              <option value="bottom">Soruların En Altında</option>
-            </select>
-          </div>
-
-        </div>
-      </div>
-
-      <button type="button" class="btn-proceed" onclick="proceedToExam()">
-        İlerle ve Testi Oluştur ➔
+  <!-- GOOGLE GİRİŞ KİLİT EKRANI -->
+  <div id="loginScreen">
+    <div class="login-card">
+      <div class="login-title">🧠 Nöroloji Soru Bankası</div>
+      <p class="login-desc">Soru hazırlama paneline erişmek ve test oluşturmak için lütfen Google hesabınızla giriş yapınız.</p>
+      <button id="btnGoogleLogin" class="btn-google-login">
+        <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#ffffff" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg>
+        Google ile Giriş Yap
       </button>
-
-      <div class="feedback-note">
-        görüş,öneri ve yanlış soru bildirimi için: <a href="mailto:kgulsen1994@gmail.com">kgulsen1994@gmail.com</a>
-      </div>
-
     </div>
   </div>
 
-  <div id="previewScreen" class="preview-screen">
-    <div class="action-bar no-print">
-      <div class="action-btn-group">
-        <button class="btn-action" onclick="backToConfig()">⚙️ Ayarlara Dön</button>
-        <button id="btnStartTest" class="btn-action btn-print" onclick="openTestConfigModal()">📝 Teste Başla</button>
-      </div>
+  <!-- ANA UYGULAMA MİMARİSİ (Giriş Yapılınca Açılır) -->
+  <div id="mainApp" style="display: none;">
 
-      <div id="timerDisplay" class="timer-badge" style="display: none;">
-        <span>⏱️</span> <span id="timerCountdown">00:00</span>
-      </div>
-
-      <div class="action-btn-group">
-        <button id="toggleKeyBtn" class="btn-action btn-toggle-off" onclick="cycleKeyMode()">
-          🔑 Cevap Anahtarı: <strong>GİZLİ</strong> 🙈
-        </button>
-        <button id="toggleExpBtn" class="btn-action btn-toggle-off" onclick="cycleExpMode()">
-          📖 Çözüm Açıklamaları: <strong>GİZLİ</strong> 🙈
-        </button>
-        <button id="btnFinishTestTop" class="btn-action btn-finish-test" style="display: none;" onclick="finishTest()">🏁 Testi Bitir</button>
-        <button class="btn-action btn-print" onclick="window.print()">🖨️ Yazdır / PDF İndir</button>
+    <div id="loadingOverlay" class="loading-overlay">
+      <div id="loadingSpinner" class="spinner"></div>
+      <p id="loadingText" style="font-weight: 600; font-size: 1.05rem;">Sorular Buluttan Çekiliyor...</p>
+      
+      <div id="retryGroup" class="retry-btn-group" style="display: none;">
+        <button class="btn-action btn-toggle-on" onclick="retryConnection()">🔄 Yeniden Dene</button>
+        <button class="btn-action" onclick="useFallbackData()">📂 Yerel Modda Devam Et</button>
       </div>
     </div>
 
-    <div class="paper-viewport">
-      <div class="a4-sheet" id="a4PaperSheet">
-        <div class="exam-header">
-          <div class="exam-main-title">NÖROLOJİ SORU HAZIRLAMA PANELİ</div>
-          <table>
-            <tr>
-              <td>
-                <strong>Adı Soyadı:</strong> 
-                <input type="text" id="inputStudentName" class="header-input" placeholder="......................................................" oninput="syncPrintHeader()" autocomplete="off">
-                <span id="printStudentName" class="print-only-text">___________________________</span>
-              </td>
-              <td style="text-align: right;">
-                <strong>Tarih:</strong> 
-                <input type="text" id="inputExamDate" class="header-input date-input" placeholder=".... / .... / 20...." oninput="syncPrintHeader()" autocomplete="off">
-                <span id="printExamDate" class="print-only-text">____/____/20__</span>
-                <span style="margin-left: 15px;"><strong>Aldığı Puan:</strong> ________</span>
-              </td>
-            </tr>
-          </table>
+    <div id="confirmModal" class="modal-overlay no-print" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-title">⚠️ Testten Çıkılsın mı?</div>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">
+          Devam eden testiniz sonlandırılacak ve verdiğiniz yanıtlar sıfırlanacaktır. Ayarlara dönmek istediğinizden emin misiniz?
+        </p>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-action btn-finish-test" style="flex: 1; justify-content: center;" onclick="confirmBackToConfig()">Evet, Çık</button>
+          <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeConfirmModal()">Vazgeç</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="testConfigModal" class="modal-overlay no-print" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-title">📝 Test Modu Ayarları</div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+          Testi başlatmadan önce süre ve zamanlayıcı seçeneklerinizi belirleyin.
+        </p>
+
+        <div class="toggle-tile" style="margin-bottom: 12px;">
+          <span>Süre Belirle</span>
+          <label class="switch">
+            <input type="checkbox" id="testTimerToggle" onchange="toggleTimerInput(this)">
+            <span class="slider"></span>
+          </label>
         </div>
 
-        <div id="questionsContainer" class="two-column-wrapper"></div>
+        <div id="timerInputGroup" class="input-control" style="display: none;">
+          <label for="testDurationInput">Süre (Dakika):</label>
+          <input type="number" id="testDurationInput" class="modern-input" value="15" min="1" max="180">
+        </div>
 
-        <div id="bottomFinishBtn" style="display: none; text-align: center; margin-top: 30px;" class="no-print">
-          <button class="btn-action btn-finish-test" style="padding: 12px 28px; font-size: 1rem; margin: 0 auto;" onclick="finishTest()">
-            🏁 Testi Bitir ve Sonuçları Gör
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button class="btn-action btn-print" style="flex: 1; justify-content: center;" onclick="startInteractiveTest()">🚀 Testi Başlat</button>
+          <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeTestConfigModal()">İptal</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="testResultModal" class="modal-overlay no-print" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-title" id="resultModalTitle">📊 Test Tamamlandı!</div>
+        <p style="font-size: 0.9rem; color: var(--text-muted);" id="resultModalSubtitle">Performans özetiniz aşağıdadır:</p>
+
+        <div class="result-summary-grid">
+          <div class="result-card-item correct">
+            <div style="font-size: 1.4rem;" id="resCorrectCount">0</div>
+            <div style="font-size: 0.75rem;">Doğru</div>
+          </div>
+          <div class="result-card-item wrong">
+            <div style="font-size: 1.4rem;" id="resWrongCount">0</div>
+            <div style="font-size: 0.75rem;">Yanlış</div>
+          </div>
+          <div class="result-card-item blank">
+            <div style="font-size: 1.4rem;" id="resBlankCount">0</div>
+            <div style="font-size: 0.75rem;">Boş</div>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="activateAnalysisMode()">🔍 Analiz Et</button>
+          <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeResultModal()">Kapat</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="toastContainer" class="toast-container"></div>
+
+    <div id="configScreen" class="config-screen">
+      <div class="config-card">
+        
+        <div class="panel-header">
+          <div class="panel-title">
+            <span>🧠</span> Nöroloji Soru Hazırlama Paneli
+          </div>
+          
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="user-profile-badge">
+              <span class="user-email-target">...</span>
+              <button class="btn-logout-sm btn-logout-action">Çıkış</button>
+            </div>
+            <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Ediliyor"></span>
+          </div>
+        </div>
+
+        <div class="config-grid">
+          <div class="section-card topics-card">
+            <div class="section-title">
+              <span>Konular</span>
+              <button type="button" class="select-all-btn" onclick="toggleAllTopics()">Tümünü Seç / Kaldır</button>
+            </div>
+            <div id="topicContainer" class="custom-checkbox-group"></div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-title">Zorluk Seviyesi</div>
+            <div id="diffContainer" class="custom-checkbox-group"></div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-title">Test Parametreleri</div>
+            
+            <div class="input-control">
+              <label for="questionCount" id="qCountLabel">Soru Sayısı</label>
+              <input type="number" id="questionCount" class="modern-input" value="10" min="1" max="100">
+            </div>
+
+            <div class="toggle-tile">
+              <span>Soruları Konulara Göre Eşit Dağıt</span>
+              <label class="switch"><input type="checkbox" id="equalTopicToggle" checked><span class="slider"></span></label>
+            </div>
+
+            <div class="toggle-tile">
+              <span>Soruları Karıştır</span>
+              <label class="switch"><input type="checkbox" id="shuffleToggle" checked><span class="slider"></span></label>
+            </div>
+
+            <div class="input-control" style="margin-top: 10px;">
+              <label for="keyModeSelect">Cevap Anahtarı Konumu</label>
+              <select id="keyModeSelect" class="modern-input">
+                <option value="none" selected>Gizli</option>
+                <option value="inline">Her Sorunun Altında</option>
+                <option value="bottom">Soruların En Altında</option>
+              </select>
+            </div>
+
+            <div class="input-control">
+              <label for="expModeSelect">Çözüm Açıklamaları Konumu</label>
+              <select id="expModeSelect" class="modern-input">
+                <option value="none" selected>Gizli</option>
+                <option value="inline">Her Sorunun Altında</option>
+                <option value="bottom">Soruların En Altında</option>
+              </select>
+            </div>
+
+          </div>
+        </div>
+
+        <button type="button" class="btn-proceed" onclick="proceedToExam()">
+          İlerle ve Testi Oluştur ➔
+        </button>
+
+        <div class="feedback-note">
+          görüş,öneri ve yanlış soru bildirimi için: <a href="mailto:kgulsen1994@gmail.com">kgulsen1994@gmail.com</a>
+        </div>
+
+      </div>
+    </div>
+
+    <div id="previewScreen" class="preview-screen">
+      <div class="action-bar no-print">
+        <div class="action-btn-group">
+          <button class="btn-action" onclick="backToConfig()">⚙️ Ayarlara Dön</button>
+          <button id="btnStartTest" class="btn-action btn-print" onclick="openTestConfigModal()">📝 Teste Başla</button>
+        </div>
+
+        <div id="timerDisplay" class="timer-badge" style="display: none;">
+          <span>⏱️</span> <span id="timerCountdown">00:00</span>
+        </div>
+
+        <div class="action-btn-group">
+          <button id="toggleKeyBtn" class="btn-action btn-toggle-off" onclick="cycleKeyMode()">
+            🔑 Cevap Anahtarı: <strong>GİZLİ</strong> 🙈
           </button>
+          <button id="toggleExpBtn" class="btn-action btn-toggle-off" onclick="cycleExpMode()">
+            📖 Çözüm Açıklamaları: <strong>GİZLİ</strong> 🙈
+          </button>
+          <button id="btnFinishTestTop" class="btn-action btn-finish-test" style="display: none;" onclick="finishTest()">🏁 Testi Bitir</button>
+          <button class="btn-action btn-print" onclick="window.print()">🖨️ Yazdır / PDF İndir</button>
+          
+          <div class="user-profile-badge" style="background: #334155; color: #white;">
+            <span class="user-email-target" style="color: #cbd5e1;">...</span>
+            <button class="btn-logout-sm btn-logout-action">Çıkış</button>
+          </div>
         </div>
+      </div>
 
-        <div id="answerKeySection" class="answer-key-card" style="display: none;">
-          <strong style="font-size: 10pt;">CEVAP ANAHTARI</strong>
-          <div id="answerKeyGrid" class="key-grid"></div>
-        </div>
+      <div class="paper-viewport">
+        <div class="a4-sheet" id="a4PaperSheet">
+          <div class="exam-header">
+            <div class="exam-main-title">NÖROLOJİ SORU HAZIRLAMA PANELİ</div>
+            <table>
+              <tr>
+                <td>
+                  <strong>Adı Soyadı:</strong> 
+                  <input type="text" id="inputStudentName" class="header-input" placeholder="......................................................" oninput="syncPrintHeader()" autocomplete="off">
+                  <span id="printStudentName" class="print-only-text">___________________________</span>
+                </td>
+                <td style="text-align: right;">
+                  <strong>Tarih:</strong> 
+                  <input type="text" id="inputExamDate" class="header-input date-input" placeholder=".... / .... / 20...." oninput="syncPrintHeader()" autocomplete="off">
+                  <span id="printExamDate" class="print-only-text">____/____/20__</span>
+                  <span style="margin-left: 15px;"><strong>Aldığı Puan:</strong> ________</span>
+                </td>
+              </tr>
+            </table>
+          </div>
 
-        <div id="explanationSection" class="explanation-sheet page-break" style="display: none;">
-          <h3 style="font-size: 12pt; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 12px;">
-            DETAYLI SORU ÇÖZÜMLERİ VE AÇIKLAMALARI
-          </h3>
-          <div id="explanationContainer"></div>
+          <div id="questionsContainer" class="two-column-wrapper"></div>
+
+          <div id="bottomFinishBtn" style="display: none; text-align: center; margin-top: 30px;" class="no-print">
+            <button class="btn-action btn-finish-test" style="padding: 12px 28px; font-size: 1rem; margin: 0 auto;" onclick="finishTest()">
+              🏁 Testi Bitir ve Sonuçları Gör
+            </button>
+          </div>
+
+          <div id="answerKeySection" class="answer-key-card" style="display: none;">
+            <strong style="font-size: 10pt;">CEVAP ANAHTARI</strong>
+            <div id="answerKeyGrid" class="key-grid"></div>
+          </div>
+
+          <div id="explanationSection" class="explanation-sheet page-break" style="display: none;">
+            <h3 style="font-size: 12pt; border-bottom: 1px solid #000; padding-bottom: 4px; margin-bottom: 12px;">
+              DETAYLI SORU ÇÖZÜMLERİ VE AÇIKLAMALARI
+            </h3>
+            <div id="explanationContainer"></div>
+          </div>
         </div>
       </div>
     </div>
+
   </div>
 
 <script>
@@ -1108,10 +1229,6 @@
 
   let currentKeyMode = 'none';
   let currentExpMode = 'none';
-
-  window.onload = function() {
-    loadDataAndInit();
-  };
 
   function cleanMultiParagraphs(text) {
     if (!text) return '';
@@ -1921,13 +2038,13 @@
     document.getElementById('configScreen').style.display = 'block';
   }
 </script>
-<!-- Firebase & Google Giriş Entegrasyonu -->
+
+<!-- FIREBASE & AUTHENTICATION ENTEGRASYONU -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // Firebase Yapılandırmanız
   const firebaseConfig = {
     apiKey: "AIzaSyB8dZe4nDuvU2SjH2FzX3r7sgGtohE6mo4",
     authDomain: "noroloji-soru-bankasi.firebaseapp.com",
@@ -1937,76 +2054,66 @@
     appId: "1:847076697635:web:f26dbbd758e9211225b396"
   };
 
-  // Servisleri Başlat
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
   const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
-  // HTML Elemanları
-  const loginBtn = document.getElementById('btn-login');
-  const logoutBtn = document.getElementById('btn-logout');
-  const userBar = document.getElementById('user-bar');
-  const userEmailSpan = document.getElementById('user-email');
+  const loginScreen = document.getElementById('loginScreen');
+  const mainApp = document.getElementById('mainApp');
+  const btnGoogleLogin = document.getElementById('btnGoogleLogin');
+  const btnLogoutList = document.querySelectorAll('.btn-logout-action');
+  const userEmailDisplays = document.querySelectorAll('.user-email-target');
 
   // Google ile Giriş Yap Butonu
-  if (loginBtn) {
-    loginBtn.addEventListener('click', () => {
+  if (btnGoogleLogin) {
+    btnGoogleLogin.addEventListener('click', () => {
       signInWithPopup(auth, provider).catch(error => {
         alert("Giriş yapılırken bir hata oluştu: " + error.message);
       });
     });
   }
 
-  // Çıkış Yap Butonu
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
+  // Çıkış Yap Butonları
+  btnLogoutList.forEach(btn => {
+    btn.addEventListener('click', () => {
       signOut(auth);
     });
-  }
+  });
 
   // Oturum Durumu Takibi ve Otomatik Kayıt
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      // 1. Kullanıcı verisini Firestore 'kullanicilar' koleksiyonuna kaydet/güncelle
-      await setDoc(doc(db, "kullanicilar", user.uid), {
-        email: user.email,
-        adSoyad: user.displayName || "Belirtilmedi",
-        sonGirisTarihi: serverTimestamp(),
-        durum: "Ücretsiz"
-      }, { merge: true });
+      // 1. Kullanıcı Firestore veritabanına kaydedilir/güncellenir
+      try {
+        await setDoc(doc(db, "kullanicilar", user.uid), {
+          email: user.email,
+          adSoyad: user.displayName || "Belirtilmedi",
+          sonGirisTarihi: serverTimestamp(),
+          durum: "Ücretsiz"
+        }, { merge: true });
+      } catch (e) {
+        console.error("Kullanıcı verisi kaydedilemedi:", e);
+      }
 
-      // 2. Arayüzü güncelle (Giriş yapıldı)
-      if (loginBtn) loginBtn.style.display = 'none';
-      if (userBar) userBar.style.display = 'inline-flex';
-      if (userEmailSpan) userEmailSpan.textContent = user.email;
+      // 2. Kullanıcı e-posta bilgisini panellere yaz
+      userEmailDisplays.forEach(el => el.textContent = user.email);
+
+      // 3. Kilit ekranını kapat, ana paneli aç
+      loginScreen.style.display = 'none';
+      mainApp.style.display = 'block';
+
+      // 4. Soru havuzunu yükle
+      if (masterPool.length === 0) {
+        loadDataAndInit();
+      }
     } else {
-      // 3. Arayüzü güncelle (Çıkış yapıldı)
-      if (loginBtn) loginBtn.style.display = 'inline-block';
-      if (userBar) userBar.style.display = 'none';
+      // Çıkış Yapıldığında: Kilit ekranını aç, ana paneli gizle
+      loginScreen.style.display = 'flex';
+      mainApp.style.display = 'none';
     }
   });
 </script>
+
 </body>
-  <body>
-
-  <!-- 1. ADIM: BUTON KODLARINI BURAYA YAPIŞTIRIN (Sitenin üstünde görünsün) -->
-  <header style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8f9fa;">
-    <h2>Nöroloji Soru Bankası</h2>
-    
-    <div>
-      <button id="btn-login" style="padding: 8px 16px; background-color: #4285F4; color: white; border: none; border-radius: 4px; cursor: pointer;">
-        Google ile Giriş Yap
-      </button>
-
-      <div id="user-bar" style="display: none; align-items: center; gap: 10px;">
-        <span id="user-email" style="font-weight: bold;"></span>
-        <button id="btn-logout" style="padding: 6px 12px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
-          Çıkış Yap
-        </button>
-      </div>
-    </div>
-  </header>
-
-  <!-- Sitenizin mevcut soruları ve içerikleri burada yer alacak -->
 </html>
