@@ -1921,6 +1921,92 @@
     document.getElementById('configScreen').style.display = 'block';
   }
 </script>
+<!-- Firebase & Google Giriş Entegrasyonu -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
+  // Firebase Yapılandırmanız
+  const firebaseConfig = {
+    apiKey: "AIzaSyB8dZe4nDuvU2SjH2FzX3r7sgGtohE6mo4",
+    authDomain: "noroloji-soru-bankasi.firebaseapp.com",
+    projectId: "noroloji-soru-bankasi",
+    storageBucket: "noroloji-soru-bankasi.firebasestorage.app",
+    messagingSenderId: "847076697635",
+    appId: "1:847076697635:web:f26dbbd758e9211225b396"
+  };
+
+  // Servisleri Başlat
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getFirestore(app);
+  const provider = new GoogleAuthProvider();
+
+  // HTML Elemanları
+  const loginBtn = document.getElementById('btn-login');
+  const logoutBtn = document.getElementById('btn-logout');
+  const userBar = document.getElementById('user-bar');
+  const userEmailSpan = document.getElementById('user-email');
+
+  // Google ile Giriş Yap Butonu
+  if (loginBtn) {
+    loginBtn.addEventListener('click', () => {
+      signInWithPopup(auth, provider).catch(error => {
+        alert("Giriş yapılırken bir hata oluştu: " + error.message);
+      });
+    });
+  }
+
+  // Çıkış Yap Butonu
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      signOut(auth);
+    });
+  }
+
+  // Oturum Durumu Takibi ve Otomatik Kayıt
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      // 1. Kullanıcı verisini Firestore 'kullanicilar' koleksiyonuna kaydet/güncelle
+      await setDoc(doc(db, "kullanicilar", user.uid), {
+        email: user.email,
+        adSoyad: user.displayName || "Belirtilmedi",
+        sonGirisTarihi: serverTimestamp(),
+        durum: "Ücretsiz"
+      }, { merge: true });
+
+      // 2. Arayüzü güncelle (Giriş yapıldı)
+      if (loginBtn) loginBtn.style.display = 'none';
+      if (userBar) userBar.style.display = 'inline-flex';
+      if (userEmailSpan) userEmailSpan.textContent = user.email;
+    } else {
+      // 3. Arayüzü güncelle (Çıkış yapıldı)
+      if (loginBtn) loginBtn.style.display = 'inline-block';
+      if (userBar) userBar.style.display = 'none';
+    }
+  });
+</script>
 </body>
+  <body>
+
+  <!-- 1. ADIM: BUTON KODLARINI BURAYA YAPIŞTIRIN (Sitenin üstünde görünsün) -->
+  <header style="display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #f8f9fa;">
+    <h2>Nöroloji Soru Bankası</h2>
+    
+    <div>
+      <button id="btn-login" style="padding: 8px 16px; background-color: #4285F4; color: white; border: none; border-radius: 4px; cursor: pointer;">
+        Google ile Giriş Yap
+      </button>
+
+      <div id="user-bar" style="display: none; align-items: center; gap: 10px;">
+        <span id="user-email" style="font-weight: bold;"></span>
+        <button id="btn-logout" style="padding: 6px 12px; background-color: #dc3545; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          Çıkış Yap
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Sitenizin mevcut soruları ve içerikleri burada yer alacak -->
 </html>
