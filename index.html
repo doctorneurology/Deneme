@@ -959,6 +959,36 @@
 
   <!-- GOOGLE GİRİŞ KİLİT EKRANI -->
   <div id="loginScreen">
+    <!-- SOL ÜST KÖŞE YÖNETİCİ GİRİŞİ BUTONU -->
+  <button id="btnOpenAdminAuth" class="btn-action" style="position: absolute; top: 15px; left: 15px; background: #1e293b; border-color: #475569; color: #f8fafc; z-index: 20001;" onclick="openAdminAuthModal()">
+    🔐 Yönetici Girişi
+  </button>
+
+  <!-- YÖNETİCİ KULLANICI ADI & ŞİFRE MODALİ -->
+  <div id="adminAuthModal" class="modal-overlay no-print" style="display: none; z-index: 25000;">
+    <div class="modal-card" style="max-width: 400px; width: 90%;">
+      <div class="modal-title" style="justify-content: space-between;">
+        <span>🔐 Yönetici Panel Girişi</span>
+        <button class="btn-action" onclick="closeAdminAuthModal()">✕</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+        Sisteme yönetici olarak erişmek için kullanıcı adı ve şifrenizi giriniz.
+      </p>
+
+      <div class="input-control">
+        <label>Yönetici Kullanıcı Adı:</label>
+        <input type="text" id="adminUsernameInput" class="modern-input" placeholder="Örn: admin">
+      </div>
+      <div class="input-control">
+        <label>Şifre:</label>
+        <input type="password" id="adminPasswordInput" class="modern-input" placeholder="••••••••">
+      </div>
+
+      <button class="btn-proceed" style="margin-top: 15px;" onclick="submitAdminAuth()">
+        Sisteme Giriş Yap ➔
+      </button>
+    </div>
+  </div>
     <div class="login-card">
       <div class="login-title">🧠 Nöroloji Soru Bankası</div>
       <p class="login-desc">Soru hazırlama paneline erişmek ve test oluşturmak için lütfen Google hesabınızla giriş yapınız.</p>
@@ -2229,7 +2259,61 @@ function triggerPrint() {
       document.getElementById('mainApp').style.display = 'none';
     }
   });
+// YÖNETİCİ ÖZEL GİRİŞ MODALİ FONKSİYONLARI
+  window.openAdminAuthModal = function() {
+    document.getElementById('adminAuthModal').style.display = 'flex';
+  };
 
+  window.closeAdminAuthModal = function() {
+    document.getElementById('adminAuthModal').style.display = 'none';
+  };
+
+  window.submitAdminAuth = async function() {
+    const userVal = document.getElementById('adminUsernameInput').value.trim();
+    const passVal = document.getElementById('adminPasswordInput').value.trim();
+
+    if (!userVal || !passVal) {
+      if (window.showToast) window.showToast("Lütfen kullanıcı adı ve şifre giriniz.", "warning");
+      return;
+    }
+
+    try {
+      // Firestore 'yoneticiler' koleksiyonundan kullanıcı adı ve şifre kontrolü yap
+      const q = query(
+        collection(db, "yoneticiler"),
+        where("kullaniciAdi", "==", userVal),
+        where("sifre", "==", passVal)
+      );
+      
+      const snap = await getDocs(q);
+
+      // Firestore'da kayıt yoksa varsayılan geliştirici girişi kontrolü (İlk kurulum için)
+      const isValidDefault = (userVal === "admin" && passVal === "noroloji2026");
+
+      if (!snap.empty || isValidDefault) {
+        if (window.showToast) window.showToast("Yönetici girişi başarılı!", "success");
+        
+        // Kilit ekranını kapat ve Ana Uygulamayı Aç
+        document.getElementById('loginScreen').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+        
+        // Admin Butonunu Görünür Yap
+        const btnAdmin = document.getElementById('btnAdminPanel');
+        if (btnAdmin) btnAdmin.style.display = 'inline-flex';
+
+        document.querySelectorAll('.user-email-target').forEach(el => el.textContent = "Yönetici (Özel Oturum)");
+        window.closeAdminAuthModal();
+
+        if (typeof masterPool !== 'undefined' && masterPool.length === 0) {
+          loadDataAndInit();
+        }
+      } else {
+        if (window.showToast) window.showToast("Hatalı kullanıcı adı veya şifre!", "error");
+      }
+    } catch (err) {
+      if (window.showToast) window.showToast("Giriş kontrol hatası: " + err.message, "error");
+    }
+  };
   // GİRİŞ & ÇIKIŞ
   document.getElementById('btnGoogleLogin')?.addEventListener('click', () => {
     signInWithPopup(auth, provider).catch(e => window.showToast?.("Giriş hatası: " + e.message, "error"));
