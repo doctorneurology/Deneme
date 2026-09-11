@@ -1111,6 +1111,48 @@
 
   </div>
 </div>
+    <!-- KOD GİRİŞ MODAL PENCERESİ -->
+<div id="redeemModal" class="modal-overlay no-print" style="display: none;">
+  <div class="modal-card" style="max-width: 450px; width: 90%;">
+    <div class="modal-title" style="justify-content: space-between;">
+      <span>🔑 Aktivasyon Kodu Gir</span>
+      <button class="btn-action" onclick="closeRedeemModal()">✕</button>
+    </div>
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+      Elinizdeki 3 parçalı lisans bilgilerini girerek üyeliğinizi anında yükseltebilirsiniz.
+    </p>
+
+    <div class="input-control">
+      <label>Seri No:</label>
+      <input type="text" id="inputRedeemSerial" class="modern-input" placeholder="Örn: NR-2026-102">
+    </div>
+    <div class="input-control">
+      <label>Aktivasyon Anahtarı:</label>
+      <input type="text" id="inputRedeemKey" class="modern-input" placeholder="Örn: A1B2-C3D4">
+    </div>
+    <div class="input-control">
+      <label>Güvenlik PIN:</label>
+      <input type="text" id="inputRedeemPin" class="modern-input" placeholder="Örn: 1234">
+    </div>
+
+    <button class="btn-proceed" style="margin-top: 15px;" onclick="submitRedeemCode()">
+      Kodu Onayla ve Yükselt ➔
+    </button>
+  </div>
+</div>
+
+<!-- AKTİVİTE DETAY MODALİ -->
+<div id="activityModal" class="modal-overlay no-print" style="display: none; z-index: 25000;">
+  <div class="modal-card" style="max-width: 650px; width: 90%;">
+    <div class="modal-title" style="justify-content: space-between;">
+      <span id="activityModalTitle">📊 Günlük Kullanıcı İstatistikleri</span>
+      <button class="btn-action" onclick="closeActivityModal()">✕ Kapat</button>
+    </div>
+    <div id="activityLogsList" style="max-height: 350px; overflow-y: auto; font-size: 0.85rem; margin-top: 15px;">
+      Yükleniyor...
+    </div>
+  </div>
+</div>
     <div id="toastContainer" class="toast-container"></div>
 
     <div id="configScreen" class="config-screen">
@@ -1129,6 +1171,10 @@
             <!-- Sadece Admin Kullanıcılara Görünecek Buton -->
 <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important;" onclick="openAdminModal()">
   ⚙️ Yönetici Paneli
+</button>
+            <!-- KULLANICI KOD GİRİŞ BUTONU -->
+<button class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important;" onclick="openRedeemModal()">
+  🔑 Lisans Kodu Kullan
 </button>
             <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Ediliyor"></span>
           </div>
@@ -1217,7 +1263,7 @@
             📖 Çözüm Açıklamaları: <strong>GİZLİ</strong> 🙈
           </button>
           <button id="btnFinishTestTop" class="btn-action btn-finish-test" style="display: none;" onclick="finishTest()">🏁 Testi Bitir</button>
-          <button class="btn-action btn-print" onclick="window.print()">🖨️ Yazdır / PDF İndir</button>
+          <button class="btn-action btn-print" onclick="triggerPrint()">🖨️ Yazdır / PDF İndir</button>
           
           <div class="user-profile-badge" style="background: #334155; color: #white;">
             <span class="user-email-target" style="color: #cbd5e1;">...</span>
@@ -2006,6 +2052,9 @@
 
     buildPaperView(currentQuestionsList);
     showToast("Test başladı! Başarılar dileriz.", "success");
+    if (window.logUserActivity) {
+  window.logUserActivity("Test Başlatıldı", `${currentQuestionsList.length} Soruluk Test Oluşturuldu.`);
+}
   }
 
   function updateTimerDisplay() {
@@ -2060,6 +2109,9 @@
 
     document.getElementById('testResultModal').style.display = 'flex';
     buildPaperView(currentQuestionsList);
+    if (window.logUserActivity) {
+  window.logUserActivity("Test Tamamlandı", `Doğru: ${correct}, Yanlış: ${wrong}, Boş: ${blank}`);
+}
   }
 
   function closeResultModal() {
@@ -2079,7 +2131,12 @@
     buildPaperView(currentQuestionsList);
     showToast("Analiz modu aktif. Çözümler her sorunun altında gösteriliyor.", "success");
   }
-
+function triggerPrint() {
+  if (window.logUserActivity) {
+    window.logUserActivity("Baskı / PDF Alındı", `${currentQuestionsList.length} Adet Soru Çıktı Alındı.`);
+  }
+  window.print();
+}
   function backToConfig() {
     if (isTestActive) {
       document.getElementById('confirmModal').style.display = 'flex';
@@ -2105,11 +2162,11 @@
   }
 </script>
 
-<!-- FIREBASE & AUTHENTICATION ENTEGRASYONU -->
+<!-- FIREBASE, AUTHENTICATION & LOGGING MİMARİSİ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, addDoc, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB8dZe4nDuvU2SjH2FzX3r7sgGtohE6mo4",
@@ -2125,195 +2182,272 @@
   const db = getFirestore(app);
   const provider = new GoogleAuthProvider();
 
-  const loginScreen = document.getElementById('loginScreen');
-  const mainApp = document.getElementById('mainApp');
-  const btnGoogleLogin = document.getElementById('btnGoogleLogin');
-  const btnLogoutList = document.querySelectorAll('.btn-logout-action');
-  const userEmailDisplays = document.querySelectorAll('.user-email-target');
-  const btnAdminPanel = document.getElementById('btnAdminPanel');
+  let currentUserData = null;
+  let allFetchedUsers = [];
 
-  if (btnGoogleLogin) {
-    btnGoogleLogin.addEventListener('click', () => {
-      signInWithPopup(auth, provider).catch(error => {
-        if (window.showToast) window.showToast("Giriş hatası: " + error.message, "error");
-      });
-    });
-  }
-
-  btnLogoutList.forEach(btn => {
-    btn.addEventListener('click', () => signOut(auth));
-  });
-
+  // OTURUM DİNLEYİCİ
   onAuthStateChanged(auth, async (user) => {
     if (user) {
       const userRef = doc(db, "kullanicilar", user.uid);
       const userSnap = await getDoc(userRef);
 
       if (!userSnap.exists()) {
-        await setDoc(userRef, {
+        currentUserData = {
           email: user.email,
           adSoyad: user.displayName || "Belirtilmedi",
           sonGirisTarihi: serverTimestamp(),
           durum: "Ücretsiz",
           rol: "kullanici"
-        });
+        };
+        await setDoc(userRef, currentUserData);
       } else {
-        await updateDoc(userRef, { 
-          sonGirisTarihi: serverTimestamp(),
-          adSoyad: user.displayName || userSnap.data().adSoyad || "Belirtilmedi"
-        });
+        currentUserData = userSnap.data();
+        await updateDoc(userRef, { sonGirisTarihi: serverTimestamp() });
       }
 
-      const userData = userSnap?.data();
-      
-      // BAN / ENGEL KONTROLÜ
-      if (userData && userData.durum === 'Engellendi') {
+      if (currentUserData.durum === 'Engellendi') {
         signOut(auth);
-        if (window.showToast) window.showToast("Hesabınız yönetici tarafından erişime kapatılmıştır.", "error");
+        if (window.showToast) window.showToast("Hesabınız kilitlenmiştir.", "error");
         return;
       }
 
-      // Admin Yetkisi Kontrolü
-      if (userData && userData.rol === 'admin') {
-        if (btnAdminPanel) btnAdminPanel.style.display = 'inline-flex';
+      if (currentUserData.rol === 'admin') {
+        const btnAdmin = document.getElementById('btnAdminPanel');
+        if (btnAdmin) btnAdmin.style.display = 'inline-flex';
       }
 
-      userEmailDisplays.forEach(el => el.textContent = user.email);
-      loginScreen.style.display = 'none';
-      mainApp.style.display = 'block';
+      document.querySelectorAll('.user-email-target').forEach(el => el.textContent = user.email);
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
 
       if (typeof masterPool !== 'undefined' && masterPool.length === 0) {
         loadDataAndInit();
       }
     } else {
-      loginScreen.style.display = 'flex';
-      mainApp.style.display = 'none';
-      if (btnAdminPanel) btnAdminPanel.style.display = 'none';
+      currentUserData = null;
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('mainApp').style.display = 'none';
     }
   });
 
-  // ADMIN PANELİ SEKME GEÇİŞİ
-  window.switchAdminTab = function(tabName) {
-    const tabUsers = document.getElementById('adminTabUsers');
-    const tabLicenses = document.getElementById('adminTabLicenses');
-    const btnUsers = document.getElementById('tabUsersBtn');
-    const btnLicenses = document.getElementById('tabLicensesBtn');
+  // GİRİŞ & ÇIKIŞ
+  document.getElementById('btnGoogleLogin')?.addEventListener('click', () => {
+    signInWithPopup(auth, provider).catch(e => window.showToast?.("Giriş hatası: " + e.message, "error"));
+  });
 
-    if (tabName === 'users') {
-      tabUsers.style.display = 'block';
-      tabLicenses.style.display = 'none';
-      btnUsers.className = 'btn-action btn-toggle-on';
-      btnLicenses.className = 'btn-action btn-toggle-off';
-    } else {
-      tabUsers.style.display = 'none';
-      tabLicenses.style.display = 'block';
-      btnUsers.className = 'btn-action btn-toggle-off';
-      btnLicenses.className = 'btn-action btn-toggle-on';
+  document.querySelectorAll('.btn-logout-action').forEach(btn => {
+    btn.addEventListener('click', () => signOut(auth));
+  });
+
+  // AKTİVİTE KAYDETME FONKSİYONU (Sistem Otomatik Çağırır)
+  window.logUserActivity = async function(islemTipi, detaylar) {
+    if (!auth.currentUser) return;
+    try {
+      const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
+      await addDoc(collection(db, "kullanicilar", auth.currentUser.uid, "aktiviteler"), {
+        islem: islemTipi,
+        detay: detaylar,
+        tarihStr: todayStr,
+        zaman: serverTimestamp()
+      });
+    } catch (e) { console.error("Log kaydı hatası:", e); }
+  };
+
+  // KULLANICI KOD REDEEM
+  window.openRedeemModal = () => document.getElementById('redeemModal').style.display = 'flex';
+  window.closeRedeemModal = () => document.getElementById('redeemModal').style.display = 'none';
+
+  window.submitRedeemCode = async function() {
+    const s = document.getElementById('inputRedeemSerial').value.trim();
+    const k = document.getElementById('inputRedeemKey').value.trim();
+    const p = document.getElementById('inputRedeemPin').value.trim();
+
+    if (!s || !k || !p) { window.showToast?.("Lütfen 3 alanı da doldurun.", "warning"); return; }
+
+    try {
+      const q = query(
+        collection(db, "promosyon_kodlari"),
+        where("seriNo", "==", s),
+        where("anahtar", "==", k),
+        where("pin", "==", p),
+        where("isUsed", "==", false)
+      );
+
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        window.showToast?.("Geçersiz veya kullanılmış kod kombinasyonu!", "error");
+        return;
+      }
+
+      const codeDoc = snap.docs[0];
+      const codeData = codeDoc.data();
+
+      // Kodu kullanıldı yap ve kullanıcının durumunu güncelle
+      await updateDoc(doc(db, "promosyon_kodlari", codeDoc.id), {
+        isUsed: true,
+        usedBy: auth.currentUser.uid,
+        usedAt: serverTimestamp()
+      });
+
+      await updateDoc(doc(db, "kullanicilar", auth.currentUser.uid), {
+        durum: codeData.tur
+      });
+
+      window.showToast?.(`Tebrikler! Üyeliğiniz ${codeData.tur} seviyesine yükseltildi.`, "success");
+      window.closeRedeemModal();
+      setTimeout(() => location.reload(), 1500);
+
+    } catch (err) {
+      window.showToast?.("Aktivasyon hatası: " + err.message, "error");
     }
   };
 
-  // ADMIN PANELİNİ AÇMA VE VERİ ÇEKME
+  // ADMIN PANELİ VE FİLTRELEME
   window.openAdminModal = async function() {
     document.getElementById('adminModal').style.display = 'flex';
+    await fetchAndRenderUsers('Tümü');
+  };
+
+  window.closeAdminModal = () => document.getElementById('adminModal').style.display = 'none';
+
+  async function fetchAndRenderUsers(filterCategory) {
     const tbody = document.getElementById('adminUserTableBody');
-    tbody.innerHTML = '<tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcılar getiriliyor...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcılar sıralanıyor...</td></tr>';
 
     try {
-      const querySnapshot = await getDocs(collection(db, "kullanicilar"));
-      tbody.innerHTML = '';
-      
-      querySnapshot.forEach((userDoc) => {
-        const u = userDoc.data();
-        const uid = userDoc.id;
-        const status = u.durum || 'Ücretsiz';
+      const snap = await getDocs(collection(db, "kullanicilar"));
+      allFetchedUsers = [];
+      snap.forEach(d => allFetchedUsers.push({ id: d.id, ...d.data() }));
 
-        // Rozet Renkleri
-        let badgeBg = '#f1f5f9', badgeColor = '#475569';
-        if (status === 'Premium') { badgeBg = '#d1fae5'; badgeColor = '#047857'; }
-        if (status === 'Deneme') { badgeBg = '#fef3c7'; badgeColor = '#b45309'; }
-        if (status === 'VIP') { badgeBg = '#f3e8ff'; badgeColor = '#6b21a8'; }
-        if (status === 'Engellendi') { badgeBg = '#fee2e2'; badgeColor = '#b91c1c'; }
+      // Yetki Öncelik Haritası (Sıralama İçin)
+      const priority = { 'admin': 1, 'VIP': 2, 'Premium': 3, 'Deneme': 4, 'Ücretsiz': 5, 'Engellendi': 6 };
 
-        const row = document.createElement('tr');
-        row.style.borderBottom = '1px solid #e2e8f0';
-        row.innerHTML = `
-          <td style="padding: 10px; font-weight: 600;">${u.adSoyad || 'Belirtilmedi'}</td>
-          <td style="padding: 10px; color: #64748b;">${u.email}</td>
-          <td style="padding: 10px;">
-            <span style="padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: ${badgeBg}; color: ${badgeColor};">
-              ${status}
-            </span>
-          </td>
-          <td style="padding: 10px; text-align: right;">
-            <select class="modern-input" style="padding: 4px 8px; font-size: 0.78rem; width: auto;" onchange="changeUserStatus('${uid}', this.value)">
-              <option value="" disabled selected>Aksiyon Seç...</option>
-              <option value="Premium">⭐ Premium Yap</option>
-              <option value="Deneme">⏳ 3 Gün Deneme</option>
-              <option value="VIP">👑 VIP (Sınırsız)</option>
-              <option value="Ücretsiz">🔄 Ücretsiz Yap</option>
-              <option value="Engellendi">🚫 Hesabı Engelle</option>
-            </select>
-          </td>
-        `;
-        tbody.appendChild(row);
+      // Hiyerarşik Sıralama
+      allFetchedUsers.sort((a, b) => {
+        const pA = a.rol === 'admin' ? 1 : (priority[a.durum] || 5);
+        const pB = b.rol === 'admin' ? 1 : (priority[b.durum] || 5);
+        return pA - pB;
       });
-    } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="4" style="color:red; padding:10px;">Hata: ${err.message}</td></tr>`;
+
+      renderUserRows(filterCategory);
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="4" style="color:red; padding:10px;">Hata: ${e.message}</td></tr>`;
     }
+  }
+
+  window.filterAdminUsers = function(cat, btnElem) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.className = 'btn-action filter-btn btn-toggle-off');
+    btnElem.className = 'btn-action filter-btn btn-toggle-on';
+    renderUserRows(cat);
   };
 
-  window.closeAdminModal = function() {
-    document.getElementById('adminModal').style.display = 'none';
-  };
+  function renderUserRows(cat) {
+    const tbody = document.getElementById('adminUserTableBody');
+    tbody.innerHTML = '';
 
-  // DURUM GÜNCELLEME (MODERN TOAST BİLDİRİMLİ)
-  window.changeUserStatus = async function(uid, newStatus) {
-    if (!newStatus) return;
+    let list = allFetchedUsers;
+    if (cat === 'admin') list = list.filter(u => u.rol === 'admin');
+    else if (cat !== 'Tümü') list = list.filter(u => u.durum === cat && u.rol !== 'admin');
+
+    if (list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="padding: 15px; text-align: center;">Bu kategoride kullanıcı bulunamadı.</td></tr>';
+      return;
+    }
+
+    list.forEach(u => {
+      const isRoleAdmin = u.rol === 'admin';
+      const statusText = isRoleAdmin ? '👑 Yönetici' : (u.durum || 'Ücretsiz');
+
+      const row = document.createElement('tr');
+      row.style.borderBottom = '1px solid #e2e8f0';
+      row.innerHTML = `
+        <td style="padding: 10px; font-weight: 600;">${u.adSoyad || 'Belirtilmedi'}</td>
+        <td style="padding: 10px; color: #64748b;">${u.email}</td>
+        <td style="padding: 10px;">
+          <span style="padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0;">
+            ${statusText}
+          </span>
+        </td>
+        <td style="padding: 10px; text-align: right; display: flex; gap: 6px; justify-content: flex-end;">
+          <button class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;" onclick="viewUserActivities('${u.id}', '${u.email}')">👁️ Aktivite</button>
+          <select class="modern-input" style="padding: 2px 6px; font-size: 0.75rem; width: auto;" onchange="changeUserStatus('${u.id}', this.value)">
+            <option value="" disabled selected>Aksiyon</option>
+            <option value="Premium">⭐ Premium</option>
+            <option value="Deneme">⏳ Deneme</option>
+            <option value="VIP">👑 VIP</option>
+            <option value="Ücretsiz">🔄 Ücretsiz</option>
+            <option value="Engellendi">🚫 Engelle</option>
+          </select>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  // AKTİVİTE İZLEME EKRANI
+  window.viewUserActivities = async function(uid, email) {
+    document.getElementById('activityModal').style.display = 'flex';
+    document.getElementById('activityModalTitle').innerText = `📊 Aktivite Geçmişi: ${email}`;
+    const logBox = document.getElementById('activityLogsList');
+    logBox.innerHTML = 'Loglar getiriliyor...';
+
     try {
-      await updateDoc(doc(db, "kullanicilar", uid), { durum: newStatus });
-      if (window.showToast) {
-        window.showToast(`Kullanıcı durumu "${newStatus}" olarak güncellendi.`, 'success');
+      const q = query(
+        collection(db, "kullanicilar", uid, "aktiviteler"),
+        orderBy("zaman", "desc")
+      );
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        logBox.innerHTML = '<p style="text-align:center; color:#64748b;">Henüz aktivite kaydı bulunamadı.</p>';
+        return;
       }
-      window.openAdminModal(); // Listeyi anlık yenile
-    } catch (err) {
-      if (window.showToast) {
-        window.showToast("Güncelleme hatası: " + err.message, 'error');
-      }
+
+      let html = '<ul style="list-style: none; padding: 0;">';
+      snap.forEach(docSnap => {
+        const d = docSnap.data();
+        const dateObj = d.zaman?.toDate() ? d.zaman.toDate().toLocaleString('tr-TR') : 'Bugün';
+        
+        html += `
+          <li style="padding: 10px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; margin-bottom: 6px; border-radius: 6px;">
+            <div style="font-weight: bold; color: #1e293b;">${d.islem} <span style="font-size:0.75rem; color:#94a3b8; font-weight:normal;">(${dateObj})</span></div>
+            <div style="color: #475569; margin-top: 4px;">${d.detay}</div>
+          </li>
+        `;
+      });
+      html += 'ul>';
+      logBox.innerHTML = html;
+
+    } catch (e) {
+      logBox.innerHTML = `<span style="color:red;">Aktivite çekme hatası: ${e.message}</span>`;
     }
   };
 
-  // 3'LÜ LİSANS KODU ÜRETME FONKSİYONU
+  window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
+
+  // LİSANS KODU ÜRETME
   window.generateNewLicense = async function() {
     const type = document.getElementById('licenseTypeSelect').value;
-    
-    // Rastgele parçalar üret
     const serial = "NR-2026-" + Math.floor(100 + Math.random() * 900);
     const key = Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
     const pin = Math.floor(1000 + Math.random() * 9000).toString();
 
-    try {
-      await addDoc(collection(db, "promosyon_kodlari"), {
-        seriNo: serial,
-        anahtar: key,
-        pin: pin,
-        tur: type,
-        isUsed: false,
-        createdTime: serverTimestamp()
-      });
+    await addDoc(collection(db, "promosyon_kodlari"), {
+      seriNo: serial, anahtar: key, pin: pin, tur: type, isUsed: false, createdTime: serverTimestamp()
+    });
 
-      document.getElementById('resCodeSerial').innerText = serial;
-      document.getElementById('resCodeKey').innerText = key;
-      document.getElementById('resCodePin').innerText = pin;
-      document.getElementById('generatedCodeBox').style.display = 'block';
+    document.getElementById('resCodeSerial').innerText = serial;
+    document.getElementById('resCodeKey').innerText = key;
+    document.getElementById('resCodePin').innerText = pin;
+    document.getElementById('generatedCodeBox').style.display = 'block';
+    window.showToast?.("Yeni kod veritabanına kaydedildi.", "success");
+  };
 
-      if (window.showToast) {
-        window.showToast("Yeni aktivasyon lisansı üretildi ve kaydedildi.", 'success');
-      }
-    } catch (e) {
-      if (window.showToast) {
-        window.showToast("Lisans üretme hatası: " + e.message, 'error');
-      }
-    }
+  window.changeUserStatus = async function(uid, newStatus) {
+    if (!newStatus) return;
+    await updateDoc(doc(db, "kullanicilar", uid), { durum: newStatus });
+    window.showToast?.(`Durum "${newStatus}" olarak güncellendi.`, 'success');
+    window.openAdminModal();
   };
 </script>
 
