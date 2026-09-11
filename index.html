@@ -1016,16 +1016,27 @@
   <!-- ANA UYGULAMA MİMARİSİ (Giriş Yapılınca Açılır) -->
   <div id="mainApp" style="display: none;">
 
+<!-- YÜKLEME VE HATA EKRANI OVERLAY -->
     <div id="loadingOverlay" class="loading-overlay">
       <div id="loadingSpinner" class="spinner"></div>
       <p id="loadingText" style="font-weight: 600; font-size: 1.05rem;">Sorular Buluttan Çekiliyor...</p>
       
-      <div id="retryGroup" class="retry-btn-group" style="display: none;">
-        <button class="btn-action btn-toggle-on" onclick="retryConnection()">🔄 Yeniden Dene</button>
-        <button class="btn-action" onclick="useFallbackData()">📂 Yerel Modda Devam Et</button>
+      <!-- İptal Et / Çıkış Yap Butonu -->
+      <button id="btnCancelLoading" class="btn-action" style="margin-top: 15px; background: #ef4444 !important; border-color: #dc2626 !important; color: white !important; font-weight: 600;" onclick="cancelQuestionLoading()">
+        🚫 İptal Et / Çıkış Yap
+      </button>
+
+      <!-- Bağlantı Hatası Buton Grubu -->
+      <div id="retryGroup" class="retry-btn-group" style="display: none; gap: 12px; margin-top: 18px; justify-content: center; align-items: center; width: 100%;">
+        <button class="btn-action" style="background: #ffffff !important; color: #10b981 !important; border: 2px solid #10b981 !important; font-weight: 700; padding: 10px 18px; font-size: 0.9rem; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" onclick="retryConnection()">
+          ♻️ Yeniden Dene
+        </button>
+        <button class="btn-action" style="background: #334155 !important; color: #ffffff !important; border: 1px solid #475569 !important; font-weight: 600; padding: 10px 18px; font-size: 0.9rem;" onclick="useFallbackData()">
+          📂 Yerel Mod
+        </button>
       </div>
     </div>
-
+    
     <div id="confirmModal" class="modal-overlay no-print" style="display: none;">
       <div class="modal-card">
         <div class="modal-title">⚠️ Testten Çıkılsın mı?</div>
@@ -1219,7 +1230,7 @@
       <div class="config-card">
         
 <div class="panel-header" style="position: relative;">
-          <!-- ÜST KISIM: Başlık ve Sağda Yeşil Nokta + Altında Lisans Butonu -->
+          <!-- ÜST KISIM: Başlık ve Sağda Yeşil Nokta + Altındaki Butonlar -->
           <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
             <div class="panel-title">
               <span>🧠</span> Nöroloji Soru Hazırlama Paneli
@@ -1229,25 +1240,25 @@
               <!-- Yeşil Durum Noktası -->
               <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Ediliyor"></span>
               
-              <!-- Lisans Kodu Kullan (Yeşil Noktanın Hemen Altında - Admin Değilse Görünür) -->
+              <!-- Lisans Kodu Kullan (Normal Kullanıcıda Görünür) -->
               <button id="btnRedeemLicense" class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openRedeemModal()">
                 🔑 Lisans Kodu Kullan
+              </button>
+
+              <!-- Yönetici Paneli (Yönetici Girişinde Yeşil Noktanın Altında Görünür) -->
+              <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openAdminModal()">
+                ⚙️ Yönetici Paneli
               </button>
             </div>
           </div>
           
-          <!-- ALT KISIM: Kullanıcı İsmi ve Admin Butonu -->
+          <!-- ALT KISIM: Kullanıcı İsmi -->
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
             <div class="user-profile-badge">
               <span class="user-name-target">...</span>
               <span id="userTierBadge" style="padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0; color: #475569;">Ücretsiz</span>
               <button class="btn-logout-sm btn-logout-action">Çıkış</button>
             </div>
-
-            <!-- Admin Butonu -->
-            <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openAdminModal()">
-              ⚙️ Yönetici Paneli
-            </button>
           </div>
         </div>
 
@@ -1689,19 +1700,23 @@
     updateAvailableQuestionCount();
   }
 
+let activeFetchAbortController = null;
+
   async function loadDataAndInit() {
     showLoadingState();
     const dot = document.getElementById('dataStatusDot');
     if (dot) dot.title = "Bulut veritabanına bağlanılıyor...";
 
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 35000);
+    activeFetchAbortController = new AbortController();
+    const timeoutId = setTimeout(() => {
+      if (activeFetchAbortController) activeFetchAbortController.abort();
+    }, 35000);
 
     try {
       const response = await fetch(AUTOMATIC_JSON_URL, {
         method: 'GET',
         redirect: 'follow',
-        signal: controller.signal
+        signal: activeFetchAbortController.signal
       });
 
       clearTimeout(timeoutId);
@@ -1724,6 +1739,10 @@
       }
     } catch (err) {
       clearTimeout(timeoutId);
+      if (err.name === 'AbortError') {
+        console.log("İstek kullanıcı veya zaman aşımı tarafından iptal edildi.");
+        return;
+      }
       console.warn("Bulut Bağlantı Hatası:", err);
       if (dot) {
         dot.classList.remove('active');
@@ -1732,7 +1751,22 @@
       showConnectionErrorState();
     }
   }
-  window.loadDataAndInit = loadDataAndInit;
+
+  // YÜKLEMEYİ İPTAL ET VE GİRİŞ EKRANINA DÖN
+  function cancelQuestionLoading() {
+    if (activeFetchAbortController) {
+      activeFetchAbortController.abort();
+      activeFetchAbortController = null;
+    }
+    hideLoading();
+    if (window.forceSignOutToLogin) {
+      window.forceSignOutToLogin();
+    } else {
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    }
+  }
+  window.cancelQuestionLoading = cancelQuestionLoading;
 
   function retryConnection() { loadDataAndInit(); }
   window.retryConnection = retryConnection;
@@ -2319,9 +2353,21 @@ function activateAnalysisMode() {
     });
   });
 
-  // OTURUM DİNLEYİCİ
+// Zorunlu Çıkış Yapıp Giriş Ekranına Dönme Fonksiyonu
+  window.forceSignOutToLogin = function() {
+    window.isAdminSessionActive = false;
+    signOut(auth).then(() => {
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    }).catch(() => {
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    });
+  };
+  
+// OTURUM DİNLEYİCİ (Google ile Otomatik Girişi ve Yetkileri Yönetir)
   onAuthStateChanged(auth, async (user) => {
-    if (user) {
+    if (user && !window.isAdminSessionActive) {
       const userRef = doc(db, "kullanicilar", user.uid);
       const userSnap = await getDoc(userRef);
 
@@ -2348,15 +2394,20 @@ function activateAnalysisMode() {
         return;
       }
 
-      // Ad Soyad Biçimlendir ve Ekrana Bas
       const formattedName = formatNameSurname(currentUserData.adSoyad || user.displayName || user.email);
       document.querySelectorAll('.user-name-target').forEach(el => el.textContent = formattedName);
 
-      // Admin ise Lisans Butonunu Gizle
       const isAdm = currentUserData.rol === 'admin';
+      
       const btnRedeem = document.getElementById('btnRedeemLicense');
-      if (btnRedeem) {
-        btnRedeem.style.display = isAdm ? 'none' : 'inline-flex';
+      const btnAdmin = document.getElementById('btnAdminPanel');
+
+      if (isAdm) {
+        if (btnRedeem) btnRedeem.style.display = 'none';
+        if (btnAdmin) btnAdmin.style.display = 'inline-flex';
+      } else {
+        if (btnRedeem) btnRedeem.style.display = 'inline-flex';
+        if (btnAdmin) btnAdmin.style.display = 'none';
       }
 
       const tierBadge = document.getElementById('userTierBadge');
@@ -2370,24 +2421,16 @@ function activateAnalysisMode() {
         else { tierBadge.style.background = '#e2e8f0'; tierBadge.style.color = '#475569'; }
       }
 
-      const btnAdmin = document.getElementById('btnAdminPanel');
-      if (isAdm && btnAdmin) {
-        btnAdmin.style.display = 'inline-flex';
-      }
-
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
 
-      // Gmail ile giriş yapanlar için soruları otomatik yükle
       if (typeof masterPool !== 'undefined' && masterPool.length === 0) {
         window.loadDataAndInit();
       }
-    } else {
-      if (!window.isAdminSessionActive) {
-        currentUserData = null;
-        document.getElementById('loginScreen').style.display = 'flex';
-        document.getElementById('mainApp').style.display = 'none';
-      }
+    } else if (!window.isAdminSessionActive) {
+      currentUserData = null;
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('mainApp').style.display = 'none';
     }
   });
 
@@ -2405,8 +2448,11 @@ function activateAnalysisMode() {
     } catch (e) { console.error("Log hatası:", e); }
   };
 
-  // YÖNETİCİ GİRİŞ MODALİ (Sadece Şifre Girişi)
-  window.openAdminAuthModal = () => {
+// YÖNETİCİ GİRİŞİ BUTONUNA BASILINCA (Varsa Google Oturumunu Kapatır)
+  window.openAdminAuthModal = function() {
+    if (auth.currentUser) {
+      signOut(auth);
+    }
     document.getElementById('adminUsernameInput').value = '';
     document.getElementById('adminPasswordInput').value = '';
     document.getElementById('adminAuthModal').style.display = 'flex';
