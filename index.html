@@ -1194,11 +1194,17 @@
     <div id="configScreen" class="config-screen">
       <div class="config-card">
         
-        <div class="panel-header">
-          <div class="panel-title">
-            <span>🧠</span> Nöroloji Soru Hazırlama Paneli
+<div class="panel-header">
+          <!-- ÜST SATIR: Başlık ve En Sağa Sabitlenmiş Yeşil Durum Noktası -->
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 14px;">
+            <div class="panel-title">
+              <span>🧠</span> Nöroloji Soru Hazırlama Paneli
+            </div>
+            <!-- Bağlantı Durum Noktası (En Sağda) -->
+            <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Ediliyor"></span>
           </div>
           
+          <!-- ALT SATIR: Kullanıcı Rozeti ve Aksiyon Butonları -->
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <!-- Kullanıcı Profil Badge ve Üyelik Türü -->
             <div class="user-profile-badge">
@@ -1217,8 +1223,10 @@
               ⚙️ Yönetici Paneli
             </button>
 
-            <!-- Bağlantı Durum Noktası (En Sağda) -->
-            <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Ediliyor"></span>
+            <!-- Manuel Soruları Yükle Butonu (Yönetici Girişinde Açılır) -->
+            <button id="btnManualLoadQuestions" class="btn-action btn-toggle-on" style="display: none; background: #0284c7 !important; border-color: #0369a1 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="manualLoadQuestions()">
+              📥 Soruları Yükle
+            </button>
           </div>
         </div>
 
@@ -2303,7 +2311,7 @@
   window.openAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'flex';
   window.closeAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'none';
 
-  window.submitAdminAuth = async function() {
+window.submitAdminAuth = async function() {
     const userVal = document.getElementById('adminUsernameInput').value.trim();
     const passVal = document.getElementById('adminPasswordInput').value.trim();
 
@@ -2312,7 +2320,7 @@
       return;
     }
 
-    let isAuthorized = (userVal === "admin" && passVal === "noroloji2026");
+    let isAuthorized = (userVal === "admin" && passVal === "123");
 
     if (!isAuthorized) {
       try {
@@ -2335,8 +2343,12 @@
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
       
+      // Yönetici ve Soru Yükle Butonlarını Göster
       const btnAdmin = document.getElementById('btnAdminPanel');
       if (btnAdmin) btnAdmin.style.display = 'inline-flex';
+
+      const btnLoad = document.getElementById('btnManualLoadQuestions');
+      if (btnLoad) btnLoad.style.display = 'inline-flex';
 
       document.querySelectorAll('.user-email-target').forEach(el => el.textContent = "Yönetici (Özel)");
       
@@ -2349,11 +2361,21 @@
 
       window.closeAdminAuthModal();
 
-      if (typeof masterPool !== 'undefined' && masterPool.length === 0) {
-        window.loadDataAndInit();
+      // Doğrudan Yönetici Kontrol Paneli Modalini Aç (Otomatik soru çekme YAPMA)
+      if (window.openAdminModal) {
+        window.openAdminModal();
       }
     } else {
       if (window.showToast) window.showToast("Hatalı kullanıcı adı veya şifre!", "error");
+    }
+  };
+
+  // MANUEL SORU YÜKLEME FONKSİYONU
+  window.manualLoadQuestions = function() {
+    if (typeof loadDataAndInit === 'function') {
+      loadDataAndInit();
+      const btnLoad = document.getElementById('btnManualLoadQuestions');
+      if (btnLoad) btnLoad.style.display = 'none';
     }
   };
 
