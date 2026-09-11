@@ -1141,7 +1141,7 @@
 
   </div>
 </div>
-    <!-- KOD GİRİŞ MODAL PENCERESİ -->
+<!-- KOD GİRİŞ MODAL PENCERESİ -->
 <div id="redeemModal" class="modal-overlay no-print" style="display: none;">
   <div class="modal-card" style="max-width: 450px; width: 90%;">
     <div class="modal-title" style="justify-content: space-between;">
@@ -1154,18 +1154,18 @@
 
     <div class="input-control">
       <label>Seri No:</label>
-      <input type="text" id="inputRedeemSerial" class="modern-input" placeholder="Örn: NR-2026-102">
+      <input type="text" id="inputRedeemSerial" class="modern-input" placeholder="Örn: NR-2026-102" oninput="checkRedeemInputs()">
     </div>
     <div class="input-control">
       <label>Aktivasyon Anahtarı:</label>
-      <input type="text" id="inputRedeemKey" class="modern-input" placeholder="Örn: A1B2-C3D4">
+      <input type="text" id="inputRedeemKey" class="modern-input" placeholder="Örn: A1B2-C3D4" oninput="checkRedeemInputs()">
     </div>
     <div class="input-control">
       <label>Güvenlik PIN:</label>
-      <input type="text" id="inputRedeemPin" class="modern-input" placeholder="Örn: 1234">
+      <input type="text" id="inputRedeemPin" class="modern-input" placeholder="Örn: 1234" oninput="checkRedeemInputs()">
     </div>
 
-    <button class="btn-proceed" style="margin-top: 15px;" onclick="submitRedeemCode()">
+    <button id="btnSubmitRedeem" class="btn-proceed" style="margin-top: 15px; opacity: 0.5; cursor: not-allowed;" disabled onclick="submitRedeemCode()">
       Kodu Onayla ve Yükselt ➔
     </button>
   </div>
@@ -1188,24 +1188,30 @@
     <div id="configScreen" class="config-screen">
       <div class="config-card">
         
-        <div class="panel-header">
+<div class="panel-header">
           <div class="panel-title">
             <span>🧠</span> Nöroloji Soru Hazırlama Paneli
           </div>
           
-          <div style="display: flex; align-items: center; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <!-- Kullanıcı Profil Badge ve Üyelik Türü -->
             <div class="user-profile-badge">
               <span class="user-email-target">...</span>
+              <span id="userTierBadge" style="padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0; color: #475569;">Ücretsiz</span>
               <button class="btn-logout-sm btn-logout-action">Çıkış</button>
             </div>
-            <!-- Sadece Admin Kullanıcılara Görünecek Buton -->
-<button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important;" onclick="openAdminModal()">
-  ⚙️ Yönetici Paneli
-</button>
-            <!-- KULLANICI KOD GİRİŞ BUTONU -->
-<button class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important;" onclick="openRedeemModal()">
-  🔑 Lisans Kodu Kullan
-</button>
+
+            <!-- Lisans Kodu Kullan Butonu -->
+            <button class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openRedeemModal()">
+              🔑 Lisans Kodu Kullan
+            </button>
+
+            <!-- Admin Butonu -->
+            <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openAdminModal()">
+              ⚙️ Yönetici Paneli
+            </button>
+
+            <!-- Bağlantı Durum Noktası (En Sağda) -->
             <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Ediliyor"></span>
           </div>
         </div>
@@ -2277,262 +2283,89 @@ function triggerPrint() {
       return;
     }
 
-    try {
-      // Firestore 'yoneticiler' koleksiyonundan kullanıcı adı ve şifre kontrolü yap
-      const q = query(
-        collection(db, "yoneticiler"),
-        where("kullaniciAdi", "==", userVal),
-        where("sifre", "==", passVal)
-      );
-      
-      const snap = await getDocs(q);
+    // Öncelikli olarak yerel yönetici bilgilerini kontrol et
+    let isAuthorized = (userVal === "admin" && passVal === "noroloji2026");
 
-      // Firestore'da kayıt yoksa varsayılan geliştirici girişi kontrolü (İlk kurulum için)
-      const isValidDefault = (userVal === "admin" && passVal === "noroloji2026");
-
-      if (!snap.empty || isValidDefault) {
-        if (window.showToast) window.showToast("Yönetici girişi başarılı!", "success");
-        
-        // Kilit ekranını kapat ve Ana Uygulamayı Aç
-        document.getElementById('loginScreen').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'block';
-        
-        // Admin Butonunu Görünür Yap
-        const btnAdmin = document.getElementById('btnAdminPanel');
-        if (btnAdmin) btnAdmin.style.display = 'inline-flex';
-
-        document.querySelectorAll('.user-email-target').forEach(el => el.textContent = "Yönetici (Özel Oturum)");
-        window.closeAdminAuthModal();
-
-        if (typeof masterPool !== 'undefined' && masterPool.length === 0) {
-          loadDataAndInit();
-        }
-      } else {
-        if (window.showToast) window.showToast("Hatalı kullanıcı adı veya şifre!", "error");
+    if (!isAuthorized) {
+      try {
+        const q = query(
+          collection(db, "yoneticiler"),
+          where("kullaniciAdi", "==", userVal),
+          where("sifre", "==", passVal)
+        );
+        const snap = await getDocs(q);
+        if (!snap.empty) isAuthorized = true;
+      } catch (e) {
+        console.warn("Firestore yönetici doğrulama atlattı:", e);
       }
-    } catch (err) {
-      if (window.showToast) window.showToast("Giriş kontrol hatası: " + err.message, "error");
+    }
+
+    if (isAuthorized) {
+      if (window.showToast) window.showToast("Yönetici girişi başarılı!", "success");
+      
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      
+      const btnAdmin = document.getElementById('btnAdminPanel');
+      if (btnAdmin) btnAdmin.style.display = 'inline-flex';
+
+      document.querySelectorAll('.user-email-target').forEach(el => el.textContent = "Yönetici");
+      
+      const tierBadge = document.getElementById('userTierBadge');
+      if (tierBadge) {
+        tierBadge.textContent = "👑 Admin";
+        tierBadge.style.background = "#f3e8ff";
+        tierBadge.style.color = "#6b21a8";
+      }
+
+      window.closeAdminAuthModal();
+
+      if (typeof masterPool !== 'undefined' && masterPool.length === 0) {
+        loadDataAndInit();
+      }
+    } else {
+      if (window.showToast) window.showToast("Hatalı kullanıcı adı veya şifre!", "error");
     }
   };
-  // GİRİŞ & ÇIKIŞ
-  document.getElementById('btnGoogleLogin')?.addEventListener('click', () => {
-    signInWithPopup(auth, provider).catch(e => window.showToast?.("Giriş hatası: " + e.message, "error"));
-  });
 
-  document.querySelectorAll('.btn-logout-action').forEach(btn => {
-    btn.addEventListener('click', () => signOut(auth));
-  });
-
-  // AKTİVİTE KAYDETME FONKSİYONU (Sistem Otomatik Çağırır)
-  window.logUserActivity = async function(islemTipi, detaylar) {
-    if (!auth.currentUser) return;
-    try {
-      const todayStr = new Date().toISOString().split('T')[0]; // YYYY-MM-DD
-      await addDoc(collection(db, "kullanicilar", auth.currentUser.uid, "aktiviteler"), {
-        islem: islemTipi,
-        detay: detaylar,
-        tarihStr: todayStr,
-        zaman: serverTimestamp()
-      });
-    } catch (e) { console.error("Log kaydı hatası:", e); }
-  };
-
-  // KULLANICI KOD REDEEM
-  window.openRedeemModal = () => document.getElementById('redeemModal').style.display = 'flex';
-  window.closeRedeemModal = () => document.getElementById('redeemModal').style.display = 'none';
-
-  window.submitRedeemCode = async function() {
+  // KOD GİRİŞ ALANLARI DOLULUK KONTROLÜ
+  window.checkRedeemInputs = function() {
     const s = document.getElementById('inputRedeemSerial').value.trim();
     const k = document.getElementById('inputRedeemKey').value.trim();
     const p = document.getElementById('inputRedeemPin').value.trim();
+    const btn = document.getElementById('btnSubmitRedeem');
 
-    if (!s || !k || !p) { window.showToast?.("Lütfen 3 alanı da doldurun.", "warning"); return; }
+    if (s !== "" && k !== "" && p !== "") {
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      btn.style.cursor = "pointer";
+    } else {
+      btn.disabled = true;
+      btn.style.opacity = "0.5";
+      btn.style.cursor = "not-allowed";
+    }
+  };
 
-    try {
-      const q = query(
-        collection(db, "promosyon_kodlari"),
-        where("seriNo", "==", s),
-        where("anahtar", "==", k),
-        where("pin", "==", p),
-        where("isUsed", "==", false)
-      );
-
-      const snap = await getDocs(q);
-      if (snap.empty) {
-        window.showToast?.("Geçersiz veya kullanılmış kod kombinasyonu!", "error");
-        return;
+  // KULLANICI ÜYELİK ROZETİ GÜNCELLEME SİMüLASYONU
+  const originalOnAuthStateChanged = auth.onAuthStateChanged;
+  onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const userRef = doc(db, "kullanicilar", user.uid);
+      const userSnap = await getDoc(userRef);
+      if (userSnap.exists()) {
+        const uData = userSnap.data();
+        const tierBadge = document.getElementById('userTierBadge');
+        if (tierBadge) {
+          const st = uData.durum || 'Ücretsiz';
+          tierBadge.textContent = st;
+          if (st === 'Premium') { tierBadge.style.background = '#d1fae5'; tierBadge.style.color = '#047857'; }
+          else if (st === 'VIP') { tierBadge.style.background = '#f3e8ff'; tierBadge.style.color = '#6b21a8'; }
+          else if (st === 'Deneme') { tierBadge.style.background = '#fef3c7'; tierBadge.style.color = '#b45309'; }
+          else { tierBadge.style.background = '#e2e8f0'; tierBadge.style.color = '#475569'; }
+        }
       }
-
-      const codeDoc = snap.docs[0];
-      const codeData = codeDoc.data();
-
-      // Kodu kullanıldı yap ve kullanıcının durumunu güncelle
-      await updateDoc(doc(db, "promosyon_kodlari", codeDoc.id), {
-        isUsed: true,
-        usedBy: auth.currentUser.uid,
-        usedAt: serverTimestamp()
-      });
-
-      await updateDoc(doc(db, "kullanicilar", auth.currentUser.uid), {
-        durum: codeData.tur
-      });
-
-      window.showToast?.(`Tebrikler! Üyeliğiniz ${codeData.tur} seviyesine yükseltildi.`, "success");
-      window.closeRedeemModal();
-      setTimeout(() => location.reload(), 1500);
-
-    } catch (err) {
-      window.showToast?.("Aktivasyon hatası: " + err.message, "error");
     }
-  };
-
-  // ADMIN PANELİ VE FİLTRELEME
-  window.openAdminModal = async function() {
-    document.getElementById('adminModal').style.display = 'flex';
-    await fetchAndRenderUsers('Tümü');
-  };
-
-  window.closeAdminModal = () => document.getElementById('adminModal').style.display = 'none';
-
-  async function fetchAndRenderUsers(filterCategory) {
-    const tbody = document.getElementById('adminUserTableBody');
-    tbody.innerHTML = '<tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcılar sıralanıyor...</td></tr>';
-
-    try {
-      const snap = await getDocs(collection(db, "kullanicilar"));
-      allFetchedUsers = [];
-      snap.forEach(d => allFetchedUsers.push({ id: d.id, ...d.data() }));
-
-      // Yetki Öncelik Haritası (Sıralama İçin)
-      const priority = { 'admin': 1, 'VIP': 2, 'Premium': 3, 'Deneme': 4, 'Ücretsiz': 5, 'Engellendi': 6 };
-
-      // Hiyerarşik Sıralama
-      allFetchedUsers.sort((a, b) => {
-        const pA = a.rol === 'admin' ? 1 : (priority[a.durum] || 5);
-        const pB = b.rol === 'admin' ? 1 : (priority[b.durum] || 5);
-        return pA - pB;
-      });
-
-      renderUserRows(filterCategory);
-    } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="4" style="color:red; padding:10px;">Hata: ${e.message}</td></tr>`;
-    }
-  }
-
-  window.filterAdminUsers = function(cat, btnElem) {
-    document.querySelectorAll('.filter-btn').forEach(b => b.className = 'btn-action filter-btn btn-toggle-off');
-    btnElem.className = 'btn-action filter-btn btn-toggle-on';
-    renderUserRows(cat);
-  };
-
-  function renderUserRows(cat) {
-    const tbody = document.getElementById('adminUserTableBody');
-    tbody.innerHTML = '';
-
-    let list = allFetchedUsers;
-    if (cat === 'admin') list = list.filter(u => u.rol === 'admin');
-    else if (cat !== 'Tümü') list = list.filter(u => u.durum === cat && u.rol !== 'admin');
-
-    if (list.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" style="padding: 15px; text-align: center;">Bu kategoride kullanıcı bulunamadı.</td></tr>';
-      return;
-    }
-
-    list.forEach(u => {
-      const isRoleAdmin = u.rol === 'admin';
-      const statusText = isRoleAdmin ? '👑 Yönetici' : (u.durum || 'Ücretsiz');
-
-      const row = document.createElement('tr');
-      row.style.borderBottom = '1px solid #e2e8f0';
-      row.innerHTML = `
-        <td style="padding: 10px; font-weight: 600;">${u.adSoyad || 'Belirtilmedi'}</td>
-        <td style="padding: 10px; color: #64748b;">${u.email}</td>
-        <td style="padding: 10px;">
-          <span style="padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0;">
-            ${statusText}
-          </span>
-        </td>
-        <td style="padding: 10px; text-align: right; display: flex; gap: 6px; justify-content: flex-end;">
-          <button class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;" onclick="viewUserActivities('${u.id}', '${u.email}')">👁️ Aktivite</button>
-          <select class="modern-input" style="padding: 2px 6px; font-size: 0.75rem; width: auto;" onchange="changeUserStatus('${u.id}', this.value)">
-            <option value="" disabled selected>Aksiyon</option>
-            <option value="Premium">⭐ Premium</option>
-            <option value="Deneme">⏳ Deneme</option>
-            <option value="VIP">👑 VIP</option>
-            <option value="Ücretsiz">🔄 Ücretsiz</option>
-            <option value="Engellendi">🚫 Engelle</option>
-          </select>
-        </td>
-      `;
-      tbody.appendChild(row);
-    });
-  }
-
-  // AKTİVİTE İZLEME EKRANI
-  window.viewUserActivities = async function(uid, email) {
-    document.getElementById('activityModal').style.display = 'flex';
-    document.getElementById('activityModalTitle').innerText = `📊 Aktivite Geçmişi: ${email}`;
-    const logBox = document.getElementById('activityLogsList');
-    logBox.innerHTML = 'Loglar getiriliyor...';
-
-    try {
-      const q = query(
-        collection(db, "kullanicilar", uid, "aktiviteler"),
-        orderBy("zaman", "desc")
-      );
-      const snap = await getDocs(q);
-
-      if (snap.empty) {
-        logBox.innerHTML = '<p style="text-align:center; color:#64748b;">Henüz aktivite kaydı bulunamadı.</p>';
-        return;
-      }
-
-      let html = '<ul style="list-style: none; padding: 0;">';
-      snap.forEach(docSnap => {
-        const d = docSnap.data();
-        const dateObj = d.zaman?.toDate() ? d.zaman.toDate().toLocaleString('tr-TR') : 'Bugün';
-        
-        html += `
-          <li style="padding: 10px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; margin-bottom: 6px; border-radius: 6px;">
-            <div style="font-weight: bold; color: #1e293b;">${d.islem} <span style="font-size:0.75rem; color:#94a3b8; font-weight:normal;">(${dateObj})</span></div>
-            <div style="color: #475569; margin-top: 4px;">${d.detay}</div>
-          </li>
-        `;
-      });
-      html += 'ul>';
-      logBox.innerHTML = html;
-
-    } catch (e) {
-      logBox.innerHTML = `<span style="color:red;">Aktivite çekme hatası: ${e.message}</span>`;
-    }
-  };
-
-  window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
-
-  // LİSANS KODU ÜRETME
-  window.generateNewLicense = async function() {
-    const type = document.getElementById('licenseTypeSelect').value;
-    const serial = "NR-2026-" + Math.floor(100 + Math.random() * 900);
-    const key = Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
-    const pin = Math.floor(1000 + Math.random() * 9000).toString();
-
-    await addDoc(collection(db, "promosyon_kodlari"), {
-      seriNo: serial, anahtar: key, pin: pin, tur: type, isUsed: false, createdTime: serverTimestamp()
-    });
-
-    document.getElementById('resCodeSerial').innerText = serial;
-    document.getElementById('resCodeKey').innerText = key;
-    document.getElementById('resCodePin').innerText = pin;
-    document.getElementById('generatedCodeBox').style.display = 'block';
-    window.showToast?.("Yeni kod veritabanına kaydedildi.", "success");
-  };
-
-  window.changeUserStatus = async function(uid, newStatus) {
-    if (!newStatus) return;
-    await updateDoc(doc(db, "kullanicilar", uid), { durum: newStatus });
-    window.showToast?.(`Durum "${newStatus}" olarak güncellendi.`, 'success');
-    window.openAdminModal();
-  };
+  });
 </script>
 
 </body>
