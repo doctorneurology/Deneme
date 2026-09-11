@@ -1048,7 +1048,35 @@
         </div>
       </div>
     </div>
+<!-- ADMIN PANELİ MODAL PENCERESİ -->
+<div id="adminModal" class="modal-overlay no-print" style="display: none;">
+  <div class="modal-card" style="max-width: 650px; width: 95%;">
+    <div class="modal-title" style="justify-content: space-between;">
+      <span>⚙️ Kullanıcı Yönetim Paneli</span>
+      <button class="btn-action" onclick="closeAdminModal()">✕ Kapat</button>
+    </div>
+    
+    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+      Sisteme kayıtlı tüm kullanıcılar aşağıda listelenmektedir. Üyelik durumlarını anlık güncelleyebilirsiniz.
+    </p>
 
+    <!-- Kullanıcı Listesi Tablosu -->
+    <div style="max-height: 350px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+        <thead style="background: #f1f5f9; position: sticky; top: 0;">
+          <tr>
+            <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
+            <th style="padding: 10px; border-bottom: 1px solid var(--border);">Durum</th>
+            <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">İşlem</th>
+          </tr>
+        </thead>
+        <tbody id="adminUserTableBody">
+          <tr><td colspan="3" style="padding: 15px; text-align: center;">Yükleniyor...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
     <div id="toastContainer" class="toast-container"></div>
 
     <div id="configScreen" class="config-screen">
@@ -1064,6 +1092,10 @@
               <span class="user-email-target">...</span>
               <button class="btn-logout-sm btn-logout-action">Çıkış</button>
             </div>
+            <!-- Sadece Admin Kullanıcılara Görünecek Buton -->
+<button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important;" onclick="openAdminModal()">
+  ⚙️ Yönetici Paneli
+</button>
             <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Ediliyor"></span>
           </div>
         </div>
@@ -2043,7 +2075,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB8dZe4nDuvU2SjH2FzX3r7sgGtohE6mo4",
@@ -2064,55 +2096,108 @@
   const btnGoogleLogin = document.getElementById('btnGoogleLogin');
   const btnLogoutList = document.querySelectorAll('.btn-logout-action');
   const userEmailDisplays = document.querySelectorAll('.user-email-target');
+  const btnAdminPanel = document.getElementById('btnAdminPanel');
 
-  // Google ile Giriş Yap Butonu
   if (btnGoogleLogin) {
     btnGoogleLogin.addEventListener('click', () => {
       signInWithPopup(auth, provider).catch(error => {
-        alert("Giriş yapılırken bir hata oluştu: " + error.message);
+        alert("Giriş hatası: " + error.message);
       });
     });
   }
 
-  // Çıkış Yap Butonları
   btnLogoutList.forEach(btn => {
-    btn.addEventListener('click', () => {
-      signOut(auth);
-    });
+    btn.addEventListener('click', () => signOut(auth));
   });
 
-  // Oturum Durumu Takibi ve Otomatik Kayıt
   onAuthStateChanged(auth, async (user) => {
     if (user) {
-      // 1. Kullanıcı Firestore veritabanına kaydedilir/güncellenir
-      try {
-        await setDoc(doc(db, "kullanicilar", user.uid), {
+      const userRef = doc(db, "kullanicilar", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (!userSnap.exists()) {
+        await setDoc(userRef, {
           email: user.email,
           adSoyad: user.displayName || "Belirtilmedi",
           sonGirisTarihi: serverTimestamp(),
-          durum: "Ücretsiz"
-        }, { merge: true });
-      } catch (e) {
-        console.error("Kullanıcı verisi kaydedilemedi:", e);
+          durum: "Ücretsiz",
+          rol: "kullanici"
+        });
+      } else {
+        await updateDoc(userRef, { sonGirisTarihi: serverTimestamp() });
       }
 
-      // 2. Kullanıcı e-posta bilgisini panellere yaz
-      userEmailDisplays.forEach(el => el.textContent = user.email);
+      // Admin Yetkisi Kontrolü
+      const userData = userSnap?.data();
+      if (userData && userData.rol === 'admin') {
+        if (btnAdminPanel) btnAdminPanel.style.display = 'inline-flex';
+      }
 
-      // 3. Kilit ekranını kapat, ana paneli aç
+      userEmailDisplays.forEach(el => el.textContent = user.email);
       loginScreen.style.display = 'none';
       mainApp.style.display = 'block';
 
-      // 4. Soru havuzunu yükle
-      if (masterPool.length === 0) {
+      if (typeof masterPool !== 'undefined' && masterPool.length === 0) {
         loadDataAndInit();
       }
     } else {
-      // Çıkış Yapıldığında: Kilit ekranını aç, ana paneli gizle
       loginScreen.style.display = 'flex';
       mainApp.style.display = 'none';
+      if (btnAdminPanel) btnAdminPanel.style.display = 'none';
     }
   });
+
+  // ADMIN PANELİ FONKSİYONLARI
+  window.openAdminModal = async function() {
+    document.getElementById('adminModal').style.display = 'flex';
+    const tbody = document.getElementById('adminUserTableBody');
+    tbody.innerHTML = '<tr><td colspan="3" style="padding: 15px; text-align: center;">Kullanıcılar getiriliyor...</td></tr>';
+
+    try {
+      const querySnapshot = await getDocs(collection(db, "kullanicilar"));
+      tbody.innerHTML = '';
+      
+      querySnapshot.forEach((userDoc) => {
+        const u = userDoc.data();
+        const uid = userDoc.id;
+        const isPremium = u.durum === 'Premium';
+
+        const row = document.createElement('tr');
+        row.style.borderBottom = '1px solid #e2e8f0';
+        row.innerHTML = `
+          <td style="padding: 10px;">${u.email}</td>
+          <td style="padding: 10px;">
+            <span style="padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: ${isPremium ? '#d1fae5' : '#f1f5f9'}; color: ${isPremium ? '#047857' : '#475569'};">
+              ${u.durum || 'Ücretsiz'}
+            </span>
+          </td>
+          <td style="padding: 10px; text-align: right;">
+            <button class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;" onclick="toggleUserStatus('${uid}', '${u.durum}')">
+              ${isPremium ? 'Ücretsiz Yap' : '⭐ Premium Yap'}
+            </button>
+          </td>
+        `;
+        tbody.appendChild(row);
+      });
+    } catch (err) {
+      tbody.innerHTML = `<tr><td colspan="3" style="color:red; padding:10px;">Hata: ${err.message}</td></tr>`;
+    }
+  };
+
+  window.closeAdminModal = function() {
+    document.getElementById('adminModal').style.display = 'none';
+  };
+
+  window.toggleUserStatus = async function(uid, currentStatus) {
+    const newStatus = currentStatus === 'Premium' ? 'Ücretsiz' : 'Premium';
+    try {
+      await updateDoc(doc(db, "kullanicilar", uid), { durum: newStatus });
+      alert(`Kullanıcı durumu "${newStatus}" olarak güncellendi.`);
+      window.openAdminModal();
+    } catch (err) {
+      alert("Güncelleme hatası: " + err.message);
+    }
+  };
 </script>
 
 </body>
