@@ -555,12 +555,32 @@
       box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
     }
 
+/* A4 Kağıdını Tam Ortada Tutar */
     .paper-viewport {
       display: flex;
-      flex-direction: column;
-      align-items: center;
+      justify-content: center;
+      align-items: flex-start;
       padding: 30px 0;
-      gap: 30px;
+      width: 100%;
+      position: relative;
+    }
+
+    /* Sol Detaylı Konu Analizi Paneli (A4'ü Sola İtmez, Sabit Durur) */
+    #sideAnalysisPanel {
+      display: none;
+      position: fixed;
+      left: 20px;
+      top: 90px;
+      width: 280px;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+      background: #ffffff;
+      padding: 16px;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      border: 1px solid var(--border);
+      z-index: 900;
+      font-size: 0.85rem;
     }
 
     .a4-sheet {
@@ -970,43 +990,32 @@
   <!-- TOAST BİLDİRİM KAPSAYICISI -->
   <div id="toastContainer" class="toast-container"></div>
 
-  <!-- GOOGLE & YÖNETİCİ KİLİT EKRANI -->
+<!-- GİRİŞ EKRANI -->
   <div id="loginScreen">
-    <!-- SOL ÜST KÖŞE YÖNETİCİ GİRİŞİ BUTONU -->
     <button id="btnOpenAdminAuth" class="btn-action" style="position: absolute; top: 15px; left: 15px; background: #1e293b; border-color: #475569; color: #f8fafc; z-index: 20001;" onclick="openAdminAuthModal()">
       🔐 Yönetici Girişi
     </button>
 
-<!-- YÖNETİCİ KULLANICI ADI & ŞİFRE MODALİ -->
-    <div id="adminAuthModal" class="modal-overlay no-print" style="display: none; z-index: 25000;" onclick="if(event.target===this) closeAdminAuthModal()">
-      <div class="modal-card" style="max-width: 400px; width: 90%;">
-        <div class="modal-title" style="justify-content: space-between;">
-          <span>🔐 Yönetici Panel Girişi</span>
-          <button class="btn-action" onclick="closeAdminAuthModal()">✕</button>
-        </div>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-          Sisteme yönetici olarak erişmek için kullanıcı adı ve şifrenizi giriniz.
-        </p>
-
-        <div class="input-control">
-          <label>Yönetici Kullanıcı Adı:</label>
-          <input type="text" id="adminUsernameInput" class="modern-input" placeholder="Örn: admin" onkeydown="if(event.key==='Enter') submitAdminAuth()">
-        </div>
-        <div class="input-control">
-          <label>Şifre:</label>
-          <input type="password" id="adminPasswordInput" class="modern-input" placeholder="••••••••" onkeydown="if(event.key==='Enter') submitAdminAuth()">
-        </div>
-
-        <button class="btn-proceed" style="margin-top: 15px;" onclick="submitAdminAuth()">
-          Sisteme Giriş Yap ➔
-        </button>
-      </div>
-    </div>
-
     <div class="login-card">
       <div class="login-title">🧠 Nöroloji Soru Bankası</div>
-      <p class="login-desc">Soru hazırlama paneline erişmek ve test oluşturmak için lütfen Google hesabınızla giriş yapınız.</p>
-      <button id="btnGoogleLogin" class="btn-google-login">
+      <p class="login-desc">Soru hazırlama paneline erişmek ve test oluşturmak için lütfen giriş yapınız.</p>
+      <button class="btn-proceed" onclick="openLoginOptionsModal()">
+        Giriş Yap ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- GİRİŞ SEÇENEKLERİ MODALİ -->
+  <div id="loginOptionsModal" class="modal-overlay no-print" style="display: none; z-index: 25000;" onclick="if(event.target===this) closeLoginOptionsModal()">
+    <div class="modal-card" style="max-width: 380px; width: 90%;">
+      <div class="modal-title" style="justify-content: space-between;">
+        <span>🔑 Hesabınıza Giriş Yapın</span>
+        <button class="btn-action" onclick="closeLoginOptionsModal()">✕</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px;">
+        Aşağıdaki yöntemlerden birini kullanarak sisteme güvenle bağlanabilirsiniz.
+      </p>
+      <button id="btnGoogleLoginModal" class="btn-google-login">
         <svg width="18" height="18" viewBox="0 0 24 24"><path fill="#ffffff" d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.761H12.545z"/></svg>
         Google ile Giriş Yap
       </button>
@@ -1077,8 +1086,9 @@
       </div>
     </div>
 
-    <div id="testResultModal" class="modal-overlay no-print" style="display: none;">
-      <div class="modal-card">
+<!-- TEST TAMAMLANDI MODALİ -->
+    <div id="testResultModal" class="modal-overlay no-print" style="display: none; z-index: 24000;">
+      <div class="modal-card" style="max-width: 520px; width: 90%; max-height: 85vh; overflow-y: auto;">
         <div class="modal-title" id="resultModalTitle">📊 Test Tamamlandı!</div>
         <p style="font-size: 0.9rem; color: var(--text-muted);" id="resultModalSubtitle">Performans özetiniz aşağıdadır:</p>
 
@@ -1097,8 +1107,11 @@
           </div>
         </div>
 
+        <!-- MODAL İÇİ DETAYLI KONU ANALİZİ -->
+        <div id="modalTopicAnalysisBox" style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 12px;"></div>
+
         <div style="display: flex; gap: 10px; margin-top: 20px;">
-          <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="activateAnalysisMode()">🔍 Analiz Et</button>
+          <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="activateAnalysisMode()">🔍 Analiz Et & Çözümleri Gör</button>
           <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeResultModal()">Kapat</button>
         </div>
       </div>
@@ -1160,19 +1173,21 @@
       </div>
     </div>
 
-    <!-- SEKME 2: LİSANS KODU ÜRETİCİ -->
+<!-- SEKME 2: DİNAMİK LİSANS KODU ÜRETİCİ -->
     <div id="adminTabLicenses" style="display: none;">
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Promosyon lisansı üretin:</p>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">İstediğiniz gün ve üyelik türüne göre promosyon kodu oluşturun:</p>
       <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
         <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
-          <select id="licenseTypeSelect" class="modern-input" style="flex: 1;">
-            <option value="Deneme">3 Günlük Deneme</option>
-            <option value="Premium" selected>30 Günlük Premium</option>
-            <option value="VIP">Sınırsız VIP</option>
+          <input type="number" id="licenseDaysInput" class="modern-input" style="flex: 1; min-width: 120px;" value="30" min="1" placeholder="Süre (Gün)">
+          <select id="licenseTierSelect" class="modern-input" style="flex: 1; min-width: 140px;">
+            <option value="Deneme">Deneme</option>
+            <option value="Premium" selected>Premium</option>
+            <option value="VIP">VIP</option>
           </select>
           <button class="btn-action btn-toggle-on" onclick="generateNewLicense()">✨ Kodu Üret</button>
         </div>
         <div id="generatedCodeBox" style="display: none; background: #0f172a; color: #38bdf8; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 0.9rem;">
+          <div><strong>Süre / Tür:</strong> <span id="resCodeMeta" style="color:#f59e0b;">-</span></div>
           <div><strong>Seri No:</strong> <span id="resCodeSerial" style="color:white;">-</span></div>
           <div><strong>Anahtar:</strong> <span id="resCodeKey" style="color:white;">-</span></div>
           <div><strong>PIN:</strong> <span id="resCodePin" style="color:white;">-</span></div>
@@ -1353,7 +1368,14 @@
           </div>
         </div>
       </div>
-
+<!-- SOL YAN DETAYLI KONU ANALİZİ -->
+      <div id="sideAnalysisPanel" class="no-print">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 6px; margin-bottom: 10px;">
+          <h4 style="font-size: 0.95rem; color: var(--bg-dark); margin: 0;">📊 Detaylı Konu Analizi</h4>
+          <button class="btn-action" style="padding: 2px 6px; font-size: 0.75rem;" onclick="closeSideAnalysisPanel()">✕</button>
+        </div>
+        <div id="sideAnalysisContent"></div>
+      </div>
       <div class="paper-viewport">
         <div class="paper-viewport" style="display: flex; gap: 20px; align-items: flex-start; justify-content: center; width: 100%;">
         <!-- KULLANICI İÇİN SAĞ / YAN DETAYLI ANALİZ PANELİ -->
@@ -1405,7 +1427,20 @@
     </div>
 
   </div>
+window.manualLoadQuestions = function() {
+    if (typeof loadDataAndInit === 'function') {
+      loadDataAndInit();
+      if (window.closeAdminModal) window.closeAdminModal();
+    }
+  };
 
+  window.closeSideAnalysisPanel = function() {
+    const panel = document.getElementById('sideAnalysisPanel');
+    if (panel) panel.style.display = 'none';
+  };
+
+  window.openLoginOptionsModal = () => document.getElementById('loginOptionsModal').style.display = 'flex';
+  window.closeLoginOptionsModal = () => document.getElementById('loginOptionsModal').style.display = 'none';
 <script>
   const AUTOMATIC_JSON_URL = "https://script.google.com/macros/s/AKfycbxji5BJB8jHOqGX6e3r84HCfwWMCfRa6rOvX_PKP5Yih8fkylIzE3vqV5_48-ES38D8/exec";
 
@@ -2805,21 +2840,30 @@ function activateAnalysisMode() {
     document.getElementById('adminTestDetailModal').style.display = 'none';
   };
 
-  window.generateNewLicense = async function() {
-    const type = document.getElementById('licenseTypeSelect').value;
+window.generateNewLicense = async function() {
+    const days = parseInt(document.getElementById('licenseDaysInput').value) || 30;
+    const tier = document.getElementById('licenseTierSelect').value;
+
     const serial = "NR-2026-" + Math.floor(100 + Math.random() * 900);
     const key = Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
     const pin = Math.floor(1000 + Math.random() * 9000).toString();
 
     await addDoc(collection(db, "promosyon_kodlari"), {
-      seriNo: serial, anahtar: key, pin: pin, tur: type, isUsed: false, createdTime: serverTimestamp()
+      seriNo: serial,
+      anahtar: key,
+      pin: pin,
+      tur: tier,
+      gun: days,
+      isUsed: false,
+      createdTime: serverTimestamp()
     });
 
+    document.getElementById('resCodeMeta').innerText = `${days} Günlük ${tier}`;
     document.getElementById('resCodeSerial').innerText = serial;
     document.getElementById('resCodeKey').innerText = key;
     document.getElementById('resCodePin').innerText = pin;
     document.getElementById('generatedCodeBox').style.display = 'block';
-    window.showToast?.("Yeni kod veritabanına kaydedildi.", "success");
+    window.showToast?.(`${days} Günlük ${tier} kodu veritabanına kaydedildi.`, "success");
   };
 
   window.changeUserStatus = async function(uid, newStatus) {
