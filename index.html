@@ -189,7 +189,7 @@
       position: fixed;
       top: 20px;
       right: 20px;
-      z-index: 9999;
+      z-index: 99999;
       display: flex;
       flex-direction: column;
       gap: 10px;
@@ -957,38 +957,42 @@
 </head>
 <body>
 
-  <!-- GOOGLE GİRİŞ KİLİT EKRANI -->
+  <!-- TOAST BİLDİRİM KAPSAYICISI -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- GOOGLE & YÖNETİCİ KİLİT EKRANI -->
   <div id="loginScreen">
     <!-- SOL ÜST KÖŞE YÖNETİCİ GİRİŞİ BUTONU -->
-  <button id="btnOpenAdminAuth" class="btn-action" style="position: absolute; top: 15px; left: 15px; background: #1e293b; border-color: #475569; color: #f8fafc; z-index: 20001;" onclick="openAdminAuthModal()">
-    🔐 Yönetici Girişi
-  </button>
+    <button id="btnOpenAdminAuth" class="btn-action" style="position: absolute; top: 15px; left: 15px; background: #1e293b; border-color: #475569; color: #f8fafc; z-index: 20001;" onclick="openAdminAuthModal()">
+      🔐 Yönetici Girişi
+    </button>
 
-  <!-- YÖNETİCİ KULLANICI ADI & ŞİFRE MODALİ -->
-  <div id="adminAuthModal" class="modal-overlay no-print" style="display: none; z-index: 25000;">
-    <div class="modal-card" style="max-width: 400px; width: 90%;">
-      <div class="modal-title" style="justify-content: space-between;">
-        <span>🔐 Yönetici Panel Girişi</span>
-        <button class="btn-action" onclick="closeAdminAuthModal()">✕</button>
-      </div>
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-        Sisteme yönetici olarak erişmek için kullanıcı adı ve şifrenizi giriniz.
-      </p>
+    <!-- YÖNETİCİ KULLANICI ADI & ŞİFRE MODALİ -->
+    <div id="adminAuthModal" class="modal-overlay no-print" style="display: none; z-index: 25000;">
+      <div class="modal-card" style="max-width: 400px; width: 90%;">
+        <div class="modal-title" style="justify-content: space-between;">
+          <span>🔐 Yönetici Panel Girişi</span>
+          <button class="btn-action" onclick="closeAdminAuthModal()">✕</button>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+          Sisteme yönetici olarak erişmek için kullanıcı adı ve şifrenizi giriniz.
+        </p>
 
-      <div class="input-control">
-        <label>Yönetici Kullanıcı Adı:</label>
-        <input type="text" id="adminUsernameInput" class="modern-input" placeholder="Örn: admin">
-      </div>
-      <div class="input-control">
-        <label>Şifre:</label>
-        <input type="password" id="adminPasswordInput" class="modern-input" placeholder="••••••••">
-      </div>
+        <div class="input-control">
+          <label>Yönetici Kullanıcı Adı:</label>
+          <input type="text" id="adminUsernameInput" class="modern-input" placeholder="Örn: admin">
+        </div>
+        <div class="input-control">
+          <label>Şifre:</label>
+          <input type="password" id="adminPasswordInput" class="modern-input" placeholder="••••••••">
+        </div>
 
-      <button class="btn-proceed" style="margin-top: 15px;" onclick="submitAdminAuth()">
-        Sisteme Giriş Yap ➔
-      </button>
+        <button class="btn-proceed" style="margin-top: 15px;" onclick="submitAdminAuth()">
+          Sisteme Giriş Yap ➔
+        </button>
+      </div>
     </div>
-  </div>
+
     <div class="login-card">
       <div class="login-title">🧠 Nöroloji Soru Bankası</div>
       <p class="login-desc">Soru hazırlama paneline erişmek ve test oluşturmak için lütfen Google hesabınızla giriş yapınız.</p>
@@ -1078,117 +1082,119 @@
         </div>
       </div>
     </div>
-<!-- GELİŞMİŞ ADMIN PANELİ MODAL PENCERESİ -->
-<div id="adminModal" class="modal-overlay no-print" style="display: none;">
-  <div class="modal-card" style="max-width: 800px; width: 95%;">
-    <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
-      <span>⚙️ Yönetici Kontrol Merkezi</span>
-      <button class="btn-action" onclick="closeAdminModal()">✕ Kapat</button>
-    </div>
-    
-    <!-- Admin Alt Sekmeleri -->
-    <div style="display: flex; gap: 8px; margin: 15px 0;">
-      <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar</button>
-      <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
-    </div>
 
-    <!-- SEKME 1: KULLANICI LİSTESİ -->
-    <div id="adminTabUsers">
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-        Kayıtlı tüm hekimler aşağıdadır. Üyelik durumunu değiştirebilir veya hesabı kilitleyebilirsiniz.
-      </p>
-      <div style="max-height: 380px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
-          <thead style="background: #f1f5f9; position: sticky; top: 0; z-index: 5;">
-            <tr>
-              <th style="padding: 10px; border-bottom: 1px solid var(--border);">Ad Soyad</th>
-              <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
-              <th style="padding: 10px; border-bottom: 1px solid var(--border);">Durum</th>
-              <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">Hızlı Aksiyon</th>
-            </tr>
-          </thead>
-          <tbody id="adminUserTableBody">
-            <tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcılar getiriliyor...</td></tr>
-          </tbody>
-        </table>
+    <!-- GELİŞMİŞ ADMIN PANELİ MODAL PENCERESİ -->
+    <div id="adminModal" class="modal-overlay no-print" style="display: none;">
+      <div class="modal-card" style="max-width: 900px; width: 95%;">
+        <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <span>⚙️ Yönetici Kontrol Merkezi</span>
+          <button class="btn-action" onclick="closeAdminModal()">✕ Kapat</button>
+        </div>
+        
+        <div style="display: flex; gap: 8px; margin: 15px 0;">
+          <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar</button>
+          <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
+        </div>
+
+        <!-- SEKME 1: FİLTRELİ KULLANICI LİSTESİ -->
+        <div id="adminTabUsers">
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 15px;">
+            <button class="btn-action filter-btn btn-toggle-on" onclick="filterAdminUsers('Tümü', this)">Tümü</button>
+            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('admin', this)">👑 Yönetici</button>
+            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('VIP', this)">👑 VIP</button>
+            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Premium', this)">⭐ Premium</button>
+            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Deneme', this)">⏳ Deneme</button>
+            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Ücretsiz', this)">🆓 Ücretsiz</button>
+            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Engellendi', this)">🚫 Engelli</button>
+          </div>
+
+          <div style="max-height: 380px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+              <thead style="background: #f1f5f9; position: sticky; top: 0; z-index: 5;">
+                <tr>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border);">Ad Soyad</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border);">Rol / Durum</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">İşlem / Aktivite</th>
+                </tr>
+              </thead>
+              <tbody id="adminUserTableBody">
+                <tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcılar getiriliyor...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SEKME 2: 3 PARÇALI LİSANS KODU ÜRETİCİ -->
+        <div id="adminTabLicenses" style="display: none;">
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">Promosyon lisansı üretin:</p>
+          <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+            <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+              <select id="licenseTypeSelect" class="modern-input" style="flex: 1;">
+                <option value="Deneme">3 Günlük Deneme</option>
+                <option value="Premium" selected>30 Günlük Premium</option>
+                <option value="VIP">Sınırsız VIP</option>
+              </select>
+              <button class="btn-action btn-toggle-on" onclick="generateNewLicense()">✨ Kodu Üret</button>
+            </div>
+            <div id="generatedCodeBox" style="display: none; background: #0f172a; color: #38bdf8; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 0.9rem;">
+              <div><strong>Seri No:</strong> <span id="resCodeSerial" style="color:white;">-</span></div>
+              <div><strong>Anahtar:</strong> <span id="resCodeKey" style="color:white;">-</span></div>
+              <div><strong>PIN:</strong> <span id="resCodePin" style="color:white;">-</span></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
-    <!-- SEKME 2: 3 PARÇALI LİSANS KODU ÜRETİCİ -->
-    <div id="adminTabLicenses" style="display: none;">
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
-        Çekiliş, yarışma veya promosyonlar için e-postadan bağımsız 3 alanlı aktivasyon kodu üretin.
-      </p>
-      <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
-        <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
-          <select id="licenseTypeSelect" class="modern-input" style="flex: 1;">
-            <option value="3_gün">3 Günlük Deneme</option>
-            <option value="30_gün" selected>30 Günlük Premium</option>
-            <option value="365_gün">1 Yıllık Premium</option>
-            <option value="sinirsiz">Sınırsız VIP</option>
-          </select>
-          <button class="btn-action btn-toggle-on" onclick="generateNewLicense()">✨ Kodu Üret</button>
+    <!-- KOD GİRİŞ MODAL PENCERESİ -->
+    <div id="redeemModal" class="modal-overlay no-print" style="display: none;">
+      <div class="modal-card" style="max-width: 450px; width: 90%;">
+        <div class="modal-title" style="justify-content: space-between;">
+          <span>🔑 Aktivasyon Kodu Gir</span>
+          <button class="btn-action" onclick="closeRedeemModal()">✕</button>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+          Elinizdeki 3 parçalı lisans bilgilerini girerek üyeliğinizi anında yükseltebilirsiniz.
+        </p>
+
+        <div class="input-control">
+          <label>Seri No:</label>
+          <input type="text" id="inputRedeemSerial" class="modern-input" placeholder="Örn: NR-2026-102" oninput="checkRedeemInputs()">
+        </div>
+        <div class="input-control">
+          <label>Aktivasyon Anahtarı:</label>
+          <input type="text" id="inputRedeemKey" class="modern-input" placeholder="Örn: A1B2-C3D4" oninput="checkRedeemInputs()">
+        </div>
+        <div class="input-control">
+          <label>Güvenlik PIN:</label>
+          <input type="text" id="inputRedeemPin" class="modern-input" placeholder="Örn: 1234" oninput="checkRedeemInputs()">
         </div>
 
-        <!-- Üretilen Kodu Gösterim Alanı -->
-        <div id="generatedCodeBox" style="display: none; background: #0f172a; color: #38bdf8; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 0.9rem; line-height: 1.6;">
-          <div><strong>1. Seri No:</strong> <span id="resCodeSerial" style="color:white;">-</span></div>
-          <div><strong>2. Anahtar:</strong> <span id="resCodeKey" style="color:white;">-</span></div>
-          <div><strong>3. PIN:</strong> <span id="resCodePin" style="color:white;">-</span></div>
-        </div>
+        <button id="btnSubmitRedeem" class="btn-proceed" style="margin-top: 15px; opacity: 0.5; cursor: not-allowed;" disabled onclick="submitRedeemCode()">
+          Kodu Onayla ve Yükselt ➔
+        </button>
       </div>
     </div>
 
-  </div>
-</div>
-<!-- KOD GİRİŞ MODAL PENCERESİ -->
-<div id="redeemModal" class="modal-overlay no-print" style="display: none;">
-  <div class="modal-card" style="max-width: 450px; width: 90%;">
-    <div class="modal-title" style="justify-content: space-between;">
-      <span>🔑 Aktivasyon Kodu Gir</span>
-      <button class="btn-action" onclick="closeRedeemModal()">✕</button>
+    <!-- AKTİVİTE DETAY MODALİ -->
+    <div id="activityModal" class="modal-overlay no-print" style="display: none; z-index: 25000;">
+      <div class="modal-card" style="max-width: 650px; width: 90%;">
+        <div class="modal-title" style="justify-content: space-between;">
+          <span id="activityModalTitle">📊 Günlük Kullanıcı İstatistikleri</span>
+          <button class="btn-action" onclick="closeActivityModal()">✕ Kapat</button>
+        </div>
+        <div id="activityLogsList" style="max-height: 350px; overflow-y: auto; font-size: 0.85rem; margin-top: 15px;">
+          Yükleniyor...
+        </div>
+      </div>
     </div>
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-      Elinizdeki 3 parçalı lisans bilgilerini girerek üyeliğinizi anında yükseltebilirsiniz.
-    </p>
-
-    <div class="input-control">
-      <label>Seri No:</label>
-      <input type="text" id="inputRedeemSerial" class="modern-input" placeholder="Örn: NR-2026-102" oninput="checkRedeemInputs()">
-    </div>
-    <div class="input-control">
-      <label>Aktivasyon Anahtarı:</label>
-      <input type="text" id="inputRedeemKey" class="modern-input" placeholder="Örn: A1B2-C3D4" oninput="checkRedeemInputs()">
-    </div>
-    <div class="input-control">
-      <label>Güvenlik PIN:</label>
-      <input type="text" id="inputRedeemPin" class="modern-input" placeholder="Örn: 1234" oninput="checkRedeemInputs()">
-    </div>
-
-    <button id="btnSubmitRedeem" class="btn-proceed" style="margin-top: 15px; opacity: 0.5; cursor: not-allowed;" disabled onclick="submitRedeemCode()">
-      Kodu Onayla ve Yükselt ➔
-    </button>
-  </div>
-</div>
-
-<!-- AKTİVİTE DETAY MODALİ -->
-<div id="activityModal" class="modal-overlay no-print" style="display: none; z-index: 25000;">
-  <div class="modal-card" style="max-width: 650px; width: 90%;">
-    <div class="modal-title" style="justify-content: space-between;">
-      <span id="activityModalTitle">📊 Günlük Kullanıcı İstatistikleri</span>
-      <button class="btn-action" onclick="closeActivityModal()">✕ Kapat</button>
-    </div>
-    <div id="activityLogsList" style="max-height: 350px; overflow-y: auto; font-size: 0.85rem; margin-top: 15px;">
-      Yükleniyor...
-    </div>
-  </div>
-</div>
-    <div id="toastContainer" class="toast-container"></div>
 
     <div id="configScreen" class="config-screen">
       <div class="config-card">
         
-<div class="panel-header">
+        <div class="panel-header">
           <div class="panel-title">
             <span>🧠</span> Nöroloji Soru Hazırlama Paneli
           </div>
@@ -1301,7 +1307,7 @@
           <button id="btnFinishTestTop" class="btn-action btn-finish-test" style="display: none;" onclick="finishTest()">🏁 Testi Bitir</button>
           <button class="btn-action btn-print" onclick="triggerPrint()">🖨️ Yazdır / PDF İndir</button>
           
-          <div class="user-profile-badge" style="background: #334155; color: #white;">
+          <div class="user-profile-badge" style="background: #334155; color: white;">
             <span class="user-email-target" style="color: #cbd5e1;">...</span>
             <button class="btn-logout-sm btn-logout-action">Çıkış</button>
           </div>
@@ -1523,6 +1529,7 @@
 
   function showToast(message, type = 'warning') {
     const container = document.getElementById('toastContainer');
+    if (!container) return;
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
     
@@ -1537,6 +1544,7 @@
       toast.remove();
     }, 4000);
   }
+  window.showToast = showToast;
 
   function showLoadingState() {
     const overlay = document.getElementById('loadingOverlay');
@@ -1544,11 +1552,13 @@
     const text = document.getElementById('loadingText');
     const retryGroup = document.getElementById('retryGroup');
 
-    overlay.style.display = 'flex';
-    overlay.style.opacity = '1';
-    spinner.style.display = 'block';
-    text.innerText = "Sorular Buluttan Çekiliyor...";
-    retryGroup.style.display = 'none';
+    if (overlay) {
+      overlay.style.display = 'flex';
+      overlay.style.opacity = '1';
+    }
+    if (spinner) spinner.style.display = 'block';
+    if (text) text.innerText = "Sorular Buluttan Çekiliyor...";
+    if (retryGroup) retryGroup.style.display = 'none';
   }
 
   function showConnectionErrorState() {
@@ -1556,9 +1566,9 @@
     const text = document.getElementById('loadingText');
     const retryGroup = document.getElementById('retryGroup');
 
-    spinner.style.display = 'none';
-    text.innerText = "Bulut veritabanına bağlanılamadı veya zaman aşımına uğradı.";
-    retryGroup.style.display = 'flex';
+    if (spinner) spinner.style.display = 'none';
+    if (text) text.innerText = "Bulut veritabanına bağlanılamadı veya zaman aşımına uğradı.";
+    if (retryGroup) retryGroup.style.display = 'flex';
   }
 
   function hideLoading() {
@@ -1582,19 +1592,20 @@
     const label = document.getElementById('qCountLabel');
     const input = document.getElementById('questionCount');
 
-    label.innerHTML = `Soru Sayısı <span style="color:var(--primary); font-weight:700;">(Mevcut: ${totalAvailable})</span>`;
-    input.max = totalAvailable;
-
-    if (parseInt(input.value) > totalAvailable && totalAvailable > 0) {
-      input.value = totalAvailable;
-    } else if (totalAvailable === 0) {
-      input.value = 0;
+    if (label) label.innerHTML = `Soru Sayısı <span style="color:var(--primary); font-weight:700;">(Mevcut: ${totalAvailable})</span>`;
+    if (input) {
+      input.max = totalAvailable;
+      if (parseInt(input.value) > totalAvailable && totalAvailable > 0) {
+        input.value = totalAvailable;
+      } else if (totalAvailable === 0) {
+        input.value = 0;
+      }
     }
   }
 
   function initFilters() {
     const topicContainer = document.getElementById('topicContainer');
-    topicContainer.innerHTML = '';
+    if (topicContainer) topicContainer.innerHTML = '';
 
     const topicsMap = new Map();
     masterPool.forEach(q => {
@@ -1611,11 +1622,11 @@
         <input type="checkbox" class="topic-check" value="${cleanKey}" checked onchange="updateAvailableQuestionCount()">
         <span>${displayName}</span>
       `;
-      topicContainer.appendChild(label);
+      if (topicContainer) topicContainer.appendChild(label);
     });
 
     const diffContainer = document.getElementById('diffContainer');
-    diffContainer.innerHTML = '';
+    if (diffContainer) diffContainer.innerHTML = '';
 
     const diffsMap = new Map();
     diffsMap.set('kolay', 'Kolay');
@@ -1637,7 +1648,7 @@
         <input type="checkbox" class="diff-check" value="${cleanKey}" checked onchange="updateAvailableQuestionCount()">
         <span>${displayName}</span>
       `;
-      diffContainer.appendChild(label);
+      if (diffContainer) diffContainer.appendChild(label);
     });
 
     updateAvailableQuestionCount();
@@ -1646,7 +1657,7 @@
   async function loadDataAndInit() {
     showLoadingState();
     const dot = document.getElementById('dataStatusDot');
-    dot.title = "Bulut veritabanına bağlanılıyor...";
+    if (dot) dot.title = "Bulut veritabanına bağlanılıyor...";
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 35000);
@@ -1660,16 +1671,16 @@
 
       clearTimeout(timeoutId);
 
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}`);
-      }
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
 
       const data = await response.json();
 
       if (Array.isArray(data) && data.length > 0) {
         masterPool = deduplicateQuestions(data);
-        dot.classList.add('active');
-        dot.title = `Bulut Bağlantısı Aktif (${masterPool.length} Benzersiz Soru Yüklendi)`;
+        if (dot) {
+          dot.classList.add('active');
+          dot.title = `Bulut Bağlantısı Aktif (${masterPool.length} Benzersiz Soru Yüklendi)`;
+        }
         hideLoading();
         initFilters();
         showToast(`Buluttan ${masterPool.length} benzersiz soru yüklendi.`, 'success');
@@ -1679,15 +1690,17 @@
     } catch (err) {
       clearTimeout(timeoutId);
       console.warn("Bulut Bağlantı Hatası:", err);
-      dot.classList.remove('active');
-      dot.title = "Yerel Mod (Bulut Bağlantısı Kurulamadı)";
+      if (dot) {
+        dot.classList.remove('active');
+        dot.title = "Yerel Mod (Bulut Bağlantısı Kurulamadı)";
+      }
       showConnectionErrorState();
     }
   }
+  window.loadDataAndInit = loadDataAndInit;
 
-  function retryConnection() {
-    loadDataAndInit();
-  }
+  function retryConnection() { loadDataAndInit(); }
+  window.retryConnection = retryConnection;
 
   function useFallbackData() {
     masterPool = deduplicateQuestions(defaultFallbackPool);
@@ -1695,6 +1708,7 @@
     initFilters();
     showToast("Yerel yedek soru havuzu yüklendi.", "warning");
   }
+  window.useFallbackData = useFallbackData;
 
   function toggleAllTopics() {
     const checkboxes = document.querySelectorAll('.topic-check');
@@ -1702,6 +1716,7 @@
     checkboxes.forEach(cb => cb.checked = !allChecked);
     updateAvailableQuestionCount();
   }
+  window.toggleAllTopics = toggleAllTopics;
 
   function shuffle(array) {
     const arr = [...array];
@@ -1716,9 +1731,7 @@
     const topicGroups = new Map();
     filteredQuestions.forEach(q => {
       const meta = parseQuestionMeta(q);
-      if (!topicGroups.has(meta.konuKey)) {
-        topicGroups.set(meta.konuKey, []);
-      }
+      if (!topicGroups.has(meta.konuKey)) topicGroups.set(meta.konuKey, []);
       topicGroups.get(meta.konuKey).push(q);
     });
 
@@ -1751,9 +1764,7 @@
           remainingTarget -= take;
           allocatedInThisRound += take;
 
-          if (group.length - topicQuotas.get(topic) > 0) {
-            nextActiveTopics.push(topic);
-          }
+          if (group.length - topicQuotas.get(topic) > 0) nextActiveTopics.push(topic);
         }
       }
 
@@ -1766,16 +1777,12 @@
 
     topics.forEach(topic => {
       let group = topicGroups.get(topic);
-      if (isShuffle) {
-        group = shuffle(group);
-      }
+      if (isShuffle) group = shuffle(group);
       const quota = topicQuotas.get(topic);
       finalPool.push(...group.slice(0, quota));
     });
 
-    if (isShuffle) {
-      finalPool = shuffle(finalPool);
-    }
+    if (isShuffle) finalPool = shuffle(finalPool);
 
     return finalPool;
   }
@@ -1800,9 +1807,7 @@
     document.getElementById('timerDisplay').style.display = 'none';
 
     const sheet = document.getElementById('a4PaperSheet');
-    if (sheet) {
-      sheet.classList.remove('interactive-mode', 'analysis-mode');
-    }
+    if (sheet) sheet.classList.remove('interactive-mode', 'analysis-mode');
   }
 
   function proceedToExam() {
@@ -1835,9 +1840,7 @@
     if (equalDistribution) {
       currentQuestionsList = distributeQuestionsEqually(filtered, count);
     } else {
-      if (document.getElementById('shuffleToggle').checked) {
-        filtered = shuffle(filtered);
-      }
+      if (document.getElementById('shuffleToggle').checked) filtered = shuffle(filtered);
       currentQuestionsList = filtered.slice(0, count);
     }
 
@@ -1850,6 +1853,7 @@
     document.getElementById('configScreen').style.display = 'none';
     document.getElementById('previewScreen').style.display = 'block';
   }
+  window.proceedToExam = proceedToExam;
 
   function updateKeyButtonUI() {
     const btn = document.getElementById('toggleKeyBtn');
@@ -1886,32 +1890,26 @@
   function cycleKeyMode() {
     if (isTestActive) return;
 
-    if (currentKeyMode === 'none') {
-      currentKeyMode = 'inline';
-    } else if (currentKeyMode === 'inline') {
-      currentKeyMode = 'bottom';
-    } else {
-      currentKeyMode = 'none';
-    }
+    if (currentKeyMode === 'none') currentKeyMode = 'inline';
+    else if (currentKeyMode === 'inline') currentKeyMode = 'bottom';
+    else currentKeyMode = 'none';
 
     document.getElementById('keyModeSelect').value = currentKeyMode;
     buildPaperView(currentQuestionsList);
   }
+  window.cycleKeyMode = cycleKeyMode;
 
   function cycleExpMode() {
     if (isTestActive) return;
 
-    if (currentExpMode === 'none') {
-      currentExpMode = 'inline';
-    } else if (currentExpMode === 'inline') {
-      currentExpMode = 'bottom';
-    } else {
-      currentExpMode = 'none';
-    }
+    if (currentExpMode === 'none') currentExpMode = 'inline';
+    else if (currentExpMode === 'inline') currentExpMode = 'bottom';
+    else currentExpMode = 'none';
 
     document.getElementById('expModeSelect').value = currentExpMode;
     buildPaperView(currentQuestionsList);
   }
+  window.cycleExpMode = cycleExpMode;
 
   function buildPaperView(questions) {
     const qContainer = document.getElementById('questionsContainer');
@@ -1962,17 +1960,11 @@
         const letter = String.fromCharCode(65 + optIdx);
         let optionClasses = 'q-option';
 
-        if (isTestActive && userSelIdx === optIdx) {
-          optionClasses += ' user-selected';
-        }
+        if (isTestActive && userSelIdx === optIdx) optionClasses += ' user-selected';
 
         if (isAnalysisActive) {
-          if (correctIndices.includes(optIdx)) {
-            optionClasses += ' correct-choice';
-          }
-          if (userSelIdx === optIdx && !correctIndices.includes(optIdx)) {
-            optionClasses += ' wrong-choice';
-          }
+          if (correctIndices.includes(optIdx)) optionClasses += ' correct-choice';
+          if (userSelIdx === optIdx && !correctIndices.includes(optIdx)) optionClasses += ' wrong-choice';
         }
 
         optionsHTML += `
@@ -2017,40 +2009,32 @@
     if (isTestActive) {
       document.getElementById('answerKeySection').style.display = 'none';
       document.getElementById('explanationSection').style.display = 'none';
-      updateKeyButtonUI();
-      updateExpButtonUI();
     } else {
       document.getElementById('answerKeySection').style.display = (currentKeyMode === 'bottom') ? 'block' : 'none';
       document.getElementById('explanationSection').style.display = (currentExpMode === 'bottom') ? 'block' : 'none';
-
-      updateKeyButtonUI();
-      updateExpButtonUI();
     }
+    updateKeyButtonUI();
+    updateExpButtonUI();
   }
 
   function selectOption(qIndex, optIndex) {
     if (!isTestActive) return;
-
-    if (userAnswers[qIndex] === optIndex) {
-      delete userAnswers[qIndex];
-    } else {
-      userAnswers[qIndex] = optIndex;
-    }
-
+    if (userAnswers[qIndex] === optIndex) delete userAnswers[qIndex];
+    else userAnswers[qIndex] = optIndex;
     buildPaperView(currentQuestionsList);
   }
+  window.selectOption = selectOption;
 
-  function openTestConfigModal() {
-    document.getElementById('testConfigModal').style.display = 'flex';
-  }
+  function openTestConfigModal() { document.getElementById('testConfigModal').style.display = 'flex'; }
+  window.openTestConfigModal = openTestConfigModal;
 
-  function closeTestConfigModal() {
-    document.getElementById('testConfigModal').style.display = 'none';
-  }
+  function closeTestConfigModal() { document.getElementById('testConfigModal').style.display = 'none'; }
+  window.closeTestConfigModal = closeTestConfigModal;
 
   function toggleTimerInput(checkbox) {
     document.getElementById('timerInputGroup').style.display = checkbox.checked ? 'block' : 'none';
   }
+  window.toggleTimerInput = toggleTimerInput;
 
   function startInteractiveTest() {
     closeTestConfigModal();
@@ -2089,15 +2073,15 @@
     buildPaperView(currentQuestionsList);
     showToast("Test başladı! Başarılar dileriz.", "success");
     if (window.logUserActivity) {
-  window.logUserActivity("Test Başlatıldı", `${currentQuestionsList.length} Soruluk Test Oluşturuldu.`);
-}
+      window.logUserActivity("Test Başlatıldı", `${currentQuestionsList.length} Soruluk Test Oluşturuldu.`);
+    }
   }
+  window.startInteractiveTest = startInteractiveTest;
 
   function updateTimerDisplay() {
     const m = Math.floor(remainingSeconds / 60);
     const s = remainingSeconds % 60;
-    document.getElementById('timerCountdown').innerText = 
-      `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+    document.getElementById('timerCountdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   }
 
   function finishTest(isTimeUp = false) {
@@ -2114,21 +2098,15 @@
     document.getElementById('timerDisplay').style.display = 'none';
     document.getElementById('btnStartTest').style.display = 'inline-flex';
 
-    let correct = 0;
-    let wrong = 0;
-    let blank = 0;
+    let correct = 0, wrong = 0, blank = 0;
 
     currentQuestionsList.forEach((q, idx) => {
       const userSel = userAnswers[idx];
       const correctIndices = getCorrectIndices(q);
 
-      if (userSel === undefined) {
-        blank++;
-      } else if (correctIndices.includes(userSel)) {
-        correct++;
-      } else {
-        wrong++;
-      }
+      if (userSel === undefined) blank++;
+      else if (correctIndices.includes(userSel)) correct++;
+      else wrong++;
     });
 
     document.getElementById('resCorrectCount').innerText = correct;
@@ -2146,13 +2124,13 @@
     document.getElementById('testResultModal').style.display = 'flex';
     buildPaperView(currentQuestionsList);
     if (window.logUserActivity) {
-  window.logUserActivity("Test Tamamlandı", `Doğru: ${correct}, Yanlış: ${wrong}, Boş: ${blank}`);
-}
+      window.logUserActivity("Test Tamamlandı", `Doğru: ${correct}, Yanlış: ${wrong}, Boş: ${blank}`);
+    }
   }
+  window.finishTest = finishTest;
 
-  function closeResultModal() {
-    document.getElementById('testResultModal').style.display = 'none';
-  }
+  function closeResultModal() { document.getElementById('testResultModal').style.display = 'none'; }
+  window.closeResultModal = closeResultModal;
 
   function activateAnalysisMode() {
     closeResultModal();
@@ -2167,29 +2145,31 @@
     buildPaperView(currentQuestionsList);
     showToast("Analiz modu aktif. Çözümler her sorunun altında gösteriliyor.", "success");
   }
-function triggerPrint() {
-  if (window.logUserActivity) {
-    window.logUserActivity("Baskı / PDF Alındı", `${currentQuestionsList.length} Adet Soru Çıktı Alındı.`);
-  }
-  window.print();
-}
-  function backToConfig() {
-    if (isTestActive) {
-      document.getElementById('confirmModal').style.display = 'flex';
-    } else {
-      performBackToConfig();
-    }
-  }
+  window.activateAnalysisMode = activateAnalysisMode;
 
-  function closeConfirmModal() {
-    document.getElementById('confirmModal').style.display = 'none';
+  function triggerPrint() {
+    if (window.logUserActivity) {
+      window.logUserActivity("Baskı / PDF Alındı", `${currentQuestionsList.length} Adet Soru Çıktı Alındı.`);
+    }
+    window.print();
   }
+  window.triggerPrint = triggerPrint;
+
+  function backToConfig() {
+    if (isTestActive) document.getElementById('confirmModal').style.display = 'flex';
+    else performBackToConfig();
+  }
+  window.backToConfig = backToConfig;
+
+  function closeConfirmModal() { document.getElementById('confirmModal').style.display = 'none'; }
+  window.closeConfirmModal = closeConfirmModal;
 
   function confirmBackToConfig() {
     closeConfirmModal();
     resetTestState();
     performBackToConfig();
   }
+  window.confirmBackToConfig = confirmBackToConfig;
 
   function performBackToConfig() {
     resetTestState();
@@ -2198,7 +2178,7 @@ function triggerPrint() {
   }
 </script>
 
-<!-- FIREBASE, AUTHENTICATION & LOGGING MİMARİSİ -->
+<!-- FIREBASE, AUTHENTICATION, ADMIN & LİSANS SİSTEMİ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -2220,6 +2200,27 @@ function triggerPrint() {
 
   let currentUserData = null;
   let allFetchedUsers = [];
+  window.isAdminSessionActive = false;
+
+  // GOOGLE İLE GİRİŞ BUTONU
+  const btnGoogleLogin = document.getElementById('btnGoogleLogin');
+  if (btnGoogleLogin) {
+    btnGoogleLogin.addEventListener('click', () => {
+      signInWithPopup(auth, provider).catch(error => {
+        if (window.showToast) window.showToast("Giriş hatası: " + error.message, "error");
+      });
+    });
+  }
+
+  // ÇIKIŞ YAP BUTONLARI
+  document.querySelectorAll('.btn-logout-action').forEach(btn => {
+    btn.addEventListener('click', () => {
+      signOut(auth).then(() => {
+        window.isAdminSessionActive = false;
+        location.reload();
+      });
+    });
+  });
 
   // OTURUM DİNLEYİCİ
   onAuthStateChanged(auth, async (user) => {
@@ -2238,7 +2239,10 @@ function triggerPrint() {
         await setDoc(userRef, currentUserData);
       } else {
         currentUserData = userSnap.data();
-        await updateDoc(userRef, { sonGirisTarihi: serverTimestamp() });
+        await updateDoc(userRef, { 
+          sonGirisTarihi: serverTimestamp(),
+          adSoyad: user.displayName || currentUserData.adSoyad || "Belirtilmedi"
+        });
       }
 
       if (currentUserData.durum === 'Engellendi') {
@@ -2247,32 +2251,57 @@ function triggerPrint() {
         return;
       }
 
-      if (currentUserData.rol === 'admin') {
-        const btnAdmin = document.getElementById('btnAdminPanel');
-        if (btnAdmin) btnAdmin.style.display = 'inline-flex';
+      document.querySelectorAll('.user-email-target').forEach(el => el.textContent = user.email);
+      
+      const tierBadge = document.getElementById('userTierBadge');
+      if (tierBadge) {
+        const isAdm = currentUserData.rol === 'admin';
+        const st = isAdm ? '👑 Admin' : (currentUserData.durum || 'Ücretsiz');
+        tierBadge.textContent = st;
+        if (isAdm) { tierBadge.style.background = '#f3e8ff'; tierBadge.style.color = '#6b21a8'; }
+        else if (st === 'Premium') { tierBadge.style.background = '#d1fae5'; tierBadge.style.color = '#047857'; }
+        else if (st === 'VIP') { tierBadge.style.background = '#f3e8ff'; tierBadge.style.color = '#6b21a8'; }
+        else if (st === 'Deneme') { tierBadge.style.background = '#fef3c7'; tierBadge.style.color = '#b45309'; }
+        else { tierBadge.style.background = '#e2e8f0'; tierBadge.style.color = '#475569'; }
       }
 
-      document.querySelectorAll('.user-email-target').forEach(el => el.textContent = user.email);
+      const btnAdmin = document.getElementById('btnAdminPanel');
+      if (currentUserData.rol === 'admin' && btnAdmin) {
+        btnAdmin.style.display = 'inline-flex';
+      }
+
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
 
       if (typeof masterPool !== 'undefined' && masterPool.length === 0) {
-        loadDataAndInit();
+        window.loadDataAndInit();
       }
     } else {
-      currentUserData = null;
-      document.getElementById('loginScreen').style.display = 'flex';
-      document.getElementById('mainApp').style.display = 'none';
+      if (!window.isAdminSessionActive) {
+        currentUserData = null;
+        document.getElementById('loginScreen').style.display = 'flex';
+        document.getElementById('mainApp').style.display = 'none';
+      }
     }
   });
-// YÖNETİCİ ÖZEL GİRİŞ MODALİ FONKSİYONLARI
-  window.openAdminAuthModal = function() {
-    document.getElementById('adminAuthModal').style.display = 'flex';
+
+  // AKTİVİTE LOGLAMA YARDIMCISI
+  window.logUserActivity = async function(islemTipi, detaylar) {
+    if (!auth.currentUser) return;
+    try {
+      const todayStr = new Date().toISOString().split('T')[0];
+      await addDoc(collection(db, "kullanicilar", auth.currentUser.uid, "aktiviteler"), {
+        islem: islemTipi,
+        detay: detaylar,
+        tarihStr: todayStr,
+        zaman: serverTimestamp()
+      });
+    } catch (e) { console.error("Log hatası:", e); }
   };
 
-  window.closeAdminAuthModal = function() {
-    document.getElementById('adminAuthModal').style.display = 'none';
-  };
+  // YÖNETİCİ GİRİŞİ (KULLANICI ADI & ŞİFRE)
+  window.openAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'flex';
+  window.closeAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'none';
 
   window.submitAdminAuth = async function() {
     const userVal = document.getElementById('adminUsernameInput').value.trim();
@@ -2283,7 +2312,6 @@ function triggerPrint() {
       return;
     }
 
-    // Öncelikli olarak yerel yönetici bilgilerini kontrol et
     let isAuthorized = (userVal === "admin" && passVal === "noroloji2026");
 
     if (!isAuthorized) {
@@ -2296,11 +2324,12 @@ function triggerPrint() {
         const snap = await getDocs(q);
         if (!snap.empty) isAuthorized = true;
       } catch (e) {
-        console.warn("Firestore yönetici doğrulama atlattı:", e);
+        console.warn("Firestore sorgu hatası:", e);
       }
     }
 
     if (isAuthorized) {
+      window.isAdminSessionActive = true;
       if (window.showToast) window.showToast("Yönetici girişi başarılı!", "success");
       
       document.getElementById('loginScreen').style.display = 'none';
@@ -2309,7 +2338,7 @@ function triggerPrint() {
       const btnAdmin = document.getElementById('btnAdminPanel');
       if (btnAdmin) btnAdmin.style.display = 'inline-flex';
 
-      document.querySelectorAll('.user-email-target').forEach(el => el.textContent = "Yönetici");
+      document.querySelectorAll('.user-email-target').forEach(el => el.textContent = "Yönetici (Özel)");
       
       const tierBadge = document.getElementById('userTierBadge');
       if (tierBadge) {
@@ -2321,14 +2350,17 @@ function triggerPrint() {
       window.closeAdminAuthModal();
 
       if (typeof masterPool !== 'undefined' && masterPool.length === 0) {
-        loadDataAndInit();
+        window.loadDataAndInit();
       }
     } else {
       if (window.showToast) window.showToast("Hatalı kullanıcı adı veya şifre!", "error");
     }
   };
 
-  // KOD GİRİŞ ALANLARI DOLULUK KONTROLÜ
+  // LİSANS REDEEM MODAL FONKSİYONLARI
+  window.openRedeemModal = () => document.getElementById('redeemModal').style.display = 'flex';
+  window.closeRedeemModal = () => document.getElementById('redeemModal').style.display = 'none';
+
   window.checkRedeemInputs = function() {
     const s = document.getElementById('inputRedeemSerial').value.trim();
     const k = document.getElementById('inputRedeemKey').value.trim();
@@ -2346,26 +2378,214 @@ function triggerPrint() {
     }
   };
 
-  // KULLANICI ÜYELİK ROZETİ GÜNCELLEME SİMüLASYONU
-  const originalOnAuthStateChanged = auth.onAuthStateChanged;
-  onAuthStateChanged(auth, async (user) => {
-    if (user) {
-      const userRef = doc(db, "kullanicilar", user.uid);
-      const userSnap = await getDoc(userRef);
-      if (userSnap.exists()) {
-        const uData = userSnap.data();
-        const tierBadge = document.getElementById('userTierBadge');
-        if (tierBadge) {
-          const st = uData.durum || 'Ücretsiz';
-          tierBadge.textContent = st;
-          if (st === 'Premium') { tierBadge.style.background = '#d1fae5'; tierBadge.style.color = '#047857'; }
-          else if (st === 'VIP') { tierBadge.style.background = '#f3e8ff'; tierBadge.style.color = '#6b21a8'; }
-          else if (st === 'Deneme') { tierBadge.style.background = '#fef3c7'; tierBadge.style.color = '#b45309'; }
-          else { tierBadge.style.background = '#e2e8f0'; tierBadge.style.color = '#475569'; }
-        }
+  window.submitRedeemCode = async function() {
+    const s = document.getElementById('inputRedeemSerial').value.trim();
+    const k = document.getElementById('inputRedeemKey').value.trim();
+    const p = document.getElementById('inputRedeemPin').value.trim();
+
+    if (!s || !k || !p) { window.showToast?.("Lütfen tüm alanları doldurun.", "warning"); return; }
+
+    try {
+      const q = query(
+        collection(db, "promosyon_kodlari"),
+        where("seriNo", "==", s),
+        where("anahtar", "==", k),
+        where("pin", "==", p),
+        where("isUsed", "==", false)
+      );
+
+      const snap = await getDocs(q);
+      if (snap.empty) {
+        window.showToast?.("Geçersiz veya daha önce kullanılmış kod!", "error");
+        return;
       }
+
+      const codeDoc = snap.docs[0];
+      const codeData = codeDoc.data();
+
+      await updateDoc(doc(db, "promosyon_kodlari", codeDoc.id), {
+        isUsed: true,
+        usedBy: auth.currentUser ? auth.currentUser.uid : "admin_session",
+        usedAt: serverTimestamp()
+      });
+
+      if (auth.currentUser) {
+        await updateDoc(doc(db, "kullanicilar", auth.currentUser.uid), {
+          durum: codeData.tur
+        });
+      }
+
+      window.showToast?.(`Tebrikler! Üyeliğiniz ${codeData.tur} seviyesine yükseltildi.`, "success");
+      window.closeRedeemModal();
+      setTimeout(() => location.reload(), 1500);
+
+    } catch (err) {
+      window.showToast?.("Aktivasyon hatası: " + err.message, "error");
     }
-  });
+  };
+
+  // ADMIN PANELİ
+  window.switchAdminTab = function(tabName) {
+    const tabUsers = document.getElementById('adminTabUsers');
+    const tabLicenses = document.getElementById('adminTabLicenses');
+    const btnUsers = document.getElementById('tabUsersBtn');
+    const btnLicenses = document.getElementById('tabLicensesBtn');
+
+    if (tabName === 'users') {
+      tabUsers.style.display = 'block';
+      tabLicenses.style.display = 'none';
+      btnUsers.className = 'btn-action btn-toggle-on';
+      btnLicenses.className = 'btn-action btn-toggle-off';
+    } else {
+      tabUsers.style.display = 'none';
+      tabLicenses.style.display = 'block';
+      btnUsers.className = 'btn-action btn-toggle-off';
+      btnLicenses.className = 'btn-action btn-toggle-on';
+    }
+  };
+
+  window.openAdminModal = async function() {
+    document.getElementById('adminModal').style.display = 'flex';
+    await fetchAndRenderUsers('Tümü');
+  };
+
+  window.closeAdminModal = () => document.getElementById('adminModal').style.display = 'none';
+
+  async function fetchAndRenderUsers(filterCategory) {
+    const tbody = document.getElementById('adminUserTableBody');
+    tbody.innerHTML = '<tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcılar sıralanıyor...</td></tr>';
+
+    try {
+      const snap = await getDocs(collection(db, "kullanicilar"));
+      allFetchedUsers = [];
+      snap.forEach(d => allFetchedUsers.push({ id: d.id, ...d.data() }));
+
+      const priority = { 'admin': 1, 'VIP': 2, 'Premium': 3, 'Deneme': 4, 'Ücretsiz': 5, 'Engellendi': 6 };
+
+      allFetchedUsers.sort((a, b) => {
+        const pA = a.rol === 'admin' ? 1 : (priority[a.durum] || 5);
+        const pB = b.rol === 'admin' ? 1 : (priority[b.durum] || 5);
+        return pA - pB;
+      });
+
+      renderUserRows(filterCategory);
+    } catch (e) {
+      tbody.innerHTML = `<tr><td colspan="4" style="color:red; padding:10px;">Hata: ${e.message}</td></tr>`;
+    }
+  }
+
+  window.filterAdminUsers = function(cat, btnElem) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.className = 'btn-action filter-btn btn-toggle-off');
+    btnElem.className = 'btn-action filter-btn btn-toggle-on';
+    renderUserRows(cat);
+  };
+
+  function renderUserRows(cat) {
+    const tbody = document.getElementById('adminUserTableBody');
+    tbody.innerHTML = '';
+
+    let list = allFetchedUsers;
+    if (cat === 'admin') list = list.filter(u => u.rol === 'admin');
+    else if (cat !== 'Tümü') list = list.filter(u => u.durum === cat && u.rol !== 'admin');
+
+    if (list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="4" style="padding: 15px; text-align: center;">Bu kategoride kullanıcı bulunamadı.</td></tr>';
+      return;
+    }
+
+    list.forEach(u => {
+      const isRoleAdmin = u.rol === 'admin';
+      const statusText = isRoleAdmin ? '👑 Yönetici' : (u.durum || 'Ücretsiz');
+
+      const row = document.createElement('tr');
+      row.style.borderBottom = '1px solid #e2e8f0';
+      row.innerHTML = `
+        <td style="padding: 10px; font-weight: 600;">${u.adSoyad || 'Belirtilmedi'}</td>
+        <td style="padding: 10px; color: #64748b;">${u.email}</td>
+        <td style="padding: 10px;">
+          <span style="padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0;">
+            ${statusText}
+          </span>
+        </td>
+        <td style="padding: 10px; text-align: right; display: flex; gap: 6px; justify-content: flex-end;">
+          <button class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;" onclick="viewUserActivities('${u.id}', '${u.email}')">👁️ Aktivite</button>
+          <select class="modern-input" style="padding: 2px 6px; font-size: 0.75rem; width: auto;" onchange="changeUserStatus('${u.id}', this.value)">
+            <option value="" disabled selected>Aksiyon</option>
+            <option value="Premium">⭐ Premium</option>
+            <option value="Deneme">⏳ Deneme</option>
+            <option value="VIP">👑 VIP</option>
+            <option value="Ücretsiz">🔄 Ücretsiz</option>
+            <option value="Engellendi">🚫 Engelle</option>
+          </select>
+        </td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  window.viewUserActivities = async function(uid, email) {
+    document.getElementById('activityModal').style.display = 'flex';
+    document.getElementById('activityModalTitle').innerText = `📊 Aktivite Geçmişi: ${email}`;
+    const logBox = document.getElementById('activityLogsList');
+    logBox.innerHTML = 'Loglar getiriliyor...';
+
+    try {
+      const q = query(
+        collection(db, "kullanicilar", uid, "aktiviteler"),
+        orderBy("zaman", "desc")
+      );
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        logBox.innerHTML = '<p style="text-align:center; color:#64748b;">Henüz aktivite kaydı bulunamadı.</p>';
+        return;
+      }
+
+      let html = '<ul style="list-style: none; padding: 0;">';
+      snap.forEach(docSnap => {
+        const d = docSnap.data();
+        const dateObj = d.zaman?.toDate() ? d.zaman.toDate().toLocaleString('tr-TR') : 'Bugün';
+        
+        html += `
+          <li style="padding: 10px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; margin-bottom: 6px; border-radius: 6px;">
+            <div style="font-weight: bold; color: #1e293b;">${d.islem} <span style="font-size:0.75rem; color:#94a3b8; font-weight:normal;">(${dateObj})</span></div>
+            <div style="color: #475569; margin-top: 4px;">${d.detay}</div>
+          </li>
+        `;
+      });
+      html += '</ul>';
+      logBox.innerHTML = html;
+
+    } catch (e) {
+      logBox.innerHTML = `<span style="color:red;">Aktivite çekme hatası: ${e.message}</span>`;
+    }
+  };
+
+  window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
+
+  window.generateNewLicense = async function() {
+    const type = document.getElementById('licenseTypeSelect').value;
+    const serial = "NR-2026-" + Math.floor(100 + Math.random() * 900);
+    const key = Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+    const pin = Math.floor(1000 + Math.random() * 9000).toString();
+
+    await addDoc(collection(db, "promosyon_kodlari"), {
+      seriNo: serial, anahtar: key, pin: pin, tur: type, isUsed: false, createdTime: serverTimestamp()
+    });
+
+    document.getElementById('resCodeSerial').innerText = serial;
+    document.getElementById('resCodeKey').innerText = key;
+    document.getElementById('resCodePin').innerText = pin;
+    document.getElementById('generatedCodeBox').style.display = 'block';
+    window.showToast?.("Yeni kod veritabanına kaydedildi.", "success");
+  };
+
+  window.changeUserStatus = async function(uid, newStatus) {
+    if (!newStatus) return;
+    await updateDoc(doc(db, "kullanicilar", uid), { durum: newStatus });
+    window.showToast?.(`Durum "${newStatus}" olarak güncellendi.`, 'success');
+    window.openAdminModal();
+  };
 </script>
 
 </body>
