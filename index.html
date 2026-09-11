@@ -957,6 +957,16 @@
 </head>
 <body>
 
+  <!-- YÖNETİCİ DETAYLI TEST ANALİZİ MODALİ -->
+<div id="adminTestDetailModal" class="modal-overlay no-print" style="display: none; z-index: 26000;">
+  <div class="modal-card" style="max-width: 500px; width: 90%;">
+    <div class="modal-title" style="justify-content: space-between;">
+      <span>📊 Test Detay Analizi</span>
+      <button class="btn-action" onclick="closeAdminTestDetailModal()">✕ Kapat</button>
+    </div>
+    <div id="adminTestDetailContent" style="margin-top: 15px; font-size: 0.88rem; line-height: 1.6;"></div>
+  </div>
+</div>
   <!-- TOAST BİLDİRİM KAPSAYICISI -->
   <div id="toastContainer" class="toast-container"></div>
 
@@ -1195,35 +1205,30 @@
       <div class="config-card">
         
 <div class="panel-header">
-          <!-- ÜST SATIR: Başlık ve En Sağa Sabitlenmiş Yeşil Durum Noktası -->
           <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; margin-bottom: 14px;">
             <div class="panel-title">
               <span>🧠</span> Nöroloji Soru Hazırlama Paneli
             </div>
-            <!-- Bağlantı Durum Noktası (En Sağda) -->
+            <!-- Yeşil Nokta En Sağa Sabitlendi -->
             <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Ediliyor"></span>
           </div>
           
-          <!-- ALT SATIR: Kullanıcı Rozeti ve Aksiyon Butonları -->
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
-            <!-- Kullanıcı Profil Badge ve Üyelik Türü -->
             <div class="user-profile-badge">
               <span class="user-email-target">...</span>
               <span id="userTierBadge" style="padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0; color: #475569;">Ücretsiz</span>
               <button class="btn-logout-sm btn-logout-action">Çıkış</button>
             </div>
 
-            <!-- Lisans Kodu Kullan Butonu -->
             <button class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openRedeemModal()">
               🔑 Lisans Kodu Kullan
             </button>
 
-            <!-- Admin Butonu -->
             <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openAdminModal()">
               ⚙️ Yönetici Paneli
             </button>
 
-            <!-- Manuel Soruları Yükle Butonu (Yönetici Girişinde Açılır) -->
+            <!-- GÖRÜNÜR SORULARI YÜKLE BUTONU -->
             <button id="btnManualLoadQuestions" class="btn-action btn-toggle-on" style="display: none; background: #0284c7 !important; border-color: #0369a1 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="manualLoadQuestions()">
               📥 Soruları Yükle
             </button>
@@ -1323,6 +1328,12 @@
       </div>
 
       <div class="paper-viewport">
+        <div class="paper-viewport" style="display: flex; gap: 20px; align-items: flex-start; justify-content: center; width: 100%;">
+        <!-- KULLANICI İÇİN SAĞ / YAN DETAYLI ANALİZ PANELİ -->
+        <div id="sideAnalysisPanel" style="display: none; width: 280px; background: white; padding: 18px; border-radius: 12px; box-shadow: var(--shadow-lg); border: 1px solid var(--border); position: sticky; top: 80px; font-size: 0.85rem;">
+          <h4 style="font-size: 1rem; color: var(--bg-dark); margin-bottom: 10px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">📊 Detaylı Konu Analizi</h4>
+          <div id="sideAnalysisContent"></div>
+        </div>
         <div class="a4-sheet" id="a4PaperSheet">
           <div class="exam-header">
             <div class="exam-main-title">NÖROLOJİ SORU HAZIRLAMA PANELİ</div>
@@ -2044,7 +2055,7 @@
   }
   window.toggleTimerInput = toggleTimerInput;
 
-  function startInteractiveTest() {
+function startInteractiveTest() {
     closeTestConfigModal();
     isTestActive = true;
     isAnalysisActive = false;
@@ -2068,7 +2079,6 @@
       testTimerInterval = setInterval(() => {
         remainingSeconds--;
         updateTimerDisplay();
-
         if (remainingSeconds <= 0) {
           clearInterval(testTimerInterval);
           finishTest(true);
@@ -2080,8 +2090,20 @@
 
     buildPaperView(currentQuestionsList);
     showToast("Test başladı! Başarılar dileriz.", "success");
+
+    // KONU BAZLI LOGLAMA
+    const selectedTopicElems = Array.from(document.querySelectorAll('.topic-check:checked'));
+    const allTopicElems = document.querySelectorAll('.topic-check');
+    let topicsStr = "";
+    if (selectedTopicElems.length === allTopicElems.length && allTopicElems.length > 0) {
+      topicsStr = "Tüm Konular";
+    } else {
+      const names = selectedTopicElems.map(cb => cb.closest('label').querySelector('span').textContent.trim());
+      topicsStr = names.map(n => `'${n}'`).join(' ve ');
+    }
+
     if (window.logUserActivity) {
-      window.logUserActivity("Test Başlatıldı", `${currentQuestionsList.length} Soruluk Test Oluşturuldu.`);
+      window.logUserActivity("Test Başlatıldı", `${topicsStr} konusundan ${currentQuestionsList.length} soru üretildi.`);
     }
   }
   window.startInteractiveTest = startInteractiveTest;
@@ -2092,7 +2114,7 @@
     document.getElementById('timerCountdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   }
 
-  function finishTest(isTimeUp = false) {
+function finishTest(isTimeUp = false) {
     if (!isTestActive) return;
 
     isTestActive = false;
@@ -2107,15 +2129,30 @@
     document.getElementById('btnStartTest').style.display = 'inline-flex';
 
     let correct = 0, wrong = 0, blank = 0;
+    let topicStats = {};
 
     currentQuestionsList.forEach((q, idx) => {
       const userSel = userAnswers[idx];
       const correctIndices = getCorrectIndices(q);
+      const meta = parseQuestionMeta(q);
+      const tName = meta.displayName;
 
-      if (userSel === undefined) blank++;
-      else if (correctIndices.includes(userSel)) correct++;
-      else wrong++;
+      if (!topicStats[tName]) topicStats[tName] = { total: 0, correct: 0, wrong: 0, blank: 0 };
+      topicStats[tName].total++;
+
+      if (userSel === undefined) {
+        blank++;
+        topicStats[tName].blank++;
+      } else if (correctIndices.includes(userSel)) {
+        correct++;
+        topicStats[tName].correct++;
+      } else {
+        wrong++;
+        topicStats[tName].wrong++;
+      }
     });
+
+    window.lastTestTopicStats = { total: currentQuestionsList.length, correct, wrong, blank, topicStats };
 
     document.getElementById('resCorrectCount').innerText = correct;
     document.getElementById('resWrongCount').innerText = wrong;
@@ -2131,16 +2168,17 @@
 
     document.getElementById('testResultModal').style.display = 'flex';
     buildPaperView(currentQuestionsList);
+
     if (window.logUserActivity) {
-      window.logUserActivity("Test Tamamlandı", `Doğru: ${correct}, Yanlış: ${wrong}, Boş: ${blank}`);
+      const logPayload = JSON.stringify(window.lastTestTopicStats);
+      window.logUserActivity("Test Tamamlandı", logPayload);
     }
   }
-  window.finishTest = finishTest;
 
   function closeResultModal() { document.getElementById('testResultModal').style.display = 'none'; }
   window.closeResultModal = closeResultModal;
 
-  function activateAnalysisMode() {
+function activateAnalysisMode() {
     closeResultModal();
     isAnalysisActive = true;
 
@@ -2150,10 +2188,31 @@
     document.getElementById('expModeSelect').value = 'inline';
     document.getElementById('keyModeSelect').value = 'none';
 
+    // SAĞ DETAYLI ANALİZ PANELİNİ DOLDUR VE GÖSTER
+    const panel = document.getElementById('sideAnalysisPanel');
+    const content = document.getElementById('sideAnalysisContent');
+    
+    if (window.lastTestTopicStats && panel && content) {
+      const st = window.lastTestTopicStats;
+      let html = `<div style="margin-bottom:12px; font-weight:bold;">Toplam ${st.total} Soru<br><span style="color:#10b981;">Doğru: ${st.correct}</span> | <span style="color:#ef4444;">Yanlış: ${st.wrong}</span> | <span style="color:#8b5cf6;">Boş: ${st.blank}</span></div><hr style="margin:10px 0; border:none; border-top:1px solid #e2e8f0;">`;
+      
+      for (const [tName, data] of Object.entries(st.topicStats)) {
+        html += `
+          <div style="margin-bottom: 10px; background: #f8fafc; padding: 8px; border-radius: 6px; border-left: 3px solid var(--primary);">
+            <div style="font-weight: bold; color: #1e293b;">${tName} (${data.total} Soru)</div>
+            <div style="font-size: 0.8rem; color: #475569; margin-top: 2px;">
+              ✅ ${data.correct} Doğru | ❌ ${data.wrong} Yanlış | ❓ ${data.blank} Boş
+            </div>
+          </div>
+        `;
+      }
+      content.innerHTML = html;
+      panel.style.display = 'block';
+    }
+
     buildPaperView(currentQuestionsList);
-    showToast("Analiz modu aktif. Çözümler her sorunun altında gösteriliyor.", "success");
+    showToast("Analiz modu aktif. Çözümler ve detaylı analiz görüntüleniyor.", "success");
   }
-  window.activateAnalysisMode = activateAnalysisMode;
 
   function triggerPrint() {
     if (window.logUserActivity) {
@@ -2471,7 +2530,10 @@ window.submitAdminAuth = async function() {
     await fetchAndRenderUsers('Tümü');
   };
 
-  window.closeAdminModal = () => document.getElementById('adminModal').style.display = 'none';
+window.closeAdminModal = function() {
+    document.getElementById('adminModal').style.display = 'none';
+    // Otomatik soru yükleme tamamen kaldırıldı
+  };
 
   async function fetchAndRenderUsers(filterCategory) {
     const tbody = document.getElementById('adminUserTableBody');
@@ -2545,7 +2607,7 @@ window.submitAdminAuth = async function() {
     });
   }
 
-  window.viewUserActivities = async function(uid, email) {
+window.viewUserActivities = async function(uid, email) {
     document.getElementById('activityModal').style.display = 'flex';
     document.getElementById('activityModalTitle').innerText = `📊 Aktivite Geçmişi: ${email}`;
     const logBox = document.getElementById('activityLogsList');
@@ -2567,11 +2629,23 @@ window.submitAdminAuth = async function() {
       snap.forEach(docSnap => {
         const d = docSnap.data();
         const dateObj = d.zaman?.toDate() ? d.zaman.toDate().toLocaleString('tr-TR') : 'Bugün';
+        let detailText = d.detay;
+        let detailsBtnHTML = "";
+
+        if (d.islem === "Test Tamamlandı") {
+          try {
+            const parsed = JSON.parse(d.detay);
+            detailText = `Toplam ${parsed.total} Soru (Doğru: ${parsed.correct}, Yanlış: ${parsed.wrong}, Boş: ${parsed.blank})`;
+            window[`testLogDetail_${docSnap.id}`] = parsed;
+            detailsBtnHTML = `<button class="btn-action" style="font-size: 0.7rem; padding: 2px 6px; margin-top: 4px; background: #2563eb; color: white;" onclick="showAdminTestDetail('${docSnap.id}')">🔍 Detaylar</button>`;
+          } catch(e) {}
+        }
         
         html += `
           <li style="padding: 10px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; margin-bottom: 6px; border-radius: 6px;">
             <div style="font-weight: bold; color: #1e293b;">${d.islem} <span style="font-size:0.75rem; color:#94a3b8; font-weight:normal;">(${dateObj})</span></div>
-            <div style="color: #475569; margin-top: 4px;">${d.detay}</div>
+            <div style="color: #475569; margin-top: 4px;">${detailText}</div>
+            ${detailsBtnHTML}
           </li>
         `;
       });
@@ -2583,7 +2657,30 @@ window.submitAdminAuth = async function() {
     }
   };
 
-  window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
+  window.showAdminTestDetail = function(logId) {
+    const data = window[`testLogDetail_${logId}`];
+    if (!data) return;
+
+    let html = `<div style="margin-bottom: 12px; font-weight: bold;">Genel Özet: Toplam ${data.total} Soru<br><span style="color:#10b981;">Doğru: ${data.correct}</span> | <span style="color:#ef4444;">Yanlış: ${data.wrong}</span> | <span style="color:#8b5cf6;">Boş: ${data.blank}</span></div><hr style="margin:10px 0; border:none; border-top:1px solid #e2e8f0;">`;
+
+    for (const [tName, tData] of Object.entries(data.topicStats)) {
+      html += `
+        <div style="margin-bottom: 8px; background: #f1f5f9; padding: 10px; border-radius: 6px;">
+          <div style="font-weight: bold; color: #0f172a;">${tName} (${tData.total} Soru)</div>
+          <div style="font-size: 0.82rem; color: #334155; margin-top: 3px;">
+            ✅ ${tData.correct} Doğru | ❌ ${tData.wrong} Yanlış | ❓ ${tData.blank} Boş
+          </div>
+        </div>
+      `;
+    }
+
+    document.getElementById('adminTestDetailContent').innerHTML = html;
+    document.getElementById('adminTestDetailModal').style.display = 'flex';
+  };
+
+  window.closeAdminTestDetailModal = function() {
+    document.getElementById('adminTestDetailModal').style.display = 'none';
+  };
 
   window.generateNewLicense = async function() {
     const type = document.getElementById('licenseTypeSelect').value;
