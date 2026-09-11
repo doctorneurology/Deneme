@@ -1048,33 +1048,67 @@
         </div>
       </div>
     </div>
-<!-- ADMIN PANELİ MODAL PENCERESİ -->
+<!-- GELİŞMİŞ ADMIN PANELİ MODAL PENCERESİ -->
 <div id="adminModal" class="modal-overlay no-print" style="display: none;">
-  <div class="modal-card" style="max-width: 650px; width: 95%;">
-    <div class="modal-title" style="justify-content: space-between;">
-      <span>⚙️ Kullanıcı Yönetim Paneli</span>
+  <div class="modal-card" style="max-width: 800px; width: 95%;">
+    <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+      <span>⚙️ Yönetici Kontrol Merkezi</span>
       <button class="btn-action" onclick="closeAdminModal()">✕ Kapat</button>
     </div>
     
-    <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-      Sisteme kayıtlı tüm kullanıcılar aşağıda listelenmektedir. Üyelik durumlarını anlık güncelleyebilirsiniz.
-    </p>
-
-    <!-- Kullanıcı Listesi Tablosu -->
-    <div style="max-height: 350px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
-      <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
-        <thead style="background: #f1f5f9; position: sticky; top: 0;">
-          <tr>
-            <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
-            <th style="padding: 10px; border-bottom: 1px solid var(--border);">Durum</th>
-            <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">İşlem</th>
-          </tr>
-        </thead>
-        <tbody id="adminUserTableBody">
-          <tr><td colspan="3" style="padding: 15px; text-align: center;">Yükleniyor...</td></tr>
-        </tbody>
-      </table>
+    <!-- Admin Alt Sekmeleri -->
+    <div style="display: flex; gap: 8px; margin: 15px 0;">
+      <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar</button>
+      <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
     </div>
+
+    <!-- SEKME 1: KULLANICI LİSTESİ -->
+    <div id="adminTabUsers">
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+        Kayıtlı tüm hekimler aşağıdadır. Üyelik durumunu değiştirebilir veya hesabı kilitleyebilirsiniz.
+      </p>
+      <div style="max-height: 380px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+          <thead style="background: #f1f5f9; position: sticky; top: 0; z-index: 5;">
+            <tr>
+              <th style="padding: 10px; border-bottom: 1px solid var(--border);">Ad Soyad</th>
+              <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
+              <th style="padding: 10px; border-bottom: 1px solid var(--border);">Durum</th>
+              <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">Hızlı Aksiyon</th>
+            </tr>
+          </thead>
+          <tbody id="adminUserTableBody">
+            <tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcılar getiriliyor...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- SEKME 2: 3 PARÇALI LİSANS KODU ÜRETİCİ -->
+    <div id="adminTabLicenses" style="display: none;">
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">
+        Çekiliş, yarışma veya promosyonlar için e-postadan bağımsız 3 alanlı aktivasyon kodu üretin.
+      </p>
+      <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+        <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+          <select id="licenseTypeSelect" class="modern-input" style="flex: 1;">
+            <option value="3_gün">3 Günlük Deneme</option>
+            <option value="30_gün" selected>30 Günlük Premium</option>
+            <option value="365_gün">1 Yıllık Premium</option>
+            <option value="sinirsiz">Sınırsız VIP</option>
+          </select>
+          <button class="btn-action btn-toggle-on" onclick="generateNewLicense()">✨ Kodu Üret</button>
+        </div>
+
+        <!-- Üretilen Kodu Gösterim Alanı -->
+        <div id="generatedCodeBox" style="display: none; background: #0f172a; color: #38bdf8; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 0.9rem; line-height: 1.6;">
+          <div><strong>1. Seri No:</strong> <span id="resCodeSerial" style="color:white;">-</span></div>
+          <div><strong>2. Anahtar:</strong> <span id="resCodeKey" style="color:white;">-</span></div>
+          <div><strong>3. PIN:</strong> <span id="resCodePin" style="color:white;">-</span></div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </div>
     <div id="toastContainer" class="toast-container"></div>
@@ -2075,7 +2109,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB8dZe4nDuvU2SjH2FzX3r7sgGtohE6mo4",
@@ -2101,7 +2135,7 @@
   if (btnGoogleLogin) {
     btnGoogleLogin.addEventListener('click', () => {
       signInWithPopup(auth, provider).catch(error => {
-        alert("Giriş hatası: " + error.message);
+        if (window.showToast) window.showToast("Giriş hatası: " + error.message, "error");
       });
     });
   }
@@ -2124,11 +2158,22 @@
           rol: "kullanici"
         });
       } else {
-        await updateDoc(userRef, { sonGirisTarihi: serverTimestamp() });
+        await updateDoc(userRef, { 
+          sonGirisTarihi: serverTimestamp(),
+          adSoyad: user.displayName || userSnap.data().adSoyad || "Belirtilmedi"
+        });
+      }
+
+      const userData = userSnap?.data();
+      
+      // BAN / ENGEL KONTROLÜ
+      if (userData && userData.durum === 'Engellendi') {
+        signOut(auth);
+        if (window.showToast) window.showToast("Hesabınız yönetici tarafından erişime kapatılmıştır.", "error");
+        return;
       }
 
       // Admin Yetkisi Kontrolü
-      const userData = userSnap?.data();
       if (userData && userData.rol === 'admin') {
         if (btnAdminPanel) btnAdminPanel.style.display = 'inline-flex';
       }
@@ -2147,11 +2192,31 @@
     }
   });
 
-  // ADMIN PANELİ FONKSİYONLARI
+  // ADMIN PANELİ SEKME GEÇİŞİ
+  window.switchAdminTab = function(tabName) {
+    const tabUsers = document.getElementById('adminTabUsers');
+    const tabLicenses = document.getElementById('adminTabLicenses');
+    const btnUsers = document.getElementById('tabUsersBtn');
+    const btnLicenses = document.getElementById('tabLicensesBtn');
+
+    if (tabName === 'users') {
+      tabUsers.style.display = 'block';
+      tabLicenses.style.display = 'none';
+      btnUsers.className = 'btn-action btn-toggle-on';
+      btnLicenses.className = 'btn-action btn-toggle-off';
+    } else {
+      tabUsers.style.display = 'none';
+      tabLicenses.style.display = 'block';
+      btnUsers.className = 'btn-action btn-toggle-off';
+      btnLicenses.className = 'btn-action btn-toggle-on';
+    }
+  };
+
+  // ADMIN PANELİNİ AÇMA VE VERİ ÇEKME
   window.openAdminModal = async function() {
     document.getElementById('adminModal').style.display = 'flex';
     const tbody = document.getElementById('adminUserTableBody');
-    tbody.innerHTML = '<tr><td colspan="3" style="padding: 15px; text-align: center;">Kullanıcılar getiriliyor...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcılar getiriliyor...</td></tr>';
 
     try {
       const querySnapshot = await getDocs(collection(db, "kullanicilar"));
@@ -2160,27 +2225,40 @@
       querySnapshot.forEach((userDoc) => {
         const u = userDoc.data();
         const uid = userDoc.id;
-        const isPremium = u.durum === 'Premium';
+        const status = u.durum || 'Ücretsiz';
+
+        // Rozet Renkleri
+        let badgeBg = '#f1f5f9', badgeColor = '#475569';
+        if (status === 'Premium') { badgeBg = '#d1fae5'; badgeColor = '#047857'; }
+        if (status === 'Deneme') { badgeBg = '#fef3c7'; badgeColor = '#b45309'; }
+        if (status === 'VIP') { badgeBg = '#f3e8ff'; badgeColor = '#6b21a8'; }
+        if (status === 'Engellendi') { badgeBg = '#fee2e2'; badgeColor = '#b91c1c'; }
 
         const row = document.createElement('tr');
         row.style.borderBottom = '1px solid #e2e8f0';
         row.innerHTML = `
-          <td style="padding: 10px;">${u.email}</td>
+          <td style="padding: 10px; font-weight: 600;">${u.adSoyad || 'Belirtilmedi'}</td>
+          <td style="padding: 10px; color: #64748b;">${u.email}</td>
           <td style="padding: 10px;">
-            <span style="padding: 2px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: ${isPremium ? '#d1fae5' : '#f1f5f9'}; color: ${isPremium ? '#047857' : '#475569'};">
-              ${u.durum || 'Ücretsiz'}
+            <span style="padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: ${badgeBg}; color: ${badgeColor};">
+              ${status}
             </span>
           </td>
           <td style="padding: 10px; text-align: right;">
-            <button class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;" onclick="toggleUserStatus('${uid}', '${u.durum}')">
-              ${isPremium ? 'Ücretsiz Yap' : '⭐ Premium Yap'}
-            </button>
+            <select class="modern-input" style="padding: 4px 8px; font-size: 0.78rem; width: auto;" onchange="changeUserStatus('${uid}', this.value)">
+              <option value="" disabled selected>Aksiyon Seç...</option>
+              <option value="Premium">⭐ Premium Yap</option>
+              <option value="Deneme">⏳ 3 Gün Deneme</option>
+              <option value="VIP">👑 VIP (Sınırsız)</option>
+              <option value="Ücretsiz">🔄 Ücretsiz Yap</option>
+              <option value="Engellendi">🚫 Hesabı Engelle</option>
+            </select>
           </td>
         `;
         tbody.appendChild(row);
       });
     } catch (err) {
-      tbody.innerHTML = `<tr><td colspan="3" style="color:red; padding:10px;">Hata: ${err.message}</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="4" style="color:red; padding:10px;">Hata: ${err.message}</td></tr>`;
     }
   };
 
@@ -2188,14 +2266,53 @@
     document.getElementById('adminModal').style.display = 'none';
   };
 
-  window.toggleUserStatus = async function(uid, currentStatus) {
-    const newStatus = currentStatus === 'Premium' ? 'Ücretsiz' : 'Premium';
+  // DURUM GÜNCELLEME (MODERN TOAST BİLDİRİMLİ)
+  window.changeUserStatus = async function(uid, newStatus) {
+    if (!newStatus) return;
     try {
       await updateDoc(doc(db, "kullanicilar", uid), { durum: newStatus });
-      alert(`Kullanıcı durumu "${newStatus}" olarak güncellendi.`);
-      window.openAdminModal();
+      if (window.showToast) {
+        window.showToast(`Kullanıcı durumu "${newStatus}" olarak güncellendi.`, 'success');
+      }
+      window.openAdminModal(); // Listeyi anlık yenile
     } catch (err) {
-      alert("Güncelleme hatası: " + err.message);
+      if (window.showToast) {
+        window.showToast("Güncelleme hatası: " + err.message, 'error');
+      }
+    }
+  };
+
+  // 3'LÜ LİSANS KODU ÜRETME FONKSİYONU
+  window.generateNewLicense = async function() {
+    const type = document.getElementById('licenseTypeSelect').value;
+    
+    // Rastgele parçalar üret
+    const serial = "NR-2026-" + Math.floor(100 + Math.random() * 900);
+    const key = Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+    const pin = Math.floor(1000 + Math.random() * 9000).toString();
+
+    try {
+      await addDoc(collection(db, "promosyon_kodlari"), {
+        seriNo: serial,
+        anahtar: key,
+        pin: pin,
+        tur: type,
+        isUsed: false,
+        createdTime: serverTimestamp()
+      });
+
+      document.getElementById('resCodeSerial').innerText = serial;
+      document.getElementById('resCodeKey').innerText = key;
+      document.getElementById('resCodePin').innerText = pin;
+      document.getElementById('generatedCodeBox').style.display = 'block';
+
+      if (window.showToast) {
+        window.showToast("Yeni aktivasyon lisansı üretildi ve kaydedildi.", 'success');
+      }
+    } catch (e) {
+      if (window.showToast) {
+        window.showToast("Lisans üretme hatası: " + e.message, 'error');
+      }
     }
   };
 </script>
