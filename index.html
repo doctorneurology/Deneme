@@ -36,7 +36,27 @@
       min-height: 100vh;
     }
 
-    /* GİRİŞ KİLİT EKRANI STİLLERİ */
+    /* GİRİŞ EKRANI SİLİK ADMİN BUTONU */
+    .btn-admin-subtle {
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      background: transparent !important;
+      border: 1px solid rgba(255, 255, 255, 0.12) !important;
+      color: rgba(255, 255, 255, 0.25) !important;
+      font-size: 0.72rem !important;
+      padding: 4px 10px !important;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      z-index: 20001;
+    }
+    .btn-admin-subtle:hover {
+      color: rgba(255, 255, 255, 0.7) !important;
+      border-color: rgba(255, 255, 255, 0.3) !important;
+      background: rgba(255, 255, 255, 0.05) !important;
+    }
+
     #loginScreen {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -122,9 +142,7 @@
       transition: background 0.2s;
     }
 
-    .btn-logout-sm:hover {
-      background: #dc2626;
-    }
+    .btn-logout-sm:hover { background: #dc2626; }
 
     .loading-overlay, .modal-overlay {
       position: fixed;
@@ -150,6 +168,17 @@
       width: 90%;
       box-shadow: var(--shadow-lg);
       text-align: left;
+    }
+
+    /* BÜYÜK YÖNETİCİ KONTROL MERKEZİ MODALİ */
+    .admin-modal-card {
+      max-width: 1250px !important;
+      width: 95vw !important;
+      height: 90vh !important;
+      max-height: 900px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      padding: 24px !important;
     }
 
     .modal-title {
@@ -299,10 +328,7 @@
       flex-direction: column;
     }
 
-    .topics-card .custom-checkbox-group {
-      flex: 1;
-      max-height: none;
-    }
+    .topics-card .custom-checkbox-group { flex: 1; max-height: none; }
 
     .section-title {
       font-size: 0.9rem;
@@ -360,10 +386,7 @@
       cursor: pointer;
     }
 
-    .input-control {
-      margin-bottom: 14px;
-    }
-
+    .input-control { margin-bottom: 14px; }
     .input-control label {
       display: block;
       font-size: 0.85rem;
@@ -464,15 +487,8 @@
       line-height: 1.4;
     }
 
-    .feedback-note a {
-      color: #94a3b8;
-      text-decoration: underline;
-      transition: color 0.2s ease;
-    }
-
-    .feedback-note a:hover {
-      color: var(--primary);
-    }
+    .feedback-note a { color: #94a3b8; text-decoration: underline; transition: color 0.2s ease; }
+    .feedback-note a:hover { color: var(--primary); }
 
     .preview-screen { display: none; }
 
@@ -521,19 +537,12 @@
       color: #94a3b8 !important;
       border-color: #475569 !important;
     }
-    .btn-toggle-off:hover {
-      background: #475569 !important;
-      color: #f1f5f9 !important;
-    }
 
     .btn-toggle-on {
       background: #2563eb !important;
       color: #ffffff !important;
       border-color: #3b82f6 !important;
       box-shadow: 0 0 12px rgba(37, 99, 235, 0.4);
-    }
-    .btn-toggle-on:hover {
-      background: #1d4ed8 !important;
     }
 
     .btn-print { background: var(--accent-green); border-color: var(--accent-green); color: white; }
@@ -555,7 +564,6 @@
       box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
     }
 
-    /* A4 Kağıdını Tam Ortada Tutar */
     .paper-viewport {
       display: flex;
       justify-content: center;
@@ -565,7 +573,6 @@
       position: relative;
     }
 
-    /* Sol Detaylı Konu Analizi Paneli */
     #sideAnalysisPanel {
       display: none;
       position: fixed;
@@ -610,11 +617,7 @@
       text-transform: uppercase;
     }
 
-    .exam-header table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 10.5pt;
-    }
+    .exam-header table { width: 100%; border-collapse: collapse; font-size: 10.5pt; }
 
     .header-input {
       border: none;
@@ -626,29 +629,13 @@
       padding: 2px 4px;
       color: #1e293b;
       width: 220px;
-      transition: border-color 0.2s;
-    }
-    .header-input:focus {
-      border-bottom-color: #2563eb;
-      background-color: #f8fafc;
-    }
-    .header-input.date-input {
-      width: 110px;
-    }
-    .print-only-text {
-      display: none;
     }
 
-    .two-column-wrapper {
-      column-count: 2;
-      column-gap: 10mm;
-      width: 100%;
-    }
+    .two-column-wrapper { column-count: 2; column-gap: 10mm; width: 100%; }
 
     .question-block {
       break-inside: avoid-column !important;
       page-break-inside: avoid !important;
-      -webkit-column-break-inside: avoid !important;
       display: inline-block;
       width: 100%;
       margin-bottom: 20pt;
@@ -657,21 +644,8 @@
       position: relative;
     }
 
-    .q-text {
-      font-weight: bold;
-      margin-bottom: 6pt;
-      text-align: justify;
-      white-space: pre-line !important;
-      line-height: 1.4;
-    }
-
-    .q-options {
-      display: flex !important;
-      flex-direction: column !important;
-      gap: 5pt !important;
-      width: 100% !important;
-      margin-top: 4pt !important;
-    }
+    .q-text { font-weight: bold; margin-bottom: 6pt; text-align: justify; white-space: pre-line !important; line-height: 1.4; }
+    .q-options { display: flex !important; flex-direction: column !important; gap: 5pt !important; width: 100% !important; margin-top: 4pt !important; }
 
     .q-option {
       display: flex !important;
@@ -682,295 +656,62 @@
       word-break: break-word !important;
       padding: 4px 6px;
       border-radius: 6px;
-      transition: background 0.15s ease;
     }
 
-    .q-option span {
-      white-space: pre-line !important;
-    }
+    .interactive-mode .q-option { cursor: pointer; border: 1px solid transparent; }
+    .interactive-mode .q-option:hover { background-color: #f1f5f9; border-color: #cbd5e1; }
+    .interactive-mode .q-option.user-selected { background-color: #eff6ff !important; border-color: #3b82f6 !important; font-weight: 600; }
 
-    .q-option strong {
-      flex-shrink: 0 !important;
-      min-width: 22px !important;
-      white-space: nowrap !important;
-      font-weight: bold !important;
-    }
-
-    .q-inline-answer {
-      margin-top: 6pt;
-      padding: 4px 8px;
-      background-color: #eff6ff;
-      border-left: 3px solid #2563eb;
-      font-size: 9.5pt;
-      font-weight: bold;
-      color: #1e3a8a;
-      border-radius: 4px;
-      break-inside: avoid;
-    }
-
-    .q-inline-exp {
-      margin-top: 6pt;
-      padding: 6px 8px;
-      background-color: #f8fafc;
-      border-left: 3px solid #8b5cf6;
-      font-size: 9pt;
-      color: #334155;
-      line-height: 1.35;
-      border-radius: 4px;
-      white-space: pre-line !important;
-      break-inside: avoid;
-    }
-
-    .interactive-mode .q-option {
-      cursor: pointer;
-      border: 1px solid transparent;
-    }
-    .interactive-mode .q-option:hover {
-      background-color: #f1f5f9;
-      border-color: #cbd5e1;
-    }
-    .interactive-mode .q-option.user-selected {
-      background-color: #eff6ff !important;
-      border-color: #3b82f6 !important;
-      font-weight: 600;
-    }
-
-    .analysis-mode .q-option.correct-choice {
-      background-color: #d1fae5 !important;
-      border: 1px solid #10b981 !important;
-      font-weight: bold;
-    }
-    .analysis-mode .q-option.wrong-choice {
-      background-color: #fee2e2 !important;
-      border: 1px solid #ef4444 !important;
-      text-decoration: line-through;
-    }
+    .analysis-mode .q-option.correct-choice { background-color: #d1fae5 !important; border: 1px solid #10b981 !important; font-weight: bold; }
+    .analysis-mode .q-option.wrong-choice { background-color: #fee2e2 !important; border: 1px solid #ef4444 !important; text-decoration: line-through; }
 
     .q-status-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 22px;
-      height: 22px;
-      border-radius: 50%;
-      color: white;
-      font-size: 11px;
-      font-weight: bold;
-      margin-right: 6px;
-      vertical-align: middle;
+      display: inline-flex; align-items: center; justify-content: center;
+      width: 22px; height: 22px; border-radius: 50%; color: white; font-size: 11px; font-weight: bold; margin-right: 6px;
     }
     .q-status-badge.correct { background-color: var(--accent-green); }
     .q-status-badge.wrong { background-color: var(--accent-red); }
     .q-status-badge.blank { background-color: var(--accent-purple); }
 
-    .blank-tag {
-      color: var(--accent-purple);
+    /* ÜCRETSİZ KULLANICI KORUMA & FİLİGRAN KODLARI */
+    .unselectable-content {
+      -webkit-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+    }
+
+    .screen-watermark {
+      display: none;
+      position: absolute;
+      top: 40%;
+      left: 50%;
+      transform: translate(-50%, -50%) rotate(-25deg);
+      font-size: 24pt;
       font-weight: bold;
-      margin-right: 4px;
-    }
-
-    .answer-key-card {
-      margin-top: 20px;
-      border-top: 2px dashed #000;
-      padding-top: 15px;
-      break-inside: avoid;
-    }
-
-    .key-grid {
-      display: grid;
-      grid-template-columns: repeat(10, 1fr);
-      gap: 6px;
-      font-size: 9pt;
+      color: rgba(148, 163, 184, 0.15);
+      pointer-events: none;
+      z-index: 50;
       text-align: center;
-      margin-top: 10px;
+      white-space: pre-line;
+      width: 90%;
     }
 
-    .key-cell {
-      border: 1px solid #000;
-      padding: 4px;
-      background: #fdfdfd;
-    }
-
-    .explanation-sheet {
-      border-top: 3px double #000;
-      margin-top: 30px;
-      padding-top: 20px;
-    }
-
-    .exp-item {
-      margin-bottom: 12pt;
-      font-size: 9.5pt;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 8pt;
-      page-break-inside: avoid;
-      white-space: pre-line !important;
-    }
-
-    .exp-title {
-      font-weight: bold;
-      color: #000;
-      margin-bottom: 2pt;
-    }
-
-    .result-summary-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 12px;
-      margin: 20px 0;
-      text-align: center;
-    }
-    .result-card-item {
-      padding: 12px;
-      border-radius: 10px;
-      font-weight: bold;
-    }
-    .result-card-item.correct { background: #d1fae5; color: #065f46; }
-    .result-card-item.wrong { background: #fee2e2; color: #991b1b; }
-    .result-card-item.blank { background: #f3e8ff; color: #6b21a8; }
-
-    /* MOBİL VE TABLET EKRAN UYUMU */
-    @media (max-width: 850px) {
-      .config-screen {
-        margin: 15px auto;
-        padding: 0 10px;
-      }
-      .config-card {
-        padding: 20px 16px;
-      }
-      .config-grid {
-        grid-template-columns: 1fr;
-        gap: 14px;
-      }
-      .topics-card {
-        grid-row: span 1;
-      }
-      .topics-card .custom-checkbox-group {
-        max-height: none !important;
-        overflow-y: visible !important;
-      }
-      .action-bar {
-        padding: 10px 14px;
-        flex-direction: column;
-        align-items: stretch;
-        gap: 10px;
-      }
-      .action-btn-group {
-        width: 100%;
-        justify-content: space-between;
-      }
-      .btn-action {
-        flex: 1;
-        justify-content: center;
-        padding: 8px 10px;
-        font-size: 0.8rem;
-      }
-      .paper-viewport {
-        padding: 10px 0;
-      }
-      .a4-sheet {
-        width: 95% !important;
-        min-height: auto !important;
-        padding: 15px 12px !important;
-      }
-      .two-column-wrapper {
-        column-count: 1 !important;
-      }
-      .header-input {
-        width: 140px;
-      }
-      .header-input.date-input {
-        width: 80px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .panel-title {
-        font-size: 1.2rem;
-      }
-      .key-grid {
-        grid-template-columns: repeat(5, 1fr) !important;
-      }
-    }
-
-    /* A4 BASKI VE PDF KURALLARI */
     @media print {
-      @page {
-        size: A4 portrait;
-        margin: 20mm 20mm 20mm 20mm !important;
-      }
-
-      body {
-        background: white !important;
-        color: black !important;
-        margin: 0 !important;
-        padding: 0 !important;
-      }
-
-      .action-bar, .config-screen, .no-print, .loading-overlay, .modal-overlay, .q-status-badge, .blank-tag, #bottomFinishBtn, #loginScreen {
-        display: none !important;
-      }
-
-      .preview-screen {
+      .print-watermark {
         display: block !important;
-      }
-
-      .paper-viewport {
-        padding: 0 !important;
-        gap: 0 !important;
-      }
-
-      .a4-sheet {
-        box-shadow: none !important;
-        margin: 0 !important;
-        width: 100% !important;
-        min-height: auto !important;
-        padding: 0 !important;
-      }
-
-      .two-column-wrapper {
-        column-count: 2 !important;
-      }
-
-      .key-grid {
-        grid-template-columns: repeat(10, 1fr) !important;
-      }
-
-      .page-break {
-        page-break-before: always;
-      }
-
-      .q-option, 
-      .q-option.user-selected, 
-      .q-option.correct-choice, 
-      .q-option.wrong-choice,
-      .analysis-mode .q-option,
-      .analysis-mode .q-option.correct-choice,
-      .analysis-mode .q-option.wrong-choice,
-      .interactive-mode .q-option.user-selected {
-        background: transparent !important;
-        background-color: transparent !important;
-        border: none !important;
-        border-color: transparent !important;
-        padding: 0 !important;
-        text-decoration: none !important;
-        font-weight: normal !important;
-        color: #000 !important;
-        box-shadow: none !important;
-      }
-
-      .q-inline-answer, .q-inline-exp {
-        background: #f8fafc !important;
-        border-left: 2px solid #000 !important;
-        color: #000 !important;
-        -webkit-print-color-adjust: exact;
-        print-color-adjust: exact;
-      }
-
-      .header-input {
-        display: none !important;
-      }
-      .print-only-text {
-        display: inline !important;
+        position: fixed;
+        top: 45%;
+        left: 50%;
+        transform: translate(-50%, -50%) rotate(-30deg);
+        font-size: 26pt;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 0.08) !important;
+        text-align: center;
+        pointer-events: none;
+        z-index: 9999;
+        width: 100%;
+        white-space: pre-line;
       }
     }
   </style>
@@ -988,13 +729,27 @@
     </div>
   </div>
 
-  <!-- TOAST BİLDİRİM KAPSAYICISI -->
+  <!-- KULLANICI SİLME İÇİN ADMIN ŞİFRE ONAY MODALİ -->
+  <div id="adminConfirmDeleteModal" class="modal-overlay no-print" style="display: none; z-index: 27000;">
+    <div class="modal-card" style="max-width: 400px; width: 90%;">
+      <div class="modal-title" style="color: #ef4444;">🚨 Kalıcı Silme Onayı</div>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 15px;">
+        Seçilen kullanıcı(lar) veritabanından <strong>sonsuza kadar silinecektir</strong>. Lütfen onaylamak için yönetici şifrenizi giriniz:
+      </p>
+      <input type="password" id="deleteConfirmAdminPassword" class="modern-input" placeholder="Yönetici Şifreniz" style="margin-bottom: 15px;">
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-action btn-finish-test" style="flex: 1; justify-content: center;" onclick="executeUserDeletion()">🗑️ Evet, Kalıcı Olarak Sil</button>
+        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeAdminConfirmDeleteModal()">İptal</button>
+      </div>
+    </div>
+  </div>
+
   <div id="toastContainer" class="toast-container"></div>
 
   <!-- GİRİŞ EKRANI -->
   <div id="loginScreen">
-    <button id="btnOpenAdminAuth" class="btn-action" style="position: absolute; top: 15px; left: 15px; background: #1e293b; border-color: #475569; color: #f8fafc; z-index: 20001;" onclick="openAdminAuthModal()">
-      🔐 Yönetici Girişi
+    <button id="btnOpenAdminAuth" class="btn-admin-subtle" onclick="openAdminAuthModal()">
+      admin
     </button>
 
     <div class="login-card">
@@ -1030,55 +785,39 @@
         <span>🔐 Yönetici Panel Girişi</span>
         <button class="btn-action" onclick="closeAdminAuthModal()">✕</button>
       </div>
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-        Sisteme yönetici olarak erişmek için kullanıcı adı ve şifrenizi giriniz.
-      </p>
-
       <div class="input-control">
         <label>Yönetici Kullanıcı Adı:</label>
-        <input type="text" id="adminUsernameInput" class="modern-input" placeholder="Örn: admin" onkeydown="if(event.key==='Enter') submitAdminAuth()">
+        <input type="text" id="adminUsernameInput" class="modern-input" autocomplete="off" onkeydown="if(event.key==='Enter') submitAdminAuth()">
       </div>
       <div class="input-control">
         <label>Şifre:</label>
         <input type="password" id="adminPasswordInput" class="modern-input" placeholder="••••••••" onkeydown="if(event.key==='Enter') submitAdminAuth()">
       </div>
-
       <button class="btn-proceed" style="margin-top: 15px;" onclick="submitAdminAuth()">
         Sisteme Giriş Yap ➔
       </button>
     </div>
   </div>
 
-  <!-- ANA UYGULAMA MİMARİSİ -->
+  <!-- ANA UYGULAMA -->
   <div id="mainApp" style="display: none;">
 
-    <!-- YÜKLEME VE HATA EKRANI OVERLAY -->
     <div id="loadingOverlay" class="loading-overlay">
       <div id="loadingSpinner" class="spinner"></div>
       <p id="loadingText" style="font-weight: 600; font-size: 1.05rem;">Sorular Buluttan Çekiliyor...</p>
-      
-      <!-- İptal Et / Çıkış Yap Butonu -->
-      <button id="btnCancelLoading" class="btn-action" style="margin-top: 15px; background: #ef4444 !important; border-color: #dc2626 !important; color: white !important; font-weight: 600;" onclick="cancelQuestionLoading()">
+      <button id="btnCancelLoading" class="btn-action" style="margin-top: 15px; background: #ef4444 !important; border-color: #dc2626 !important; color: white !important;" onclick="cancelQuestionLoading()">
         🚫 İptal Et / Çıkış Yap
       </button>
-
-      <!-- Bağlantı Hatası Buton Grubu -->
-      <div id="retryGroup" class="retry-btn-group" style="display: none; gap: 12px; margin-top: 18px; justify-content: center; align-items: center; width: 100%;">
-        <button class="btn-action" style="background: #ffffff !important; color: #10b981 !important; border: 2px solid #10b981 !important; font-weight: 700; padding: 10px 18px; font-size: 0.9rem; box-shadow: 0 2px 6px rgba(0,0,0,0.15);" onclick="retryConnection()">
-          ♻️ Yeniden Dene
-        </button>
-        <button class="btn-action" style="background: #334155 !important; color: #ffffff !important; border: 1px solid #475569 !important; font-weight: 600; padding: 10px 18px; font-size: 0.9rem;" onclick="useFallbackData()">
-          📂 Yerel Mod
-        </button>
+      <div id="retryGroup" class="retry-btn-group" style="display: none;">
+        <button class="btn-action" style="background: #ffffff !important; color: #10b981 !important; border: 2px solid #10b981 !important;" onclick="retryConnection()">♻️ Yeniden Dene</button>
+        <button class="btn-action" style="background: #334155 !important; color: #ffffff !important;" onclick="useFallbackData()">📂 Yerel Mod</button>
       </div>
     </div>
     
     <div id="confirmModal" class="modal-overlay no-print" style="display: none;">
       <div class="modal-card">
         <div class="modal-title">⚠️ Testten Çıkılsın mı?</div>
-        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">
-          Devam eden testiniz sonlandırılacak ve verdiğiniz yanıtlar sıfırlanacaktır. Ayarlara dönmek istediğinizden emin misiniz?
-        </p>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Testiniz sonlandırılacaktır. Ayarlara dönmek istiyor musunuz?</p>
         <div style="display: flex; gap: 10px;">
           <button class="btn-action btn-finish-test" style="flex: 1; justify-content: center;" onclick="confirmBackToConfig()">Evet, Çık</button>
           <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeConfirmModal()">Vazgeç</button>
@@ -1089,10 +828,6 @@
     <div id="testConfigModal" class="modal-overlay no-print" style="display: none;">
       <div class="modal-card">
         <div class="modal-title">📝 Test Modu Ayarları</div>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-          Testi başlatmadan önce süre ve zamanlayıcı seçeneklerinizi belirleyin.
-        </p>
-
         <div class="toggle-tile" style="margin-bottom: 12px;">
           <span>Süre Belirle</span>
           <label class="switch">
@@ -1100,12 +835,10 @@
             <span class="slider"></span>
           </label>
         </div>
-
         <div id="timerInputGroup" class="input-control" style="display: none;">
           <label for="testDurationInput">Süre (Dakika):</label>
           <input type="number" id="testDurationInput" class="modern-input" value="15" min="1" max="180">
         </div>
-
         <div style="display: flex; gap: 10px; margin-top: 20px;">
           <button class="btn-action btn-print" style="flex: 1; justify-content: center;" onclick="startInteractiveTest()">🚀 Testi Başlat</button>
           <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeTestConfigModal()">İptal</button>
@@ -1117,87 +850,98 @@
     <div id="testResultModal" class="modal-overlay no-print" style="display: none; z-index: 24000;">
       <div class="modal-card" style="max-width: 520px; width: 90%; max-height: 85vh; overflow-y: auto;">
         <div class="modal-title" id="resultModalTitle">📊 Test Tamamlandı!</div>
-        <p style="font-size: 0.9rem; color: var(--text-muted);" id="resultModalSubtitle">Performans özetiniz aşağıdadır:</p>
-
         <div class="result-summary-grid">
-          <div class="result-card-item correct">
-            <div style="font-size: 1.4rem;" id="resCorrectCount">0</div>
-            <div style="font-size: 0.75rem;">Doğru</div>
-          </div>
-          <div class="result-card-item wrong">
-            <div style="font-size: 1.4rem;" id="resWrongCount">0</div>
-            <div style="font-size: 0.75rem;">Yanlış</div>
-          </div>
-          <div class="result-card-item blank">
-            <div style="font-size: 1.4rem;" id="resBlankCount">0</div>
-            <div style="font-size: 0.75rem;">Boş</div>
-          </div>
+          <div class="result-card-item correct"><div style="font-size: 1.4rem;" id="resCorrectCount">0</div><div style="font-size: 0.75rem;">Doğru</div></div>
+          <div class="result-card-item wrong"><div style="font-size: 1.4rem;" id="resWrongCount">0</div><div style="font-size: 0.75rem;">Yanlış</div></div>
+          <div class="result-card-item blank"><div style="font-size: 1.4rem;" id="resBlankCount">0</div><div style="font-size: 0.75rem;">Boş</div></div>
         </div>
-
-        <!-- MODAL İÇİ DETAYLI KONU ANALİZİ -->
         <div id="modalTopicAnalysisBox" style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 12px;"></div>
-
         <div style="display: flex; gap: 10px; margin-top: 20px;">
-          <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="activateAnalysisMode()">🔍 Analiz Et & Çözümleri Gör</button>
+          <button id="btnModalAnalysis" class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="activateAnalysisMode()">🔍 Analiz Et & Çözümleri Gör</button>
           <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeResultModal()">Kapat</button>
         </div>
       </div>
     </div>
 
-    <!-- GELİŞMİŞ ADMIN PANELİ MODAL PENCERESİ -->
-    <div id="adminModal" class="modal-overlay no-print" style="display: none;" onclick="if(event.target===this) closeAdminModal()">
-      <div class="modal-card" style="max-width: 900px; width: 95%;">
+    <!-- GENİŞ VE GELİŞMİŞ ADMIN KONTROL MERKEZİ -->
+    <div id="adminModal" class="modal-overlay no-print" style="display: none; z-index: 25000;">
+      <div class="modal-card admin-modal-card">
         <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <span>⚙️ Yönetici Kontrol Merkezi</span>
-            <button id="btnManualLoadQuestions" class="btn-action btn-toggle-on" style="background: #0284c7 !important; border-color: #0369a1 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="manualLoadQuestions()">
+            <button id="btnManualLoadQuestions" class="btn-action btn-toggle-on" style="background: #0284c7 !important; border-color: #0369a1 !important; font-size: 0.8rem; padding: 4px 10px;" onclick="manualLoadQuestions()">
               📥 Soruları Yükle
             </button>
           </div>
-          <button class="btn-action" onclick="closeAdminModal()">✕ Kapat</button>
+          <button class="btn-action" style="background: #ef4444; border-color: #dc2626; color: white;" onclick="logoutAdminSession()">
+            🚪 Çıkış Yap
+          </button>
         </div>
         
+        <!-- ÜST SEKMELER -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin: 15px 0;">
           <div style="display: flex; gap: 8px;">
-            <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar</button>
+            <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar ve Yetkiler</button>
             <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
+            <button id="tabSettingsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('settings')">🔒 Yönetici Şifre Ayarları</button>
           </div>
-          
           <div style="width: 280px;" id="adminSearchBoxWrapper">
             <input type="text" id="adminUserSearchInput" class="modern-input" style="padding: 6px 10px; font-size: 0.82rem;" placeholder="🔍 Ad, Soyad veya E-posta İle Ara..." oninput="filterAdminUsersSearch()">
           </div>
         </div>
 
-        <!-- SEKME 1: KULLANICI LİSTESİ -->
-        <div id="adminTabUsers">
-          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 15px;">
-            <button class="btn-action filter-btn btn-toggle-on" onclick="filterAdminUsers('Tümü', this)">Tümü</button>
-            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('admin', this)">👑 Yönetici</button>
-            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('VIP', this)">👑 VIP</button>
-            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Premium', this)">⭐ Premium</button>
-            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Deneme', this)">⏳ Deneme</button>
-            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Ücretsiz', this)">🆓 Ücretsiz</button>
-            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Engellendi', this)">🚫 Engelli</button>
+        <!-- SEKME 1: KULLANICI LİSTESİ VE TOPLU İŞLEMLER -->
+        <div id="adminTabUsers" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+          
+          <!-- TOPLU İŞLEM BARİ & FİLTRELER -->
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+              <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); margin-right: 4px;">Toplu İşlem:</span>
+              <select id="bulkActionSelect" class="modern-input" style="padding: 4px 8px; font-size: 0.8rem; width: auto;">
+                <option value="" disabled selected>Yetki Seç...</option>
+                <option value="VIP">👑 VIP Yap</option>
+                <option value="Premium">⭐ Premium Yap</option>
+                <option value="Deneme">⏳ Deneme Yap</option>
+                <option value="Ücretsiz">🔄 Ücretsiz Yap</option>
+                <option value="Engellendi">🚫 Engelle</option>
+                <option value="DELETE">🗑️ Seçilenleri Kalıcı Sil</option>
+              </select>
+              <button class="btn-action btn-toggle-on" style="padding: 4px 10px; font-size: 0.8rem;" onclick="applyBulkAction()">Uygula</button>
+            </div>
+
+            <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+              <button class="btn-action filter-btn btn-toggle-on" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Tümü', this)">Tümü</button>
+              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('admin', this)">👑 Yönetici</button>
+              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('VIP', this)">👑 VIP</button>
+              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Premium', this)">⭐ Premium</button>
+              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Deneme', this)">⏳ Deneme</button>
+              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Ücretsiz', this)">🆓 Ücretsiz</button>
+              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Engellendi', this)">🚫 Engelli</button>
+            </div>
           </div>
 
-          <div style="max-height: 380px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+          <!-- KULLANICI TABLOSU -->
+          <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
             <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
               <thead style="background: #f1f5f9; position: sticky; top: 0; z-index: 5;">
                 <tr>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border); width: 40px; text-align: center;">
+                    <input type="checkbox" id="selectAllUsersCheckbox" onchange="toggleSelectAllUsers(this)">
+                  </th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">Ad Soyad</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">Rol / Durum</th>
-                  <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">İşlem / Aksiyon</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">Aksiyonlar</th>
                 </tr>
               </thead>
               <tbody id="adminUserTableBody">
-                <tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcılar sıralanıyor...</td></tr>
+                <tr><td colspan="5" style="padding: 15px; text-align: center;">Kullanıcılar sıralanıyor...</td></tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- SEKME 2: DİNAMİK LİSANS KODU ÜRETİCİ -->
+        <!-- SEKME 2: LİSANS ÜRETİCİ -->
         <div id="adminTabLicenses" style="display: none;">
           <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">İstediğiniz gün ve üyelik türüne göre promosyon kodu oluşturun:</p>
           <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
@@ -1219,52 +963,69 @@
           </div>
         </div>
 
+        <!-- SEKME 3: ADMIN ŞİFRE DEĞİŞTİRME -->
+        <div id="adminTabSettings" style="display: none; max-width: 450px;">
+          <h4 style="margin-bottom: 12px; color: var(--bg-dark);">🔐 Yönetici Şifresini Güncelle</h4>
+          <div class="input-control">
+            <label>Mevcut Şifre:</label>
+            <input type="password" id="adminOldPassInput" class="modern-input">
+          </div>
+          <div class="input-control">
+            <label>Yeni Şifre:</label>
+            <input type="password" id="adminNewPassInput" class="modern-input">
+          </div>
+          <div class="input-control">
+            <label>Yeni Şifre (Tekrar):</label>
+            <input type="password" id="adminNewPassConfirmInput" class="modern-input">
+          </div>
+          <button class="btn-action btn-toggle-on" style="margin-top: 10px; padding: 10px 18px;" onclick="changeAdminPassword()">💾 Şifreyi Kaydet</button>
+        </div>
+
       </div>
     </div>
 
-    <!-- KOD GİRİŞ MODAL PENCERESİ -->
+    <!-- KOD GİRİŞ MODALİ -->
     <div id="redeemModal" class="modal-overlay no-print" style="display: none;">
       <div class="modal-card" style="max-width: 450px; width: 90%;">
         <div class="modal-title" style="justify-content: space-between;">
           <span>🔑 Aktivasyon Kodu Gir</span>
           <button class="btn-action" onclick="closeRedeemModal()">✕</button>
         </div>
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
-          Elinizdeki 3 parçalı lisans bilgilerini girerek üyeliğinizi anında yükseltebilirsiniz.
-        </p>
-
         <div class="input-control">
           <label>Seri No:</label>
-          <input type="text" id="inputRedeemSerial" class="modern-input" placeholder="Örn: NR-2026-102" oninput="checkRedeemInputs()">
+          <input type="text" id="inputRedeemSerial" class="modern-input" placeholder="NR-2026-..." oninput="checkRedeemInputs()">
         </div>
         <div class="input-control">
           <label>Aktivasyon Anahtarı:</label>
-          <input type="text" id="inputRedeemKey" class="modern-input" placeholder="Örn: A1B2-C3D4" oninput="checkRedeemInputs()">
+          <input type="text" id="inputRedeemKey" class="modern-input" oninput="checkRedeemInputs()">
         </div>
         <div class="input-control">
           <label>Güvenlik PIN:</label>
-          <input type="text" id="inputRedeemPin" class="modern-input" placeholder="Örn: 1234" oninput="checkRedeemInputs()">
+          <input type="text" id="inputRedeemPin" class="modern-input" oninput="checkRedeemInputs()">
         </div>
-
-        <button id="btnSubmitRedeem" class="btn-proceed" style="margin-top: 15px; opacity: 0.5; cursor: not-allowed;" disabled onclick="submitRedeemCode()">
+        <button id="btnSubmitRedeem" class="btn-proceed" style="margin-top: 15px; opacity: 0.5;" disabled onclick="submitRedeemCode()">
           Kodu Onayla ve Yükselt ➔
         </button>
       </div>
     </div>
 
-    <!-- AKTİVİTE DETAY MODALİ -->
+    <!-- AKTİVİTE DETAY MODALİ (GÜNLERE GÖRE GRUPLU VE GEÇİRİLEN SÜRE GÖSTERİMİ) -->
     <div id="activityModal" class="modal-overlay no-print" style="display: none; z-index: 25000;" onclick="if(event.target===this) closeActivityModal()">
-      <div class="modal-card" style="max-width: 650px; width: 90%;">
-        <div class="modal-title" style="justify-content: space-between;">
+      <div class="modal-card" style="max-width: 700px; width: 92%; max-height: 85vh; display: flex; flex-direction: column;">
+        <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
           <span id="activityModalTitle">📊 Günlük Kullanıcı İstatistikleri</span>
-          <button class="btn-action" onclick="closeActivityModal()">✕ Kapat</button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-action btn-finish-test" style="font-size: 0.75rem; padding: 4px 8px;" onclick="clearAllActivities()">🗑️ Tümünü Temizle</button>
+            <button class="btn-action" onclick="closeActivityModal()">✕ Kapat</button>
+          </div>
         </div>
-        <div id="activityLogsList" style="max-height: 350px; overflow-y: auto; font-size: 0.85rem; margin-top: 15px;">
+        <div id="activityLogsList" style="flex: 1; overflow-y: auto; font-size: 0.85rem; margin-top: 15px; padding-right: 5px;">
           Yükleniyor...
         </div>
       </div>
     </div>
 
+    <!-- ANA PANEL EKRANI -->
     <div id="configScreen" class="config-screen">
       <div class="config-card">
         
@@ -1360,6 +1121,7 @@
       </div>
     </div>
 
+    <!-- ÖNİZLEME VE BASKI EKRANI -->
     <div id="previewScreen" class="preview-screen">
       <div class="action-bar no-print">
         <div class="action-btn-group">
@@ -1388,7 +1150,6 @@
         </div>
       </div>
 
-      <!-- SOL YAN DETAYLI KONU ANALİZİ -->
       <div id="sideAnalysisPanel" class="no-print">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 6px; margin-bottom: 10px;">
           <h4 style="font-size: 0.95rem; color: var(--bg-dark); margin: 0;">📊 Detaylı Konu Analizi</h4>
@@ -1398,6 +1159,10 @@
       </div>
 
       <div class="paper-viewport">
+        <!-- FİLİGRAN ALANLARI -->
+        <div id="screenWatermark" class="screen-watermark"></div>
+        <div id="printWatermark" class="print-watermark"></div>
+
         <div class="a4-sheet" id="a4PaperSheet">
           <div class="exam-header">
             <div class="exam-main-title">NÖROLOJİ SORU HAZIRLAMA PANELİ</div>
@@ -1475,34 +1240,19 @@
   function syncPrintHeader() {
     const nameVal = document.getElementById('inputStudentName').value.trim();
     const dateVal = document.getElementById('inputExamDate').value.trim();
-
     document.getElementById('printStudentName').innerText = nameVal !== '' ? nameVal : '___________________________';
     document.getElementById('printExamDate').innerText = dateVal !== '' ? dateVal : '____/____/20__';
   }
 
   function normStr(str) {
     if (str === null || str === undefined) return '';
-    return String(str)
-      .toLocaleLowerCase('tr-TR')
-      .replace(/ç/g, 'c')
-      .replace(/ğ/g, 'g')
-      .replace(/ı/g, 'i')
-      .replace(/ö/g, 'o')
-      .replace(/ş/g, 's')
-      .replace(/ü/g, 'u')
-      .replace(/[^a-z0-9]/g, '');
+    return String(str).toLocaleLowerCase('tr-TR').replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u').replace(/[^a-z0-9]/g, '');
   }
 
   function getCorrectIndices(q) {
-    if (Array.isArray(q.dogruCevapIndices) && q.dogruCevapIndices.length > 0) {
-      return q.dogruCevapIndices.map(Number);
-    }
-    if (Array.isArray(q.dogruCevapIndex)) {
-      return q.dogruCevapIndex.map(Number);
-    }
-    if (q.dogruCevapIndex !== undefined && q.dogruCevapIndex !== null && !isNaN(q.dogruCevapIndex)) {
-      return [parseInt(q.dogruCevapIndex)];
-    }
+    if (Array.isArray(q.dogruCevapIndices) && q.dogruCevapIndices.length > 0) return q.dogruCevapIndices.map(Number);
+    if (Array.isArray(q.dogruCevapIndex)) return q.dogruCevapIndex.map(Number);
+    if (q.dogruCevapIndex !== undefined && q.dogruCevapIndex !== null && !isNaN(q.dogruCevapIndex)) return [parseInt(q.dogruCevapIndex)];
     let ans = q.dogruCevap || q.cevap || q.ans || '';
     let matches = String(ans).match(/[A-E]/gi);
     if (matches && matches.length > 0) {
@@ -1523,66 +1273,38 @@
 
   function getExplanation(q) {
     if (!q || typeof q !== 'object') return 'Açıklama mevcut değil.';
-    
-    if (q.aciklama && String(q.aciklama).trim() !== '' && String(q.aciklama).trim().toLowerCase() !== 'null') {
-      return String(q.aciklama).trim();
-    }
-
+    if (q.aciklama && String(q.aciklama).trim() !== '' && String(q.aciklama).trim().toLowerCase() !== 'null') return String(q.aciklama).trim();
     const keys = Object.keys(q);
     for (let key of keys) {
       let cleanKey = normStr(key);
       if (cleanKey.includes('aciklam') || cleanKey.includes('cozum') || cleanKey.includes('explan')) {
         let val = q[key];
         if (Array.isArray(val)) val = val.join(" ");
-        if (val && String(val).trim() !== '' && String(val).trim().toLowerCase() !== 'null') {
-          return String(val).trim();
-        }
+        if (val && String(val).trim() !== '' && String(val).trim().toLowerCase() !== 'null') return String(val).trim();
       }
     }
-
     return 'Açıklama mevcut değil.';
   }
 
   function parseQuestionMeta(q) {
     let rawKonu = String(q.konu || '').trim();
     let rawZorluk = String(q.zorluk || '').trim();
-
     let combined = (rawKonu + ' ' + rawZorluk).toLocaleLowerCase('tr-TR');
-
     let detectedZorluk = 'orta';
-    if (combined.includes('kolay')) {
-      detectedZorluk = 'kolay';
-    } else if (combined.includes('zor')) {
-      detectedZorluk = 'zor';
-    } else if (combined.includes('orta')) {
-      detectedZorluk = 'orta';
-    }
+    if (combined.includes('kolay')) detectedZorluk = 'kolay';
+    else if (combined.includes('zor')) detectedZorluk = 'zor';
+    else if (combined.includes('orta')) detectedZorluk = 'orta';
 
-    let cleanKonuName = rawKonu
-      .replace(/zorluk\s*[:\s]*.*/i, '')
-      .replace(/\b(kolay|orta|zor)\b/gi, '')
-      .replace(/[\r\n\t]/g, '')
-      .trim() || 'Genel';
-
-    return {
-      displayName: cleanKonuName,
-      konuKey: normStr(cleanKonuName),
-      zorlukKey: detectedZorluk
-    };
+    let cleanKonuName = rawKonu.replace(/zorluk\s*[:\s]*.*/i, '').replace(/\b(kolay|orta|zor)\b/gi, '').replace(/[\r\n\t]/g, '').trim() || 'Genel';
+    return { displayName: cleanKonuName, konuKey: normStr(cleanKonuName), zorlukKey: detectedZorluk };
   }
 
   function extractAndCleanOptions(q) {
     if (!q || !q.secenekler) return [];
-
     let rawArr = Array.isArray(q.secenekler) ? q.secenekler : [q.secenekler];
     let fullText = rawArr.join(" ");
-
     let parts = fullText.split(/(?=\b[A-E][\)\.]\s*)/i).map(s => s.trim()).filter(Boolean);
-
-    if (parts.length >= 2) {
-      return parts.map(p => p.replace(/^[A-E][\)\.]\s*/i, '').trim());
-    }
-
+    if (parts.length >= 2) return parts.map(p => p.replace(/^[A-E][\)\.]\s*/i, '').trim());
     return rawArr.map(p => String(p).replace(/^[A-E][\)\.]\s*/i, '').trim());
   }
 
@@ -1590,23 +1312,18 @@
     if (!Array.isArray(arr)) return [];
     const seen = new Set();
     const uniqueList = [];
-
     arr.forEach(q => {
       if (!q || !q.soruMetni) return;
-
       const normText = normStr(q.soruMetni);
       const cleanOpts = extractAndCleanOptions(q);
       const normOpts = cleanOpts.map(o => normStr(o)).join('|');
       const correctLetter = getCorrectLetter(q);
-
       const uniqueKey = `${normText}___${normOpts}___${correctLetter}`;
-
       if (!seen.has(uniqueKey)) {
         seen.add(uniqueKey);
         uniqueList.push(q);
       }
     });
-
     return uniqueList;
   }
 
@@ -1615,17 +1332,12 @@
     if (!container) return;
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    
     let icon = '⚠️';
     if (type === 'error') icon = '🚫';
     if (type === 'success') icon = '✅';
-
     toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
     container.appendChild(toast);
-
-    setTimeout(() => {
-      toast.remove();
-    }, 4000);
+    setTimeout(() => { toast.remove(); }, 4000);
   }
   window.showToast = showToast;
 
@@ -1634,11 +1346,7 @@
     const spinner = document.getElementById('loadingSpinner');
     const text = document.getElementById('loadingText');
     const retryGroup = document.getElementById('retryGroup');
-
-    if (overlay) {
-      overlay.style.display = 'flex';
-      overlay.style.opacity = '1';
-    }
+    if (overlay) { overlay.style.display = 'flex'; overlay.style.opacity = '1'; }
     if (spinner) spinner.style.display = 'block';
     if (text) text.innerText = "Sorular Buluttan Çekiliyor...";
     if (retryGroup) retryGroup.style.display = 'none';
@@ -1648,9 +1356,8 @@
     const spinner = document.getElementById('loadingSpinner');
     const text = document.getElementById('loadingText');
     const retryGroup = document.getElementById('retryGroup');
-
     if (spinner) spinner.style.display = 'none';
-    if (text) text.innerText = "Bulut veritabanına bağlanılamadı veya zaman aşımına uğradı.";
+    if (text) text.innerText = "Bulut veritabanına bağlanılamadı.";
     if (retryGroup) retryGroup.style.display = 'flex';
   }
 
@@ -1665,72 +1372,52 @@
   function updateAvailableQuestionCount() {
     const selectedTopics = Array.from(document.querySelectorAll('.topic-check:checked')).map(cb => cb.value);
     const selectedDiffs = Array.from(document.querySelectorAll('.diff-check:checked')).map(cb => cb.value);
-
     const matchingQuestions = masterPool.filter(q => {
       const meta = parseQuestionMeta(q);
       return selectedTopics.includes(meta.konuKey) && selectedDiffs.includes(meta.zorlukKey);
     });
-
     const totalAvailable = matchingQuestions.length;
     const label = document.getElementById('qCountLabel');
     const input = document.getElementById('questionCount');
-
     if (label) label.innerHTML = `Soru Sayısı <span style="color:var(--primary); font-weight:700;">(Mevcut: ${totalAvailable})</span>`;
     if (input) {
       input.max = totalAvailable;
-      if (parseInt(input.value) > totalAvailable && totalAvailable > 0) {
-        input.value = totalAvailable;
-      } else if (totalAvailable === 0) {
-        input.value = 0;
-      }
+      if (parseInt(input.value) > totalAvailable && totalAvailable > 0) input.value = totalAvailable;
+      else if (totalAvailable === 0) input.value = 0;
     }
   }
 
   function initFilters() {
     const topicContainer = document.getElementById('topicContainer');
     if (topicContainer) topicContainer.innerHTML = '';
-
     const topicsMap = new Map();
     masterPool.forEach(q => {
       const meta = parseQuestionMeta(q);
-      if (!topicsMap.has(meta.konuKey)) {
-        topicsMap.set(meta.konuKey, meta.displayName);
-      }
+      if (!topicsMap.has(meta.konuKey)) topicsMap.set(meta.konuKey, meta.displayName);
     });
 
     topicsMap.forEach((displayName, cleanKey) => {
       const label = document.createElement('label');
       label.className = 'checkbox-tile';
-      label.innerHTML = `
-        <input type="checkbox" class="topic-check" value="${cleanKey}" checked onchange="updateAvailableQuestionCount()">
-        <span>${displayName}</span>
-      `;
+      label.innerHTML = `<input type="checkbox" class="topic-check" value="${cleanKey}" checked onchange="updateAvailableQuestionCount()"><span>${displayName}</span>`;
       if (topicContainer) topicContainer.appendChild(label);
     });
 
     const diffContainer = document.getElementById('diffContainer');
     if (diffContainer) diffContainer.innerHTML = '';
-
-    const diffsMap = new Map();
-    diffsMap.set('kolay', 'Kolay');
-    diffsMap.set('orta', 'Orta');
-    diffsMap.set('zor', 'Zor');
+    const diffsMap = new Map([['kolay', 'Kolay'], ['orta', 'Orta'], ['zor', 'Zor']]);
 
     masterPool.forEach(q => {
       const meta = parseQuestionMeta(q);
       if (!diffsMap.has(meta.zorlukKey)) {
-        const capitalized = meta.zorlukKey.charAt(0).toUpperCase() + meta.zorlukKey.slice(1);
-        diffsMap.set(meta.zorlukKey, capitalized);
+        diffsMap.set(meta.zorlukKey, meta.zorlukKey.charAt(0).toUpperCase() + meta.zorlukKey.slice(1));
       }
     });
 
     diffsMap.forEach((displayName, cleanKey) => {
       const label = document.createElement('label');
       label.className = 'checkbox-tile';
-      label.innerHTML = `
-        <input type="checkbox" class="diff-check" value="${cleanKey}" checked onchange="updateAvailableQuestionCount()">
-        <span>${displayName}</span>
-      `;
+      label.innerHTML = `<input type="checkbox" class="diff-check" value="${cleanKey}" checked onchange="updateAvailableQuestionCount()"><span>${displayName}</span>`;
       if (diffContainer) diffContainer.appendChild(label);
     });
 
@@ -1745,62 +1432,32 @@
     if (dot) dot.title = "Bulut veritabanına bağlanılıyor...";
 
     activeFetchAbortController = new AbortController();
-    const timeoutId = setTimeout(() => {
-      if (activeFetchAbortController) activeFetchAbortController.abort();
-    }, 35000);
+    const timeoutId = setTimeout(() => { if (activeFetchAbortController) activeFetchAbortController.abort(); }, 35000);
 
     try {
-      const response = await fetch(AUTOMATIC_JSON_URL, {
-        method: 'GET',
-        redirect: 'follow',
-        signal: activeFetchAbortController.signal
-      });
-
+      const response = await fetch(AUTOMATIC_JSON_URL, { method: 'GET', redirect: 'follow', signal: activeFetchAbortController.signal });
       clearTimeout(timeoutId);
-
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-
       const data = await response.json();
-
       if (Array.isArray(data) && data.length > 0) {
         masterPool = deduplicateQuestions(data);
-        if (dot) {
-          dot.classList.add('active');
-          dot.title = `Bulut Bağlantısı Aktif (${masterPool.length} Benzersiz Soru Yüklendi)`;
-        }
+        if (dot) { dot.classList.add('active'); dot.title = `Bulut Bağlantısı Aktif (${masterPool.length} Soru)`; }
         hideLoading();
         initFilters();
-        showToast(`Buluttan ${masterPool.length} benzersiz soru yüklendi.`, 'success');
-      } else {
-        throw new Error("Veri boş");
-      }
+        showToast(`Buluttan ${masterPool.length} soru yüklendi.`, 'success');
+      } else { throw new Error("Veri boş"); }
     } catch (err) {
       clearTimeout(timeoutId);
-      if (err.name === 'AbortError') {
-        console.log("İstek kullanıcı veya zaman aşımı tarafından iptal edildi.");
-        return;
-      }
-      console.warn("Bulut Bağlantı Hatası:", err);
-      if (dot) {
-        dot.classList.remove('active');
-        dot.title = "Yerel Mod (Bulut Bağlantısı Kurulamadı)";
-      }
+      if (err.name === 'AbortError') return;
+      if (dot) { dot.classList.remove('active'); dot.title = "Yerel Mod"; }
       showConnectionErrorState();
     }
   }
 
   function cancelQuestionLoading() {
-    if (activeFetchAbortController) {
-      activeFetchAbortController.abort();
-      activeFetchAbortController = null;
-    }
+    if (activeFetchAbortController) { activeFetchAbortController.abort(); activeFetchAbortController = null; }
     hideLoading();
-    if (window.forceSignOutToLogin) {
-      window.forceSignOutToLogin();
-    } else {
-      document.getElementById('mainApp').style.display = 'none';
-      document.getElementById('loginScreen').style.display = 'flex';
-    }
+    if (window.forceSignOutToLogin) window.forceSignOutToLogin();
   }
   window.cancelQuestionLoading = cancelQuestionLoading;
 
@@ -1846,40 +1503,32 @@
     let remainingTarget = targetCount;
     const topicQuotas = new Map();
     topics.forEach(t => topicQuotas.set(t, 0));
-
     let activeTopics = [...topics];
 
     while (remainingTarget > 0 && activeTopics.length > 0) {
-      let quotaPerTopic = Math.floor(remainingTarget / activeTopics.length);
-      if (quotaPerTopic === 0) quotaPerTopic = 1;
-
+      let quotaPerTopic = Math.floor(remainingTarget / activeTopics.length) || 1;
       let allocatedInThisRound = 0;
       const nextActiveTopics = [];
 
       for (let topic of activeTopics) {
         if (remainingTarget === 0) break;
-
         const group = topicGroups.get(topic);
         const currentQuota = topicQuotas.get(topic);
         const availableExtra = group.length - currentQuota;
-
         if (availableExtra > 0) {
           const take = Math.min(quotaPerTopic, availableExtra, remainingTarget);
           topicQuotas.set(topic, currentQuota + take);
           remainingTarget -= take;
           allocatedInThisRound += take;
-
           if (group.length - topicQuotas.get(topic) > 0) nextActiveTopics.push(topic);
         }
       }
-
       if (allocatedInThisRound === 0) break;
       activeTopics = nextActiveTopics;
     }
 
     let finalPool = [];
     const isShuffle = document.getElementById('shuffleToggle').checked;
-
     topics.forEach(topic => {
       let group = topicGroups.get(topic);
       if (isShuffle) group = shuffle(group);
@@ -1888,7 +1537,6 @@
     });
 
     if (isShuffle) finalPool = shuffle(finalPool);
-
     return finalPool;
   }
 
@@ -1897,7 +1545,6 @@
     isAnalysisActive = false;
     userAnswers = {};
     clearInterval(testTimerInterval);
-
     currentKeyMode = 'none';
     currentExpMode = 'none';
     if (document.getElementById('keyModeSelect')) document.getElementById('keyModeSelect').value = 'none';
@@ -1905,7 +1552,6 @@
 
     document.getElementById('toggleKeyBtn').disabled = false;
     document.getElementById('toggleExpBtn').disabled = false;
-
     document.getElementById('btnStartTest').style.display = 'inline-flex';
     document.getElementById('btnFinishTestTop').style.display = 'none';
     document.getElementById('bottomFinishBtn').style.display = 'none';
@@ -1915,17 +1561,30 @@
     if (sheet) sheet.classList.remove('interactive-mode', 'analysis-mode');
   }
 
+  // KULLANICI SINIRLARI KONTROLÜ VE TEST OLUŞTURMA
   function proceedToExam() {
-    const selectedTopics = Array.from(document.querySelectorAll('.topic-check:checked')).map(cb => cb.value);
-    const selectedDiffs = Array.from(document.querySelectorAll('.diff-check:checked')).map(cb => cb.value);
+    const userTier = window.currentUserTier || 'Ücretsiz';
+    const todayStr = new Date().toISOString().split('T')[0];
+    const createdKey = `usage_created_${todayStr}`;
+    let todayCreated = parseInt(localStorage.getItem(createdKey) || '0');
 
-    if (selectedTopics.length === 0) {
-      showToast("Lütfen en az bir konu seçiniz.", "warning");
+    // Günlük Limitler (VIP/Premium: 500, Deneme: 100, Ücretsiz: 30)
+    let maxLimit = 30;
+    if (userTier === 'VIP' || userTier === 'Premium') maxLimit = 500;
+    else if (userTier === 'Deneme') maxLimit = 100;
+
+    const count = parseInt(document.getElementById('questionCount').value) || 10;
+
+    if (todayCreated + count > maxLimit) {
+      showToast(`Günlük soru oluşturma limitinize ulaştınız! (${userTier} Hak: ${maxLimit}, Bugün Üretilen: ${todayCreated})`, 'error');
       return;
     }
 
-    if (selectedDiffs.length === 0) {
-      showToast("Lütfen en az bir zorluk seviyesi seçiniz.", "warning");
+    const selectedTopics = Array.from(document.querySelectorAll('.topic-check:checked')).map(cb => cb.value);
+    const selectedDiffs = Array.from(document.querySelectorAll('.diff-check:checked')).map(cb => cb.value);
+
+    if (selectedTopics.length === 0 || selectedDiffs.length === 0) {
+      showToast("Lütfen konu ve zorluk seviyesi seçiniz.", "warning");
       return;
     }
 
@@ -1935,11 +1594,9 @@
     });
 
     if (filtered.length === 0) {
-      showToast("Seçtiğiniz kombinasyona uygun soru bulunamadı.", "error");
+      showToast("Seçtiğiniz kriterlere uygun soru bulunamadı.", "error");
       return;
     }
-
-    const count = parseInt(document.getElementById('questionCount').value) || 10;
 
     const equalDistribution = document.getElementById('equalTopicToggle').checked;
     if (equalDistribution) {
@@ -1948,6 +1605,9 @@
       if (document.getElementById('shuffleToggle').checked) filtered = shuffle(filtered);
       currentQuestionsList = filtered.slice(0, count);
     }
+
+    // Limiti Güncelle
+    localStorage.setItem(createdKey, (todayCreated + currentQuestionsList.length).toString());
 
     currentKeyMode = document.getElementById('keyModeSelect').value;
     currentExpMode = document.getElementById('expModeSelect').value;
@@ -1963,42 +1623,24 @@
   function updateKeyButtonUI() {
     const btn = document.getElementById('toggleKeyBtn');
     if (!btn) return;
-
-    if (currentKeyMode === 'none') {
-      btn.className = "btn-action btn-toggle-off";
-      btn.innerHTML = `🔑 Cevap Anahtarı: <strong>GİZLİ</strong> 🙈`;
-    } else if (currentKeyMode === 'inline') {
-      btn.className = "btn-action btn-toggle-on";
-      btn.innerHTML = `🔑 Cevap Anahtarı: <strong>HER SORUDA</strong> 📌`;
-    } else if (currentKeyMode === 'bottom') {
-      btn.className = "btn-action btn-toggle-on";
-      btn.innerHTML = `🔑 Cevap Anahtarı: <strong>EN ALTTA</strong> 📑`;
-    }
+    if (currentKeyMode === 'none') { btn.className = "btn-action btn-toggle-off"; btn.innerHTML = `🔑 Cevap Anahtarı: <strong>GİZLİ</strong> 🙈`; }
+    else if (currentKeyMode === 'inline') { btn.className = "btn-action btn-toggle-on"; btn.innerHTML = `🔑 Cevap Anahtarı: <strong>HER SORUDA</strong> 📌`; }
+    else if (currentKeyMode === 'bottom') { btn.className = "btn-action btn-toggle-on"; btn.innerHTML = `🔑 Cevap Anahtarı: <strong>EN ALTTA</strong> 📑`; }
   }
 
   function updateExpButtonUI() {
     const btn = document.getElementById('toggleExpBtn');
     if (!btn) return;
-
-    if (currentExpMode === 'none') {
-      btn.className = "btn-action btn-toggle-off";
-      btn.innerHTML = `📖 Çözüm Açıklamaları: <strong>GİZLİ</strong> 🙈`;
-    } else if (currentExpMode === 'inline') {
-      btn.className = "btn-action btn-toggle-on";
-      btn.innerHTML = `📖 Çözüm Açıklamaları: <strong>HER SORUDA</strong> 📌`;
-    } else if (currentExpMode === 'bottom') {
-      btn.className = "btn-action btn-toggle-on";
-      btn.innerHTML = `📖 Çözüm Açıklamaları: <strong>EN ALTTA</strong> 📑`;
-    }
+    if (currentExpMode === 'none') { btn.className = "btn-action btn-toggle-off"; btn.innerHTML = `📖 Çözüm Açıklamaları: <strong>GİZLİ</strong> 🙈`; }
+    else if (currentExpMode === 'inline') { btn.className = "btn-action btn-toggle-on"; btn.innerHTML = `📖 Çözüm Açıklamaları: <strong>HER SORUDA</strong> 📌`; }
+    else if (currentExpMode === 'bottom') { btn.className = "btn-action btn-toggle-on"; btn.innerHTML = `📖 Çözüm Açıklamaları: <strong>EN ALTTA</strong> 📑`; }
   }
 
   function cycleKeyMode() {
     if (isTestActive) return;
-
     if (currentKeyMode === 'none') currentKeyMode = 'inline';
     else if (currentKeyMode === 'inline') currentKeyMode = 'bottom';
     else currentKeyMode = 'none';
-
     document.getElementById('keyModeSelect').value = currentKeyMode;
     buildPaperView(currentQuestionsList);
   }
@@ -2006,11 +1648,9 @@
 
   function cycleExpMode() {
     if (isTestActive) return;
-
     if (currentExpMode === 'none') currentExpMode = 'inline';
     else if (currentExpMode === 'inline') currentExpMode = 'bottom';
     else currentExpMode = 'none';
-
     document.getElementById('expModeSelect').value = currentExpMode;
     buildPaperView(currentQuestionsList);
   }
@@ -2028,14 +1668,18 @@
     syncPrintHeader();
 
     const sheet = document.getElementById('a4PaperSheet');
-    if (isTestActive) {
-      sheet.classList.add('interactive-mode');
-      sheet.classList.remove('analysis-mode');
-    } else if (isAnalysisActive) {
-      sheet.classList.add('analysis-mode');
-      sheet.classList.remove('interactive-mode');
+    if (isTestActive) { sheet.classList.add('interactive-mode'); sheet.classList.remove('analysis-mode'); }
+    else if (isAnalysisActive) { sheet.classList.add('analysis-mode'); sheet.classList.remove('interactive-mode'); }
+    else { sheet.classList.remove('interactive-mode', 'analysis-mode'); }
+
+    // Ücretsiz Kullanıcı Koruması (Fare ile Seçim ve Kopyalama Engeli)
+    const userTier = window.currentUserTier || 'Ücretsiz';
+    if (userTier === 'Ücretsiz') {
+      sheet.classList.add('unselectable-content');
+      sheet.oncontextmenu = () => false;
     } else {
-      sheet.classList.remove('interactive-mode', 'analysis-mode');
+      sheet.classList.remove('unselectable-content');
+      sheet.oncontextmenu = null;
     }
 
     questions.forEach((q, idx) => {
@@ -2046,27 +1690,20 @@
 
       const qBox = document.createElement('div');
       qBox.className = 'question-block';
-
       const cleanOptions = extractAndCleanOptions(q);
 
       let statusBadgeHTML = '';
       if (isAnalysisActive) {
-        if (userSelIdx === undefined) {
-          statusBadgeHTML = `<span class="q-status-badge blank">?</span><span class="blank-tag">Boş</span> `;
-        } else if (correctIndices.includes(userSelIdx)) {
-          statusBadgeHTML = `<span class="q-status-badge correct">✓</span>`;
-        } else {
-          statusBadgeHTML = `<span class="q-status-badge wrong">✕</span>`;
-        }
+        if (userSelIdx === undefined) statusBadgeHTML = `<span class="q-status-badge blank">?</span> `;
+        else if (correctIndices.includes(userSelIdx)) statusBadgeHTML = `<span class="q-status-badge correct">✓</span>`;
+        else statusBadgeHTML = `<span class="q-status-badge wrong">✕</span>`;
       }
 
       let optionsHTML = '';
       cleanOptions.forEach((optText, optIdx) => {
         const letter = String.fromCharCode(65 + optIdx);
         let optionClasses = 'q-option';
-
         if (isTestActive && userSelIdx === optIdx) optionClasses += ' user-selected';
-
         if (isAnalysisActive) {
           if (correctIndices.includes(optIdx)) optionClasses += ' correct-choice';
           if (userSelIdx === optIdx && !correctIndices.includes(optIdx)) optionClasses += ' wrong-choice';
@@ -2079,15 +1716,8 @@
         `;
       });
 
-      let inlineAnswerHTML = '';
-      if (!isTestActive && currentKeyMode === 'inline') {
-        inlineAnswerHTML = `<div class="q-inline-answer">✓ Doğru Cevap: ${correctLetter}</div>`;
-      }
-
-      let inlineExpHTML = '';
-      if (!isTestActive && currentExpMode === 'inline') {
-        inlineExpHTML = `<div class="q-inline-exp"><strong>💡 Çözüm Açıklaması:</strong>\n${getExplanation(q)}</div>`;
-      }
+      let inlineAnswerHTML = (!isTestActive && currentKeyMode === 'inline') ? `<div class="q-inline-answer">✓ Doğru Cevap: ${correctLetter}</div>` : '';
+      let inlineExpHTML = (!isTestActive && currentExpMode === 'inline') ? `<div class="q-inline-exp"><strong>💡 Çözüm Açıklaması:</strong>\n${getExplanation(q)}</div>` : '';
 
       qBox.innerHTML = `
         <div class="q-text">${statusBadgeHTML}${qNum}. ${cleanMultiParagraphs(q.soruMetni) || 'Soru metni yok'}</div>
@@ -2097,12 +1727,7 @@
       `;
       qContainer.appendChild(qBox);
 
-      keyGrid.innerHTML += `
-        <div class="key-cell">
-          <strong>${qNum}</strong><br>${correctLetter}
-        </div>
-      `;
-
+      keyGrid.innerHTML += `<div class="key-cell"><strong>${qNum}</strong><br>${correctLetter}</div>`;
       expContainer.innerHTML += `
         <div class="exp-item">
           <div class="exp-title">Soru ${qNum} (Doğru Cevap: ${correctLetter})</div>
@@ -2132,13 +1757,10 @@
 
   function openTestConfigModal() { document.getElementById('testConfigModal').style.display = 'flex'; }
   window.openTestConfigModal = openTestConfigModal;
-
   function closeTestConfigModal() { document.getElementById('testConfigModal').style.display = 'none'; }
   window.closeTestConfigModal = closeTestConfigModal;
 
-  function toggleTimerInput(checkbox) {
-    document.getElementById('timerInputGroup').style.display = checkbox.checked ? 'block' : 'none';
-  }
+  function toggleTimerInput(checkbox) { document.getElementById('timerInputGroup').style.display = checkbox.checked ? 'block' : 'none'; }
   window.toggleTimerInput = toggleTimerInput;
 
   function startInteractiveTest() {
@@ -2149,7 +1771,6 @@
 
     document.getElementById('toggleKeyBtn').disabled = true;
     document.getElementById('toggleExpBtn').disabled = true;
-
     document.getElementById('btnStartTest').style.display = 'none';
     document.getElementById('btnFinishTestTop').style.display = 'inline-flex';
     document.getElementById('bottomFinishBtn').style.display = 'block';
@@ -2160,7 +1781,6 @@
       remainingSeconds = mins * 60;
       document.getElementById('timerDisplay').style.display = 'flex';
       updateTimerDisplay();
-      
       clearInterval(testTimerInterval);
       testTimerInterval = setInterval(() => {
         remainingSeconds--;
@@ -2175,21 +1795,7 @@
     }
 
     buildPaperView(currentQuestionsList);
-    showToast("Test başladı! Başarılar dileriz.", "success");
-
-    const selectedTopicElems = Array.from(document.querySelectorAll('.topic-check:checked'));
-    const allTopicElems = document.querySelectorAll('.topic-check');
-    let topicsStr = "";
-    if (selectedTopicElems.length === allTopicElems.length && allTopicElems.length > 0) {
-      topicsStr = "Tüm Konular";
-    } else {
-      const names = selectedTopicElems.map(cb => cb.closest('label').querySelector('span').textContent.trim());
-      topicsStr = names.map(n => `'${n}'`).join(' ve ');
-    }
-
-    if (window.logUserActivity) {
-      window.logUserActivity("Test Başlatıldı", `${topicsStr} konusundan ${currentQuestionsList.length} soru üretildi.`);
-    }
+    showToast("Test başladı!", "success");
   }
   window.startInteractiveTest = startInteractiveTest;
 
@@ -2201,13 +1807,11 @@
 
   function finishTest(isTimeUp = false) {
     if (!isTestActive) return;
-
     isTestActive = false;
     clearInterval(testTimerInterval);
 
     document.getElementById('toggleKeyBtn').disabled = false;
     document.getElementById('toggleExpBtn').disabled = false;
-
     document.getElementById('btnFinishTestTop').style.display = 'none';
     document.getElementById('bottomFinishBtn').style.display = 'none';
     document.getElementById('timerDisplay').style.display = 'none';
@@ -2225,16 +1829,9 @@
       if (!topicStats[tName]) topicStats[tName] = { total: 0, correct: 0, wrong: 0, blank: 0 };
       topicStats[tName].total++;
 
-      if (userSel === undefined) {
-        blank++;
-        topicStats[tName].blank++;
-      } else if (correctIndices.includes(userSel)) {
-        correct++;
-        topicStats[tName].correct++;
-      } else {
-        wrong++;
-        topicStats[tName].wrong++;
-      }
+      if (userSel === undefined) { blank++; topicStats[tName].blank++; }
+      else if (correctIndices.includes(userSel)) { correct++; topicStats[tName].correct++; }
+      else { wrong++; topicStats[tName].wrong++; }
     });
 
     window.lastTestTopicStats = { total: currentQuestionsList.length, correct, wrong, blank, topicStats };
@@ -2243,34 +1840,35 @@
     document.getElementById('resWrongCount').innerText = wrong;
     document.getElementById('resBlankCount').innerText = blank;
 
+    const userTier = window.currentUserTier || 'Ücretsiz';
     const modalBox = document.getElementById('modalTopicAnalysisBox');
-    if (modalBox) {
-      let html = `<h4 style="font-size:0.9rem; margin-bottom:8px; color:var(--bg-dark);">📋 Konu Bazlı Başarı Dağılımı</h4>`;
-      for (const [tName, data] of Object.entries(topicStats)) {
-        html += `
-          <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 10px; margin-bottom:4px; border-radius:6px; font-size:0.8rem;">
-            <span style="font-weight:600;">${tName} (${data.total})</span>
-            <span>✅ ${data.correct} | ❌ ${data.wrong} | ❓ ${data.blank}</span>
-          </div>
-        `;
-      }
-      modalBox.innerHTML = html;
-    }
+    const btnAnalysis = document.getElementById('btnModalAnalysis');
 
-    if (isTimeUp) {
-      document.getElementById('resultModalTitle').innerText = "⏳ Süre Bitti!";
-      document.getElementById('resultModalSubtitle').innerText = "Süreniz doldu. Sonucunuz hesaplandı:";
+    // Ücretsiz Kullanıcıda Detaylı Analiz Gizlenir
+    if (userTier === 'Ücretsiz') {
+      if (modalBox) modalBox.innerHTML = `<div style="font-size:0.8rem; color:var(--accent-red); margin-top:10px;">⚠️ Ücretsiz üyelikte detaylı konu analizi kısıtlıdır.</div>`;
+      if (btnAnalysis) btnAnalysis.style.display = 'none';
     } else {
-      document.getElementById('resultModalTitle').innerText = "📊 Test Tamamlandı!";
-      document.getElementById('resultModalSubtitle').innerText = "Testiniz başarıyla sonlandırıldı. Özetiniz:";
+      if (modalBox) {
+        let html = `<h4 style="font-size:0.9rem; margin-bottom:8px; color:var(--bg-dark);">📋 Konu Bazlı Başarı Dağılımı</h4>`;
+        for (const [tName, data] of Object.entries(topicStats)) {
+          html += `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 10px; margin-bottom:4px; border-radius:6px; font-size:0.8rem;">
+              <span style="font-weight:600;">${tName} (${data.total})</span>
+              <span>✅ ${data.correct} | ❌ ${data.wrong} | ❓ ${data.blank}</span>
+            </div>
+          `;
+        }
+        modalBox.innerHTML = html;
+      }
+      if (btnAnalysis) btnAnalysis.style.display = 'inline-flex';
     }
 
     document.getElementById('testResultModal').style.display = 'flex';
     buildPaperView(currentQuestionsList);
 
     if (window.logUserActivity) {
-      const logPayload = JSON.stringify(window.lastTestTopicStats);
-      window.logUserActivity("Test Tamamlandı", logPayload);
+      window.logUserActivity("Test Tamamlandı", JSON.stringify(window.lastTestTopicStats));
     }
   }
 
@@ -2280,10 +1878,8 @@
   function activateAnalysisMode() {
     closeResultModal();
     isAnalysisActive = true;
-
     currentExpMode = 'inline';
     currentKeyMode = 'none';
-
     document.getElementById('expModeSelect').value = 'inline';
     document.getElementById('keyModeSelect').value = 'none';
 
@@ -2293,7 +1889,6 @@
     if (window.lastTestTopicStats && panel && content) {
       const st = window.lastTestTopicStats;
       let html = `<div style="margin-bottom:12px; font-weight:bold;">Toplam ${st.total} Soru<br><span style="color:#10b981;">Doğru: ${st.correct}</span> | <span style="color:#ef4444;">Yanlış: ${st.wrong}</span> | <span style="color:#8b5cf6;">Boş: ${st.blank}</span></div><hr style="margin:10px 0; border:none; border-top:1px solid #e2e8f0;">`;
-      
       for (const [tName, data] of Object.entries(st.topicStats)) {
         html += `
           <div style="margin-bottom: 10px; background: #f8fafc; padding: 8px; border-radius: 6px; border-left: 3px solid var(--primary);">
@@ -2309,12 +1904,48 @@
     }
 
     buildPaperView(currentQuestionsList);
-    showToast("Analiz modu aktif. Çözümler ve detaylı analiz görüntüleniyor.", "success");
+    showToast("Analiz modu aktif.", "success");
   }
 
+  // YAZDIRMA KONTROLÜ VE FİLİGRAN AYARLARI
   function triggerPrint() {
+    const userTier = window.currentUserTier || 'Ücretsiz';
+    const userEmail = window.currentUserEmail || 'Kullanıcı Maili';
+    const todayStr = new Date().toISOString().split('T')[0];
+    const printKey = `usage_printed_${todayStr}`;
+    let todayPrinted = parseInt(localStorage.getItem(printKey) || '0');
+
+    let printLimit = 10;
+    if (userTier === 'VIP' || userTier === 'Premium') printLimit = 100;
+    else if (userTier === 'Deneme') printLimit = 50;
+
+    if (todayPrinted + currentQuestionsList.length > printLimit) {
+      showToast(`Günlük soru yazdırma limitinize ulaştınız! (${userTier} Hak: ${printLimit})`, 'error');
+      return;
+    }
+
+    // Filigran Ayarlama
+    const screenWatermark = document.getElementById('screenWatermark');
+    const printWatermark = document.getElementById('printWatermark');
+
+    if (userTier === 'VIP' || userTier === 'Premium') {
+      printWatermark.innerText = userEmail;
+      screenWatermark.style.display = 'none';
+    } else if (userTier === 'Deneme') {
+      const text = `Nöroloji Soru Hazırlama Paneli ®\n${userEmail}`;
+      printWatermark.innerText = text;
+      screenWatermark.style.display = 'none';
+    } else { // Ücretsiz
+      const text = `Nöroloji Soru Hazırlama Paneli ®\n${userEmail}`;
+      printWatermark.innerText = text;
+      screenWatermark.innerText = text;
+      screenWatermark.style.display = 'block';
+    }
+
+    localStorage.setItem(printKey, (todayPrinted + currentQuestionsList.length).toString());
+
     if (window.logUserActivity) {
-      window.logUserActivity("Baskı / PDF Alındı", `${currentQuestionsList.length} Adet Soru Çıktı Alındı.`);
+      window.logUserActivity("Baskı / PDF Alındı", `${currentQuestionsList.length} Soru Çıktı Alındı.`);
     }
     window.print();
   }
@@ -2343,13 +1974,6 @@
     document.getElementById('configScreen').style.display = 'block';
   }
 
-  window.manualLoadQuestions = function() {
-    if (typeof loadDataAndInit === 'function') {
-      loadDataAndInit();
-      if (window.closeAdminModal) window.closeAdminModal();
-    }
-  };
-
   window.closeSideAnalysisPanel = function() {
     const panel = document.getElementById('sideAnalysisPanel');
     if (panel) panel.style.display = 'none';
@@ -2365,11 +1989,11 @@
   window.closeAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'none';
 </script>
 
-<!-- FIREBASE, AUTHENTICATION, ADMIN & LİSANS SİSTEMİ -->
+<!-- FIREBASE & KULLANICI / ADMIN SİSTEMİ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, addDoc, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, addDoc, deleteDoc, query, where, orderBy, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB8dZe4nDuvU2SjH2FzX3r7sgGtohE6mo4",
@@ -2388,33 +2012,30 @@
   let currentUserData = null;
   let allFetchedUsers = [];
   let currentCategoryFilter = 'Tümü';
+  let sessionStartTime = null;
+  let currentInspectedUserUid = null;
+  let userToDeleteTarget = null;
   window.isAdminSessionActive = false;
 
   function formatNameSurname(str) {
     if (!str || str === "Belirtilmedi" || str === "...") return "Belirtilmedi";
     let parts = str.trim().split(/\s+/);
-    if (parts.length === 1) {
-      return parts[0].charAt(0).toLocaleUpperCase('tr-TR') + parts[0].slice(1).toLocaleLowerCase('tr-TR');
-    }
+    if (parts.length === 1) return parts[0].charAt(0).toLocaleUpperCase('tr-TR') + parts[0].slice(1).toLocaleLowerCase('tr-TR');
     let surname = parts.pop().toLocaleUpperCase('tr-TR');
     let names = parts.map(n => n.charAt(0).toLocaleUpperCase('tr-TR') + n.slice(1).toLocaleLowerCase('tr-TR')).join(' ');
     return `${names} ${surname}`;
   }
   window.formatNameSurname = formatNameSurname;
 
-  // GOOGLE İLE GİRİŞ BUTONU (Düzeltildi)
   const btnGoogleLoginModal = document.getElementById('btnGoogleLoginModal');
   if (btnGoogleLoginModal) {
     btnGoogleLoginModal.addEventListener('click', () => {
-      signInWithPopup(auth, provider).then(() => {
-        window.closeLoginOptionsModal();
-      }).catch(error => {
+      signInWithPopup(auth, provider).then(() => { window.closeLoginOptionsModal(); }).catch(error => {
         if (window.showToast) window.showToast("Giriş hatası: " + error.message, "error");
       });
     });
   }
 
-  // ÇIKIŞ YAP BUTONLARI
   document.querySelectorAll('.btn-logout-action').forEach(btn => {
     btn.addEventListener('click', () => {
       signOut(auth).then(() => {
@@ -2435,9 +2056,29 @@
     });
   };
   
-  // OTURUM DİNLEYİCİ
+  // OTURUM SÜRESİ TAKİBİ VEYA AKTİVİTE KAYDI
+  async function saveSessionDuration() {
+    if (!auth.currentUser || !sessionStartTime) return;
+    const minutes = Math.max(1, Math.round((Date.now() - sessionStartTime) / 60000));
+    try {
+      const todayStr = new Date().toISOString().split('T')[0];
+      await addDoc(collection(db, "kullanicilar", auth.currentUser.uid, "aktiviteler"), {
+        islem: "Sistemde Kalma Süresi",
+        detay: `${minutes} Dakika Aktif Kullanım`,
+        sureDakika: minutes,
+        tarihStr: todayStr,
+        zaman: serverTimestamp()
+      });
+    } catch(e) {}
+  }
+
+  window.addEventListener('beforeunload', () => { saveSessionDuration(); });
+
+  // OTURUM VE DENEME SÜRESİ KONTROLÜ
   onAuthStateChanged(auth, async (user) => {
     if (user && !window.isAdminSessionActive) {
+      sessionStartTime = Date.now();
+      window.currentUserEmail = user.email;
       const userRef = doc(db, "kullanicilar", user.uid);
       const userSnap = await getDoc(userRef);
 
@@ -2446,7 +2087,8 @@
           email: user.email,
           adSoyad: user.displayName || "Belirtilmedi",
           sonGirisTarihi: serverTimestamp(),
-          durum: "Ücretsiz",
+          denemeBaslangicTarihi: serverTimestamp(),
+          durum: "Deneme",
           rol: "kullanici"
         };
         await setDoc(userRef, currentUserData);
@@ -2464,11 +2106,22 @@
         return;
       }
 
+      // Deneme Süresi (3 Gün) Kontrolü
+      if (currentUserData.durum === 'Deneme') {
+        const createdDate = currentUserData.denemeBaslangicTarihi?.toDate ? currentUserData.denemeBaslangicTarihi.toDate() : new Date();
+        const diffDays = (new Date() - createdDate) / (1000 * 60 * 60 * 24);
+        if (diffDays >= 3) {
+          currentUserData.durum = 'Ücretsiz';
+          await updateDoc(userRef, { durum: 'Ücretsiz' });
+          if (window.showToast) window.showToast("Deneme süreniz dolduğu için hesabınız Ücretsiz moda geçmiştir.", "warning");
+        }
+      }
+
+      window.currentUserTier = currentUserData.durum;
       const formattedName = formatNameSurname(currentUserData.adSoyad || user.displayName || user.email);
       document.querySelectorAll('.user-name-target').forEach(el => el.textContent = formattedName);
 
       const isAdm = currentUserData.rol === 'admin';
-      
       const btnRedeem = document.getElementById('btnRedeemLicense');
       const btnAdmin = document.getElementById('btnAdminPanel');
 
@@ -2482,21 +2135,19 @@
 
       const tierBadge = document.getElementById('userTierBadge');
       if (tierBadge) {
-        const st = isAdm ? '👑 Admin' : (currentUserData.durum || 'Ücretsiz');
+        // Deneme kullanıcısının ekranında Premium yazsın kuralı
+        const displayStatus = (currentUserData.durum === 'Deneme') ? 'Premium' : currentUserData.durum;
+        const st = isAdm ? '👑 Admin' : displayStatus;
         tierBadge.textContent = st;
-        if (isAdm) { tierBadge.style.background = '#f3e8ff'; tierBadge.style.color = '#6b21a8'; }
-        else if (st === 'Premium') { tierBadge.style.background = '#d1fae5'; tierBadge.style.color = '#047857'; }
-        else if (st === 'VIP') { tierBadge.style.background = '#f3e8ff'; tierBadge.style.color = '#6b21a8'; }
-        else if (st === 'Deneme') { tierBadge.style.background = '#fef3c7'; tierBadge.style.color = '#b45309'; }
+        if (isAdm || st === 'VIP') { tierBadge.style.background = '#f3e8ff'; tierBadge.style.color = '#6b21a8'; }
+        else if (st === 'Premium' || currentUserData.durum === 'Deneme') { tierBadge.style.background = '#d1fae5'; tierBadge.style.color = '#047857'; }
         else { tierBadge.style.background = '#e2e8f0'; tierBadge.style.color = '#475569'; }
       }
 
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
 
-      if (typeof masterPool !== 'undefined' && masterPool.length === 0) {
-        window.loadDataAndInit();
-      }
+      if (typeof masterPool !== 'undefined' && masterPool.length === 0) window.loadDataAndInit();
     } else if (!window.isAdminSessionActive) {
       currentUserData = null;
       document.getElementById('loginScreen').style.display = 'flex';
@@ -2514,61 +2165,58 @@
         tarihStr: todayStr,
         zaman: serverTimestamp()
       });
-    } catch (e) { console.error("Log hatası:", e); }
+    } catch (e) {}
   };
 
-  // YÖNETİCİ ŞİFRE DOĞRULAMA (Düzeltildi)
+  // ADMIN GİRİŞİ VE ŞİFRE DOĞRULAMA
   window.submitAdminAuth = async function() {
     const userVal = document.getElementById('adminUsernameInput').value.trim();
     const passVal = document.getElementById('adminPasswordInput').value.trim();
+    if (!userVal || !passVal) { showToast("Lütfen tüm alanları doldurunuz.", "warning"); return; }
 
-    if (!userVal || !passVal) {
-      if (window.showToast) window.showToast("Lütfen kullanıcı adı ve şifre giriniz.", "warning");
-      return;
-    }
-
-    let isAuthorized = (userVal === "admin" && passVal === "noroloji2026");
+    let currentAdminPass = localStorage.getItem('customAdminPassword') || "noroloji2026";
+    let isAuthorized = (userVal === "admin" && passVal === currentAdminPass);
 
     if (!isAuthorized) {
       try {
-        const q = query(
-          collection(db, "yoneticiler"),
-          where("kullaniciAdi", "==", userVal),
-          where("sifre", "==", passVal)
-        );
+        const q = query(collection(db, "yoneticiler"), where("kullaniciAdi", "==", userVal), where("sifre", "==", passVal));
         const snap = await getDocs(q);
         if (!snap.empty) isAuthorized = true;
-      } catch (e) {
-        console.warn("Firestore sorgu hatası:", e);
-      }
+      } catch (e) {}
     }
 
     if (isAuthorized) {
       window.isAdminSessionActive = true;
-      if (window.showToast) window.showToast("Yönetici girişi başarılı!", "success");
+      window.currentUserTier = 'VIP';
+      showToast("Yönetici girişi başarılı!", "success");
       
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
       
       const btnAdmin = document.getElementById('btnAdminPanel');
       if (btnAdmin) btnAdmin.style.display = 'inline-flex';
-
       const btnRedeem = document.getElementById('btnRedeemLicense');
       if (btnRedeem) btnRedeem.style.display = 'none';
 
       document.querySelectorAll('.user-name-target').forEach(el => el.textContent = "Yönetici (Özel)");
-      
       const tierBadge = document.getElementById('userTierBadge');
-      if (tierBadge) {
-        tierBadge.textContent = "👑 Admin";
-        tierBadge.style.background = "#f3e8ff";
-        tierBadge.style.color = "#6b21a8";
-      }
+      if (tierBadge) { tierBadge.textContent = "👑 Admin"; tierBadge.style.background = "#f3e8ff"; tierBadge.style.color = "#6b21a8"; }
 
       window.closeAdminAuthModal();
       window.openAdminModal();
     } else {
-      if (window.showToast) window.showToast("Hatalı kullanıcı adı veya şifre!", "error");
+      showToast("Hatalı kullanıcı adı veya şifre!", "error");
+    }
+  };
+
+  window.logoutAdminSession = function() {
+    window.isAdminSessionActive = false;
+    document.getElementById('adminModal').style.display = 'none';
+    if (auth.currentUser) {
+      signOut(auth).then(() => { location.reload(); });
+    } else {
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
     }
   };
 
@@ -2580,84 +2228,37 @@
     const k = document.getElementById('inputRedeemKey').value.trim();
     const p = document.getElementById('inputRedeemPin').value.trim();
     const btn = document.getElementById('btnSubmitRedeem');
-
-    if (s !== "" && k !== "" && p !== "") {
-      btn.disabled = false;
-      btn.style.opacity = "1";
-      btn.style.cursor = "pointer";
-    } else {
-      btn.disabled = true;
-      btn.style.opacity = "0.5";
-      btn.style.cursor = "not-allowed";
-    }
+    if (s !== "" && k !== "" && p !== "") { btn.disabled = false; btn.style.opacity = "1"; }
+    else { btn.disabled = true; btn.style.opacity = "0.5"; }
   };
 
   window.submitRedeemCode = async function() {
     const s = document.getElementById('inputRedeemSerial').value.trim();
     const k = document.getElementById('inputRedeemKey').value.trim();
     const p = document.getElementById('inputRedeemPin').value.trim();
-
-    if (!s || !k || !p) { window.showToast?.("Lütfen tüm alanları doldurun.", "warning"); return; }
-
     try {
-      const q = query(
-        collection(db, "promosyon_kodlari"),
-        where("seriNo", "==", s),
-        where("anahtar", "==", k),
-        where("pin", "==", p),
-        where("isUsed", "==", false)
-      );
-
+      const q = query(collection(db, "promosyon_kodlari"), where("seriNo", "==", s), where("anahtar", "==", k), where("pin", "==", p), where("isUsed", "==", false));
       const snap = await getDocs(q);
-      if (snap.empty) {
-        window.showToast?.("Geçersiz veya daha önce kullanılmış kod!", "error");
-        return;
-      }
-
+      if (snap.empty) { showToast("Geçersiz veya kullanılmış kod!", "error"); return; }
       const codeDoc = snap.docs[0];
       const codeData = codeDoc.data();
-
-      await updateDoc(doc(db, "promosyon_kodlari", codeDoc.id), {
-        isUsed: true,
-        usedBy: auth.currentUser ? auth.currentUser.uid : "admin_session",
-        usedAt: serverTimestamp()
-      });
-
-      if (auth.currentUser) {
-        await updateDoc(doc(db, "kullanicilar", auth.currentUser.uid), {
-          durum: codeData.tur
-        });
-      }
-
-      window.showToast?.(`Tebrikler! Üyeliğiniz ${codeData.tur} seviyesine yükseltildi.`, "success");
+      await updateDoc(doc(db, "promosyon_kodlari", codeDoc.id), { isUsed: true, usedBy: auth.currentUser ? auth.currentUser.uid : "admin", usedAt: serverTimestamp() });
+      if (auth.currentUser) { await updateDoc(doc(db, "kullanicilar", auth.currentUser.uid), { durum: codeData.tur }); }
+      showToast(`Üyeliğiniz ${codeData.tur} seviyesine yükseltildi.`, "success");
       window.closeRedeemModal();
       setTimeout(() => location.reload(), 1500);
-
-    } catch (err) {
-      window.showToast?.("Aktivasyon hatası: " + err.message, "error");
-    }
+    } catch (err) { showToast("Aktivasyon hatası: " + err.message, "error"); }
   };
 
+  // ADMIN PANEL SEKMELERİ
   window.switchAdminTab = function(tabName) {
-    const tabUsers = document.getElementById('adminTabUsers');
-    const tabLicenses = document.getElementById('adminTabLicenses');
-    const btnUsers = document.getElementById('tabUsersBtn');
-    const btnLicenses = document.getElementById('tabLicensesBtn');
-    const searchBoxWrapper = document.getElementById('adminSearchBoxWrapper');
-
-    if (tabName === 'users') {
-      tabUsers.style.display = 'block';
-      tabLicenses.style.display = 'none';
-      btnUsers.className = 'btn-action btn-toggle-on';
-      btnLicenses.className = 'btn-action btn-toggle-off';
-      if (searchBoxWrapper) searchBoxWrapper.style.display = 'block';
-    } else {
-      tabUsers.style.display = 'none';
-      tabLicenses.style.display = 'block';
-      btnUsers.className = 'btn-action btn-toggle-off';
-      btnLicenses.className = 'btn-action btn-toggle-on';
-      if (searchBoxWrapper) searchBoxWrapper.style.display = 'none';
-    }
+    document.getElementById('adminTabUsers').style.display = tabName === 'users' ? 'flex' : 'none';
+    document.getElementById('adminTabLicenses').style.display = tabName === 'licenses' ? 'block' : 'none';
+    document.getElementById('adminTabSettings').style.display = tabName === 'settings' ? 'block' : 'none';
+    document.getElementById('tabUsersBtn').className = tabName === 'users' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
+    document.getElementById('tabLicensesBtn').className = tabName === 'licenses' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
+    document.getElementById('tabSettingsBtn').className = tabName === 'settings' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
+    document.getElementById('adminSearchBoxWrapper').style.display = tabName === 'users' ? 'block' : 'none';
   };
 
   window.openAdminModal = async function() {
@@ -2665,32 +2266,16 @@
     await fetchAndRenderUsers('Tümü');
   };
 
-  window.closeAdminModal = () => {
-    document.getElementById('adminModal').style.display = 'none';
-  };
-
   async function fetchAndRenderUsers(filterCategory) {
     currentCategoryFilter = filterCategory;
     const tbody = document.getElementById('adminUserTableBody');
-    tbody.innerHTML = '<tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcılar sıralanıyor...</td></tr>';
-
+    tbody.innerHTML = '<tr><td colspan="5" style="padding: 15px; text-align: center;">Kullanıcılar yükleniyor...</td></tr>';
     try {
       const snap = await getDocs(collection(db, "kullanicilar"));
       allFetchedUsers = [];
       snap.forEach(d => allFetchedUsers.push({ id: d.id, ...d.data() }));
-
-      const priority = { 'admin': 1, 'VIP': 2, 'Premium': 3, 'Deneme': 4, 'Ücretsiz': 5, 'Engellendi': 6 };
-
-      allFetchedUsers.sort((a, b) => {
-        const pA = a.rol === 'admin' ? 1 : (priority[a.durum] || 5);
-        const pB = b.rol === 'admin' ? 1 : (priority[b.durum] || 5);
-        return pA - pB;
-      });
-
       renderUserRows();
-    } catch (e) {
-      tbody.innerHTML = `<tr><td colspan="4" style="color:red; padding:10px;">Hata: ${e.message}</td></tr>`;
-    }
+    } catch (e) { tbody.innerHTML = `<tr><td colspan="5" style="color:red; padding:10px;">Hata: ${e.message}</td></tr>`; }
   }
 
   window.filterAdminUsers = function(cat, btnElem) {
@@ -2700,14 +2285,11 @@
     renderUserRows();
   };
 
-  window.filterAdminUsersSearch = function() {
-    renderUserRows();
-  };
+  window.filterAdminUsersSearch = () => renderUserRows();
 
   function renderUserRows() {
     const tbody = document.getElementById('adminUserTableBody');
     tbody.innerHTML = '';
-
     const queryStr = document.getElementById('adminUserSearchInput')?.value.trim().toLocaleLowerCase('tr-TR') || '';
     let list = allFetchedUsers;
 
@@ -2715,15 +2297,11 @@
     else if (currentCategoryFilter !== 'Tümü') list = list.filter(u => u.durum === currentCategoryFilter && u.rol !== 'admin');
 
     if (queryStr !== '') {
-      list = list.filter(u => {
-        const nameMatch = (u.adSoyad || '').toLocaleLowerCase('tr-TR').includes(queryStr);
-        const emailMatch = (u.email || '').toLocaleLowerCase('tr-TR').includes(queryStr);
-        return nameMatch || emailMatch;
-      });
+      list = list.filter(u => (u.adSoyad || '').toLocaleLowerCase('tr-TR').includes(queryStr) || (u.email || '').toLocaleLowerCase('tr-TR').includes(queryStr));
     }
 
     if (list.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcı bulunamadı.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5" style="padding: 15px; text-align: center;">Kullanıcı bulunamadı.</td></tr>';
       return;
     }
 
@@ -2734,53 +2312,93 @@
 
       let actionTdHTML = '';
       if (isRoleAdmin) {
-        actionTdHTML = `
-          <span style="font-size: 0.75rem; color: #8b5cf6; font-weight: bold; margin-right: 8px;">Korumalı Hesap</span>
-          <button class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;" onclick="viewUserActivities('${u.id}', '${u.email}')">👁️ Aktivite</button>
-        `;
+        actionTdHTML = `<span style="font-size: 0.75rem; color: #8b5cf6; font-weight: bold;">Korumalı Admin</span>`;
       } else {
         actionTdHTML = `
           <button class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;" onclick="viewUserActivities('${u.id}', '${u.email}')">👁️ Aktivite</button>
           <select class="modern-input" style="padding: 2px 6px; font-size: 0.75rem; width: auto;" onchange="changeUserStatus('${u.id}', this.value)">
             <option value="" disabled selected>Aksiyon</option>
+            <option value="VIP">👑 VIP</option>
             <option value="Premium">⭐ Premium</option>
             <option value="Deneme">⏳ Deneme</option>
-            <option value="VIP">👑 VIP</option>
             <option value="Ücretsiz">🔄 Ücretsiz</option>
             <option value="Engellendi">🚫 Engelle</option>
           </select>
+          <button class="btn-action btn-finish-test" style="font-size: 0.75rem; padding: 4px 8px;" onclick="promptDeleteUser('${u.id}')">🗑️ Sil</button>
         `;
       }
 
       const row = document.createElement('tr');
       row.style.borderBottom = '1px solid #e2e8f0';
       row.innerHTML = `
+        <td style="padding: 10px; text-align: center;">
+          ${!isRoleAdmin ? `<input type="checkbox" class="user-row-checkbox" value="${u.id}">` : ''}
+        </td>
         <td style="padding: 10px; font-weight: 600;">${formattedName}</td>
         <td style="padding: 10px; color: #64748b;">${u.email}</td>
-        <td style="padding: 10px;">
-          <span style="padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0;">
-            ${statusText}
-          </span>
-        </td>
-        <td style="padding: 10px; text-align: right; display: flex; gap: 6px; justify-content: flex-end; align-items: center;">
-          ${actionTdHTML}
-        </td>
+        <td style="padding: 10px;"><span style="padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0;">${statusText}</span></td>
+        <td style="padding: 10px; text-align: right; display: flex; gap: 6px; justify-content: flex-end; align-items: center;">${actionTdHTML}</td>
       `;
       tbody.appendChild(row);
     });
   }
 
+  window.toggleSelectAllUsers = function(masterCb) {
+    document.querySelectorAll('.user-row-checkbox').forEach(cb => cb.checked = masterCb.checked);
+  };
+
+  // TOPLU YETKİ VERME VEYA SİLME
+  window.applyBulkAction = async function() {
+    const action = document.getElementById('bulkActionSelect').value;
+    const selectedCbs = Array.from(document.querySelectorAll('.user-row-checkbox:checked')).map(cb => cb.value);
+    if (!action || selectedCbs.length === 0) { showToast("Lütfen yetki ve en az bir kullanıcı seçiniz.", "warning"); return; }
+
+    if (action === 'DELETE') {
+      userToDeleteTarget = selectedCbs;
+      document.getElementById('adminConfirmDeleteModal').style.display = 'flex';
+    } else {
+      for (let uid of selectedCbs) {
+        await updateDoc(doc(db, "kullanicilar", uid), { durum: action });
+      }
+      showToast(`${selectedCbs.length} kullanıcının yetkisi ${action} olarak güncellendi.`, "success");
+      await fetchAndRenderUsers(currentCategoryFilter);
+    }
+  };
+
+  // KALICI KULLANICI SİLME (ŞİFRE ONAYLI)
+  window.promptDeleteUser = function(uid) {
+    userToDeleteTarget = [uid];
+    document.getElementById('deleteConfirmAdminPassword').value = '';
+    document.getElementById('adminConfirmDeleteModal').style.display = 'flex';
+  };
+
+  window.closeAdminConfirmDeleteModal = () => document.getElementById('adminConfirmDeleteModal').style.display = 'none';
+
+  window.executeUserDeletion = async function() {
+    const enteredPass = document.getElementById('deleteConfirmAdminPassword').value.trim();
+    let currentAdminPass = localStorage.getItem('customAdminPassword') || "noroloji2026";
+    if (enteredPass !== currentAdminPass) { showToast("Hatalı yönetici şifresi! Silme iptal edildi.", "error"); return; }
+
+    if (Array.isArray(userToDeleteTarget)) {
+      for (let uid of userToDeleteTarget) {
+        await deleteDoc(doc(db, "kullanicilar", uid));
+      }
+      showToast(`${userToDeleteTarget.length} kullanıcı veritabanından kalıcı olarak silindi.`, "success");
+    }
+    window.closeAdminConfirmDeleteModal();
+    await fetchAndRenderUsers(currentCategoryFilter);
+  };
+
+  // AKTİVİTE TAKİBİ: GÜNLERE GÖRE GRUPLAMA VE TEMİZLEME
   window.viewUserActivities = async function(uid, email) {
+    currentInspectedUserUid = uid;
     document.getElementById('activityModal').style.display = 'flex';
     document.getElementById('activityModalTitle').innerText = `📊 Aktivite Geçmişi: ${email}`;
     const logBox = document.getElementById('activityLogsList');
     logBox.innerHTML = 'Loglar getiriliyor...';
 
     try {
-      const q = query(
-        collection(db, "kullanicilar", uid, "aktiviteler"),
-        orderBy("zaman", "desc")
-      );
+      const q = query(collection(db, "kullanicilar", uid, "aktiviteler"), orderBy("zaman", "desc"));
       const snap = await getDocs(q);
 
       if (snap.empty) {
@@ -2788,83 +2406,77 @@
         return;
       }
 
-      let html = '<ul style="list-style: none; padding: 0;">';
+      // Günlere Göre Gruplandır
+      let grouped = {};
       snap.forEach(docSnap => {
-        const d = docSnap.data();
-        const dateObj = d.zaman?.toDate() ? d.zaman.toDate().toLocaleString('tr-TR') : 'Bugün';
-        let detailText = d.detay;
-        let detailsBtnHTML = "";
-
-        if (d.islem === "Test Tamamlandı") {
-          try {
-            const parsed = JSON.parse(d.detay);
-            detailText = `Toplam ${parsed.total} Soru (Doğru: ${parsed.correct}, Yanlış: ${parsed.wrong}, Boş: ${parsed.blank})`;
-            window[`testLogDetail_${docSnap.id}`] = parsed;
-            detailsBtnHTML = `<button class="btn-action" style="font-size: 0.7rem; padding: 2px 6px; margin-top: 4px; background: #2563eb; color: white;" onclick="showAdminTestDetail('${docSnap.id}')">🔍 Detaylar</button>`;
-          } catch(e) {}
-        }
-        
-        html += `
-          <li style="padding: 10px; border-bottom: 1px solid #e2e8f0; background: #f8fafc; margin-bottom: 6px; border-radius: 6px;">
-            <div style="font-weight: bold; color: #1e293b;">${d.islem} <span style="font-size:0.75rem; color:#94a3b8; font-weight:normal;">(${dateObj})</span></div>
-            <div style="color: #475569; margin-top: 4px;">${detailText}</div>
-            ${detailsBtnHTML}
-          </li>
-        `;
+        const data = docSnap.data();
+        const dateStr = data.tarihStr || (data.zaman?.toDate ? data.zaman.toDate().toISOString().split('T')[0] : 'Diğer Günler');
+        if (!grouped[dateStr]) grouped[dateStr] = [];
+        grouped[dateStr].push({ docId: docSnap.id, ...data });
       });
-      html += '</ul>';
+
+      let html = '';
+      for (const [dateKey, logs] of Object.entries(grouped)) {
+        // Toplam Geçirilen Dakika Hesabı
+        let totalMins = 0;
+        logs.forEach(l => { if (l.sureDakika) totalMins += l.sureDakika; });
+
+        html += `
+          <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cbd5e1; padding-bottom: 6px; margin-bottom: 8px;">
+              <span style="font-weight: bold; color: #0f172a;">📅 Tarih: ${dateKey} ${totalMins > 0 ? `<span style="color:#2563eb; font-size:0.8rem;">(⏱️ Toplam: ${totalMins} dk aktif)</span>` : ''}</span>
+              <button class="btn-action" style="font-size:0.7rem; padding:2px 6px; background:#ef4444; color:white;" onclick="clearDayActivities('${dateKey}')">🗑️ Bu Günü Temizle</button>
+            </div>
+            <ul style="list-style: none; padding: 0;">
+        `;
+
+        logs.forEach(l => {
+          const timeStr = l.zaman?.toDate ? l.zaman.toDate().toLocaleTimeString('tr-TR') : '';
+          html += `
+            <li style="padding: 4px 0; border-bottom: 1px dashed #e2e8f0; font-size: 0.82rem;">
+              <strong>${l.islem}:</strong> ${l.detay} <span style="color:#94a3b8; font-size:0.75rem;">(${timeStr})</span>
+            </li>
+          `;
+        });
+
+        html += `</ul></div>`;
+      }
+
       logBox.innerHTML = html;
-
-    } catch (e) {
-      logBox.innerHTML = `<span style="color:red;">Aktivite çekme hatası: ${e.message}</span>`;
-    }
+    } catch (e) { logBox.innerHTML = `<span style="color:red;">Hata: ${e.message}</span>`; }
   };
 
-  window.closeActivityModal = () => {
-    document.getElementById('activityModal').style.display = 'none';
+  // TEK GÜNÜ TEMİZLE
+  window.clearDayActivities = async function(dateStr) {
+    if (!currentInspectedUserUid) return;
+    const q = query(collection(db, "kullanicilar", currentInspectedUserUid, "aktiviteler"), where("tarihStr", "==", dateStr));
+    const snap = await getDocs(q);
+    for (let d of snap.docs) { await deleteDoc(d.ref); }
+    showToast(`${dateStr} tarihli aktiviteler temizlendi.`, "success");
+    window.viewUserActivities(currentInspectedUserUid, '');
   };
 
-  window.showAdminTestDetail = function(logId) {
-    const data = window[`testLogDetail_${logId}`];
-    if (!data) return;
-
-    let html = `<div style="margin-bottom: 12px; font-weight: bold;">Genel Özet: Toplam ${data.total} Soru<br><span style="color:#10b981;">Doğru: ${data.correct}</span> | <span style="color:#ef4444;">Yanlış: ${data.wrong}</span> | <span style="color:#8b5cf6;">Boş: ${data.blank}</span></div><hr style="margin:10px 0; border:none; border-top:1px solid #e2e8f0;">`;
-
-    for (const [tName, tData] of Object.entries(data.topicStats)) {
-      html += `
-        <div style="margin-bottom: 8px; background: #f1f5f9; padding: 10px; border-radius: 6px;">
-          <div style="font-weight: bold; color: #0f172a;">${tName} (${tData.total} Soru)</div>
-          <div style="font-size: 0.82rem; color: #334155; margin-top: 3px;">
-            ✅ ${tData.correct} Doğru | ❌ ${tData.wrong} Yanlış | ❓ ${tData.blank} Boş
-          </div>
-        </div>
-      `;
-    }
-
-    document.getElementById('adminTestDetailContent').innerHTML = html;
-    document.getElementById('adminTestDetailModal').style.display = 'flex';
+  // TÜM AKTİVİTELERİ TEMİZLE
+  window.clearAllActivities = async function() {
+    if (!currentInspectedUserUid) return;
+    const snap = await getDocs(collection(db, "kullanicilar", currentInspectedUserUid, "aktiviteler"));
+    for (let d of snap.docs) { await deleteDoc(d.ref); }
+    showToast("Tüm aktivite geçmişi temizlendi.", "success");
+    window.closeActivityModal();
   };
 
-  window.closeAdminTestDetailModal = function() {
-    document.getElementById('adminTestDetailModal').style.display = 'none';
-  };
+  window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
 
+  // LİSANS KODU ÜRETME
   window.generateNewLicense = async function() {
     const days = parseInt(document.getElementById('licenseDaysInput').value) || 30;
     const tier = document.getElementById('licenseTierSelect').value;
-
     const serial = "NR-2026-" + Math.floor(100 + Math.random() * 900);
     const key = Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
     const pin = Math.floor(1000 + Math.random() * 9000).toString();
 
     await addDoc(collection(db, "promosyon_kodlari"), {
-      seriNo: serial,
-      anahtar: key,
-      pin: pin,
-      tur: tier,
-      gun: days,
-      isUsed: false,
-      createdTime: serverTimestamp()
+      seriNo: serial, anahtar: key, pin: pin, tur: tier, gun: days, isUsed: false, createdTime: serverTimestamp()
     });
 
     document.getElementById('resCodeMeta').innerText = `${days} Günlük ${tier}`;
@@ -2872,14 +2484,32 @@
     document.getElementById('resCodeKey').innerText = key;
     document.getElementById('resCodePin').innerText = pin;
     document.getElementById('generatedCodeBox').style.display = 'block';
-    window.showToast?.(`${days} Günlük ${tier} kodu veritabanına kaydedildi.`, "success");
+    showToast(`${days} Günlük ${tier} kodu üretildi.`, "success");
+  };
+
+  // YÖNETİCİ ŞİFRE DEĞİŞTİRME
+  window.changeAdminPassword = function() {
+    const oldP = document.getElementById('adminOldPassInput').value.trim();
+    const newP = document.getElementById('adminNewPassInput').value.trim();
+    const confirmP = document.getElementById('adminNewPassConfirmInput').value.trim();
+    let currentAdminPass = localStorage.getItem('customAdminPassword') || "noroloji2026";
+
+    if (oldP !== currentAdminPass) { showToast("Mevcut şifre hatalı!", "error"); return; }
+    if (!newP || newP.length < 4) { showToast("Yeni şifre en az 4 karakter olmalıdır.", "warning"); return; }
+    if (newP !== confirmP) { showToast("Yeni şifreler uyuşmuyor!", "warning"); return; }
+
+    localStorage.setItem('customAdminPassword', newP);
+    showToast("Yönetici şifreniz başarıyla değiştirildi.", "success");
+    document.getElementById('adminOldPassInput').value = '';
+    document.getElementById('adminNewPassInput').value = '';
+    document.getElementById('adminNewPassConfirmInput').value = '';
   };
 
   window.changeUserStatus = async function(uid, newStatus) {
     if (!newStatus) return;
     await updateDoc(doc(db, "kullanicilar", uid), { durum: newStatus });
-    window.showToast?.(`Durum "${newStatus}" olarak güncellendi.`, 'success');
-    window.openAdminModal();
+    showToast(`Durum "${newStatus}" olarak güncellendi.`, 'success');
+    await fetchAndRenderUsers(currentCategoryFilter);
   };
 </script>
 
