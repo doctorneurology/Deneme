@@ -2328,6 +2328,20 @@ function activateAnalysisMode() {
     document.getElementById('previewScreen').style.display = 'none';
     document.getElementById('configScreen').style.display = 'block';
   }
+  window.manualLoadQuestions = function() {
+    if (typeof loadDataAndInit === 'function') {
+      loadDataAndInit();
+      if (window.closeAdminModal) window.closeAdminModal();
+    }
+  };
+
+  window.closeSideAnalysisPanel = function() {
+    const panel = document.getElementById('sideAnalysisPanel');
+    if (panel) panel.style.display = 'none';
+  };
+
+  window.openLoginOptionsModal = () => document.getElementById('loginOptionsModal').style.display = 'flex';
+  window.closeLoginOptionsModal = () => document.getElementById('loginOptionsModal').style.display = 'none';
 </script>
 
 <!-- FIREBASE, AUTHENTICATION, ADMIN & LİSANS SİSTEMİ -->
