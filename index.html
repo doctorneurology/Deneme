@@ -555,7 +555,7 @@
       box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
     }
 
-/* A4 Kağıdını Tam Ortada Tutar */
+    /* A4 Kağıdını Tam Ortada Tutar */
     .paper-viewport {
       display: flex;
       justify-content: center;
@@ -565,7 +565,7 @@
       position: relative;
     }
 
-    /* Sol Detaylı Konu Analizi Paneli (A4'ü Sola İtmez, Sabit Durur) */
+    /* Sol Detaylı Konu Analizi Paneli */
     #sideAnalysisPanel {
       display: none;
       position: fixed;
@@ -978,19 +978,20 @@
 <body>
 
   <!-- YÖNETİCİ DETAYLI TEST ANALİZİ MODALİ -->
-<div id="adminTestDetailModal" class="modal-overlay no-print" style="display: none; z-index: 26000;">
-  <div class="modal-card" style="max-width: 500px; width: 90%;">
-    <div class="modal-title" style="justify-content: space-between;">
-      <span>📊 Test Detay Analizi</span>
-      <button class="btn-action" onclick="closeAdminTestDetailModal()">✕ Kapat</button>
+  <div id="adminTestDetailModal" class="modal-overlay no-print" style="display: none; z-index: 26000;">
+    <div class="modal-card" style="max-width: 500px; width: 90%;">
+      <div class="modal-title" style="justify-content: space-between;">
+        <span>📊 Test Detay Analizi</span>
+        <button class="btn-action" onclick="closeAdminTestDetailModal()">✕ Kapat</button>
+      </div>
+      <div id="adminTestDetailContent" style="margin-top: 15px; font-size: 0.88rem; line-height: 1.6;"></div>
     </div>
-    <div id="adminTestDetailContent" style="margin-top: 15px; font-size: 0.88rem; line-height: 1.6;"></div>
   </div>
-</div>
+
   <!-- TOAST BİLDİRİM KAPSAYICISI -->
   <div id="toastContainer" class="toast-container"></div>
 
-<!-- GİRİŞ EKRANI -->
+  <!-- GİRİŞ EKRANI -->
   <div id="loginScreen">
     <button id="btnOpenAdminAuth" class="btn-action" style="position: absolute; top: 15px; left: 15px; background: #1e293b; border-color: #475569; color: #f8fafc; z-index: 20001;" onclick="openAdminAuthModal()">
       🔐 Yönetici Girişi
@@ -1022,10 +1023,36 @@
     </div>
   </div>
 
-  <!-- ANA UYGULAMA MİMARİSİ (Giriş Yapılınca Açılır) -->
+  <!-- YÖNETİCİ ŞİFRE GİRİŞİ MODALİ -->
+  <div id="adminAuthModal" class="modal-overlay no-print" style="display: none; z-index: 25000;" onclick="if(event.target===this) closeAdminAuthModal()">
+    <div class="modal-card" style="max-width: 400px; width: 90%;">
+      <div class="modal-title" style="justify-content: space-between;">
+        <span>🔐 Yönetici Panel Girişi</span>
+        <button class="btn-action" onclick="closeAdminAuthModal()">✕</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 16px;">
+        Sisteme yönetici olarak erişmek için kullanıcı adı ve şifrenizi giriniz.
+      </p>
+
+      <div class="input-control">
+        <label>Yönetici Kullanıcı Adı:</label>
+        <input type="text" id="adminUsernameInput" class="modern-input" placeholder="Örn: admin" onkeydown="if(event.key==='Enter') submitAdminAuth()">
+      </div>
+      <div class="input-control">
+        <label>Şifre:</label>
+        <input type="password" id="adminPasswordInput" class="modern-input" placeholder="••••••••" onkeydown="if(event.key==='Enter') submitAdminAuth()">
+      </div>
+
+      <button class="btn-proceed" style="margin-top: 15px;" onclick="submitAdminAuth()">
+        Sisteme Giriş Yap ➔
+      </button>
+    </div>
+  </div>
+
+  <!-- ANA UYGULAMA MİMARİSİ -->
   <div id="mainApp" style="display: none;">
 
-<!-- YÜKLEME VE HATA EKRANI OVERLAY -->
+    <!-- YÜKLEME VE HATA EKRANI OVERLAY -->
     <div id="loadingOverlay" class="loading-overlay">
       <div id="loadingSpinner" class="spinner"></div>
       <p id="loadingText" style="font-weight: 600; font-size: 1.05rem;">Sorular Buluttan Çekiliyor...</p>
@@ -1086,7 +1113,7 @@
       </div>
     </div>
 
-<!-- TEST TAMAMLANDI MODALİ -->
+    <!-- TEST TAMAMLANDI MODALİ -->
     <div id="testResultModal" class="modal-overlay no-print" style="display: none; z-index: 24000;">
       <div class="modal-card" style="max-width: 520px; width: 90%; max-height: 85vh; overflow-y: auto;">
         <div class="modal-title" id="resultModalTitle">📊 Test Tamamlandı!</div>
@@ -1117,86 +1144,83 @@
       </div>
     </div>
 
-<!-- GELİŞMİŞ ADMIN PANELİ MODAL PENCERESİ -->
-<div id="adminModal" class="modal-overlay no-print" style="display: none;" onclick="if(event.target===this) closeAdminModal()">
-  <div class="modal-card" style="max-width: 900px; width: 95%;">
-    <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <span>⚙️ Yönetici Kontrol Merkezi</span>
-        <!-- SORULARI YÜKLE BUTONU ARTIK YÖNETİCİ KONTROL MERKEZİ İÇİNDE -->
-        <button id="btnManualLoadQuestions" class="btn-action btn-toggle-on" style="background: #0284c7 !important; border-color: #0369a1 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="manualLoadQuestions()">
-          📥 Soruları Yükle
-        </button>
-      </div>
-      <button class="btn-action" onclick="closeAdminModal()">✕ Kapat</button>
-    </div>
-    
-    <!-- TABLAR VE CANLI KULLANICI ARAMA KUTUSU -->
-    <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin: 15px 0;">
-      <div style="display: flex; gap: 8px;">
-        <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar</button>
-        <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
-      </div>
-      
-      <!-- İSİM, SOYİSİM VEYA E-POSTA ARAMA KUTUSU -->
-      <div style="width: 280px;" id="adminSearchBoxWrapper">
-        <input type="text" id="adminUserSearchInput" class="modern-input" style="padding: 6px 10px; font-size: 0.82rem;" placeholder="🔍 Ad, Soyad veya E-posta İle Ara..." oninput="filterAdminUsersSearch()">
-      </div>
-    </div>
-
-    <!-- SEKME 1: KULLANICI LİSTESİ -->
-    <div id="adminTabUsers">
-      <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 15px;">
-        <button class="btn-action filter-btn btn-toggle-on" onclick="filterAdminUsers('Tümü', this)">Tümü</button>
-        <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('admin', this)">👑 Yönetici</button>
-        <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('VIP', this)">👑 VIP</button>
-        <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Premium', this)">⭐ Premium</button>
-        <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Deneme', this)">⏳ Deneme</button>
-        <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Ücretsiz', this)">🆓 Ücretsiz</button>
-        <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Engellendi', this)">🚫 Engelli</button>
-      </div>
-
-      <div style="max-height: 380px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
-        <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
-          <thead style="background: #f1f5f9; position: sticky; top: 0; z-index: 5;">
-            <tr>
-              <th style="padding: 10px; border-bottom: 1px solid var(--border);">Ad Soyad</th>
-              <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
-              <th style="padding: 10px; border-bottom: 1px solid var(--border);">Rol / Durum</th>
-              <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">İşlem / Aksiyon</th>
-            </tr>
-          </thead>
-          <tbody id="adminUserTableBody">
-            <tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcılar sıralanıyor...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-
-<!-- SEKME 2: DİNAMİK LİSANS KODU ÜRETİCİ -->
-    <div id="adminTabLicenses" style="display: none;">
-      <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">İstediğiniz gün ve üyelik türüne göre promosyon kodu oluşturun:</p>
-      <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
-        <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
-          <input type="number" id="licenseDaysInput" class="modern-input" style="flex: 1; min-width: 120px;" value="30" min="1" placeholder="Süre (Gün)">
-          <select id="licenseTierSelect" class="modern-input" style="flex: 1; min-width: 140px;">
-            <option value="Deneme">Deneme</option>
-            <option value="Premium" selected>Premium</option>
-            <option value="VIP">VIP</option>
-          </select>
-          <button class="btn-action btn-toggle-on" onclick="generateNewLicense()">✨ Kodu Üret</button>
+    <!-- GELİŞMİŞ ADMIN PANELİ MODAL PENCERESİ -->
+    <div id="adminModal" class="modal-overlay no-print" style="display: none;" onclick="if(event.target===this) closeAdminModal()">
+      <div class="modal-card" style="max-width: 900px; width: 95%;">
+        <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span>⚙️ Yönetici Kontrol Merkezi</span>
+            <button id="btnManualLoadQuestions" class="btn-action btn-toggle-on" style="background: #0284c7 !important; border-color: #0369a1 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="manualLoadQuestions()">
+              📥 Soruları Yükle
+            </button>
+          </div>
+          <button class="btn-action" onclick="closeAdminModal()">✕ Kapat</button>
         </div>
-        <div id="generatedCodeBox" style="display: none; background: #0f172a; color: #38bdf8; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 0.9rem;">
-          <div><strong>Süre / Tür:</strong> <span id="resCodeMeta" style="color:#f59e0b;">-</span></div>
-          <div><strong>Seri No:</strong> <span id="resCodeSerial" style="color:white;">-</span></div>
-          <div><strong>Anahtar:</strong> <span id="resCodeKey" style="color:white;">-</span></div>
-          <div><strong>PIN:</strong> <span id="resCodePin" style="color:white;">-</span></div>
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin: 15px 0;">
+          <div style="display: flex; gap: 8px;">
+            <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar</button>
+            <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
+          </div>
+          
+          <div style="width: 280px;" id="adminSearchBoxWrapper">
+            <input type="text" id="adminUserSearchInput" class="modern-input" style="padding: 6px 10px; font-size: 0.82rem;" placeholder="🔍 Ad, Soyad veya E-posta İle Ara..." oninput="filterAdminUsersSearch()">
+          </div>
         </div>
+
+        <!-- SEKME 1: KULLANICI LİSTESİ -->
+        <div id="adminTabUsers">
+          <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 15px;">
+            <button class="btn-action filter-btn btn-toggle-on" onclick="filterAdminUsers('Tümü', this)">Tümü</button>
+            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('admin', this)">👑 Yönetici</button>
+            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('VIP', this)">👑 VIP</button>
+            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Premium', this)">⭐ Premium</button>
+            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Deneme', this)">⏳ Deneme</button>
+            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Ücretsiz', this)">🆓 Ücretsiz</button>
+            <button class="btn-action filter-btn btn-toggle-off" onclick="filterAdminUsers('Engellendi', this)">🚫 Engelli</button>
+          </div>
+
+          <div style="max-height: 380px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+              <thead style="background: #f1f5f9; position: sticky; top: 0; z-index: 5;">
+                <tr>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border);">Ad Soyad</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border);">Rol / Durum</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">İşlem / Aksiyon</th>
+                </tr>
+              </thead>
+              <tbody id="adminUserTableBody">
+                <tr><td colspan="4" style="padding: 15px; text-align: center;">Kullanıcılar sıralanıyor...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SEKME 2: DİNAMİK LİSANS KODU ÜRETİCİ -->
+        <div id="adminTabLicenses" style="display: none;">
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">İstediğiniz gün ve üyelik türüne göre promosyon kodu oluşturun:</p>
+          <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+            <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+              <input type="number" id="licenseDaysInput" class="modern-input" style="flex: 1; min-width: 120px;" value="30" min="1" placeholder="Süre (Gün)">
+              <select id="licenseTierSelect" class="modern-input" style="flex: 1; min-width: 140px;">
+                <option value="Deneme">Deneme</option>
+                <option value="Premium" selected>Premium</option>
+                <option value="VIP">VIP</option>
+              </select>
+              <button class="btn-action btn-toggle-on" onclick="generateNewLicense()">✨ Kodu Üret</button>
+            </div>
+            <div id="generatedCodeBox" style="display: none; background: #0f172a; color: #38bdf8; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 0.9rem;">
+              <div><strong>Süre / Tür:</strong> <span id="resCodeMeta" style="color:#f59e0b;">-</span></div>
+              <div><strong>Seri No:</strong> <span id="resCodeSerial" style="color:white;">-</span></div>
+              <div><strong>Anahtar:</strong> <span id="resCodeKey" style="color:white;">-</span></div>
+              <div><strong>PIN:</strong> <span id="resCodePin" style="color:white;">-</span></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-
-  </div>
-</div>
 
     <!-- KOD GİRİŞ MODAL PENCERESİ -->
     <div id="redeemModal" class="modal-overlay no-print" style="display: none;">
@@ -1228,46 +1252,41 @@
       </div>
     </div>
 
-<!-- AKTİVİTE DETAY MODALİ -->
-<div id="activityModal" class="modal-overlay no-print" style="display: none; z-index: 25000;" onclick="if(event.target===this) closeActivityModal()">
-  <div class="modal-card" style="max-width: 650px; width: 90%;">
-    <div class="modal-title" style="justify-content: space-between;">
-      <span id="activityModalTitle">📊 Günlük Kullanıcı İstatistikleri</span>
-      <button class="btn-action" onclick="closeActivityModal()">✕ Kapat</button>
+    <!-- AKTİVİTE DETAY MODALİ -->
+    <div id="activityModal" class="modal-overlay no-print" style="display: none; z-index: 25000;" onclick="if(event.target===this) closeActivityModal()">
+      <div class="modal-card" style="max-width: 650px; width: 90%;">
+        <div class="modal-title" style="justify-content: space-between;">
+          <span id="activityModalTitle">📊 Günlük Kullanıcı İstatistikleri</span>
+          <button class="btn-action" onclick="closeActivityModal()">✕ Kapat</button>
+        </div>
+        <div id="activityLogsList" style="max-height: 350px; overflow-y: auto; font-size: 0.85rem; margin-top: 15px;">
+          Yükleniyor...
+        </div>
+      </div>
     </div>
-    <div id="activityLogsList" style="max-height: 350px; overflow-y: auto; font-size: 0.85rem; margin-top: 15px;">
-      Yükleniyor...
-    </div>
-  </div>
-</div>
 
     <div id="configScreen" class="config-screen">
       <div class="config-card">
         
-<div class="panel-header" style="position: relative;">
-          <!-- ÜST KISIM: Başlık ve Sağda Yeşil Nokta + Altındaki Butonlar -->
+        <div class="panel-header" style="position: relative;">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
             <div class="panel-title">
               <span>🧠</span> Nöroloji Soru Hazırlama Paneli
             </div>
             
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-              <!-- Yeşil Durum Noktası -->
               <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Ediliyor"></span>
               
-              <!-- Lisans Kodu Kullan (Normal Kullanıcıda Görünür) -->
               <button id="btnRedeemLicense" class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openRedeemModal()">
                 🔑 Lisans Kodu Kullan
               </button>
 
-              <!-- Yönetici Paneli (Yönetici Girişinde Yeşil Noktanın Altında Görünür) -->
               <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openAdminModal()">
                 ⚙️ Yönetici Paneli
               </button>
             </div>
           </div>
           
-          <!-- ALT KISIM: Kullanıcı İsmi -->
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
             <div class="user-profile-badge">
               <span class="user-name-target">...</span>
@@ -1363,12 +1382,13 @@
           <button class="btn-action btn-print" onclick="triggerPrint()">🖨️ Yazdır / PDF İndir</button>
           
           <div class="user-profile-badge" style="background: #334155; color: white;">
-            <span class="user-email-target" style="color: #cbd5e1;">...</span>
+            <span class="user-name-target" style="color: #f8fafc; font-weight: 600;">...</span>
             <button class="btn-logout-sm btn-logout-action">Çıkış</button>
           </div>
         </div>
       </div>
-<!-- SOL YAN DETAYLI KONU ANALİZİ -->
+
+      <!-- SOL YAN DETAYLI KONU ANALİZİ -->
       <div id="sideAnalysisPanel" class="no-print">
         <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary); padding-bottom: 6px; margin-bottom: 10px;">
           <h4 style="font-size: 0.95rem; color: var(--bg-dark); margin: 0;">📊 Detaylı Konu Analizi</h4>
@@ -1376,13 +1396,8 @@
         </div>
         <div id="sideAnalysisContent"></div>
       </div>
+
       <div class="paper-viewport">
-        <div class="paper-viewport" style="display: flex; gap: 20px; align-items: flex-start; justify-content: center; width: 100%;">
-        <!-- KULLANICI İÇİN SAĞ / YAN DETAYLI ANALİZ PANELİ -->
-        <div id="sideAnalysisPanel" style="display: none; width: 280px; background: white; padding: 18px; border-radius: 12px; box-shadow: var(--shadow-lg); border: 1px solid var(--border); position: sticky; top: 80px; font-size: 0.85rem;">
-          <h4 style="font-size: 1rem; color: var(--bg-dark); margin-bottom: 10px; border-bottom: 2px solid var(--primary); padding-bottom: 5px;">📊 Detaylı Konu Analizi</h4>
-          <div id="sideAnalysisContent"></div>
-        </div>
         <div class="a4-sheet" id="a4PaperSheet">
           <div class="exam-header">
             <div class="exam-main-title">NÖROLOJİ SORU HAZIRLAMA PANELİ</div>
@@ -1427,20 +1442,7 @@
     </div>
 
   </div>
-window.manualLoadQuestions = function() {
-    if (typeof loadDataAndInit === 'function') {
-      loadDataAndInit();
-      if (window.closeAdminModal) window.closeAdminModal();
-    }
-  };
 
-  window.closeSideAnalysisPanel = function() {
-    const panel = document.getElementById('sideAnalysisPanel');
-    if (panel) panel.style.display = 'none';
-  };
-
-  window.openLoginOptionsModal = () => document.getElementById('loginOptionsModal').style.display = 'flex';
-  window.closeLoginOptionsModal = () => document.getElementById('loginOptionsModal').style.display = 'none';
 <script>
   const AUTOMATIC_JSON_URL = "https://script.google.com/macros/s/AKfycbxji5BJB8jHOqGX6e3r84HCfwWMCfRa6rOvX_PKP5Yih8fkylIzE3vqV5_48-ES38D8/exec";
 
@@ -1735,7 +1737,7 @@ window.manualLoadQuestions = function() {
     updateAvailableQuestionCount();
   }
 
-let activeFetchAbortController = null;
+  let activeFetchAbortController = null;
 
   async function loadDataAndInit() {
     showLoadingState();
@@ -1787,7 +1789,6 @@ let activeFetchAbortController = null;
     }
   }
 
-  // YÜKLEMEYİ İPTAL ET VE GİRİŞ EKRANINA DÖN
   function cancelQuestionLoading() {
     if (activeFetchAbortController) {
       activeFetchAbortController.abort();
@@ -2140,7 +2141,7 @@ let activeFetchAbortController = null;
   }
   window.toggleTimerInput = toggleTimerInput;
 
-function startInteractiveTest() {
+  function startInteractiveTest() {
     closeTestConfigModal();
     isTestActive = true;
     isAnalysisActive = false;
@@ -2176,7 +2177,6 @@ function startInteractiveTest() {
     buildPaperView(currentQuestionsList);
     showToast("Test başladı! Başarılar dileriz.", "success");
 
-    // KONU BAZLI LOGLAMA
     const selectedTopicElems = Array.from(document.querySelectorAll('.topic-check:checked'));
     const allTopicElems = document.querySelectorAll('.topic-check');
     let topicsStr = "";
@@ -2199,7 +2199,7 @@ function startInteractiveTest() {
     document.getElementById('timerCountdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
   }
 
-function finishTest(isTimeUp = false) {
+  function finishTest(isTimeUp = false) {
     if (!isTestActive) return;
 
     isTestActive = false;
@@ -2243,9 +2243,23 @@ function finishTest(isTimeUp = false) {
     document.getElementById('resWrongCount').innerText = wrong;
     document.getElementById('resBlankCount').innerText = blank;
 
+    const modalBox = document.getElementById('modalTopicAnalysisBox');
+    if (modalBox) {
+      let html = `<h4 style="font-size:0.9rem; margin-bottom:8px; color:var(--bg-dark);">📋 Konu Bazlı Başarı Dağılımı</h4>`;
+      for (const [tName, data] of Object.entries(topicStats)) {
+        html += `
+          <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 10px; margin-bottom:4px; border-radius:6px; font-size:0.8rem;">
+            <span style="font-weight:600;">${tName} (${data.total})</span>
+            <span>✅ ${data.correct} | ❌ ${data.wrong} | ❓ ${data.blank}</span>
+          </div>
+        `;
+      }
+      modalBox.innerHTML = html;
+    }
+
     if (isTimeUp) {
       document.getElementById('resultModalTitle').innerText = "⏳ Süre Bitti!";
-      document.getElementById('resultModalSubtitle').innerText = "Süreniz doldu. Sonuçlarınız hesaplandı:";
+      document.getElementById('resultModalSubtitle').innerText = "Süreniz doldu. Sonucunuz hesaplandı:";
     } else {
       document.getElementById('resultModalTitle').innerText = "📊 Test Tamamlandı!";
       document.getElementById('resultModalSubtitle').innerText = "Testiniz başarıyla sonlandırıldı. Özetiniz:";
@@ -2263,7 +2277,7 @@ function finishTest(isTimeUp = false) {
   function closeResultModal() { document.getElementById('testResultModal').style.display = 'none'; }
   window.closeResultModal = closeResultModal;
 
-function activateAnalysisMode() {
+  function activateAnalysisMode() {
     closeResultModal();
     isAnalysisActive = true;
 
@@ -2273,7 +2287,6 @@ function activateAnalysisMode() {
     document.getElementById('expModeSelect').value = 'inline';
     document.getElementById('keyModeSelect').value = 'none';
 
-    // SAĞ DETAYLI ANALİZ PANELİNİ DOLDUR VE GÖSTER
     const panel = document.getElementById('sideAnalysisPanel');
     const content = document.getElementById('sideAnalysisContent');
     
@@ -2325,9 +2338,11 @@ function activateAnalysisMode() {
 
   function performBackToConfig() {
     resetTestState();
+    closeSideAnalysisPanel();
     document.getElementById('previewScreen').style.display = 'none';
     document.getElementById('configScreen').style.display = 'block';
   }
+
   window.manualLoadQuestions = function() {
     if (typeof loadDataAndInit === 'function') {
       loadDataAndInit();
@@ -2342,6 +2357,12 @@ function activateAnalysisMode() {
 
   window.openLoginOptionsModal = () => document.getElementById('loginOptionsModal').style.display = 'flex';
   window.closeLoginOptionsModal = () => document.getElementById('loginOptionsModal').style.display = 'none';
+  window.openAdminAuthModal = () => {
+    document.getElementById('adminUsernameInput').value = '';
+    document.getElementById('adminPasswordInput').value = '';
+    document.getElementById('adminAuthModal').style.display = 'flex';
+  };
+  window.closeAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'none';
 </script>
 
 <!-- FIREBASE, AUTHENTICATION, ADMIN & LİSANS SİSTEMİ -->
@@ -2369,7 +2390,6 @@ function activateAnalysisMode() {
   let currentCategoryFilter = 'Tümü';
   window.isAdminSessionActive = false;
 
-  // İSİM SOYİSİM BİÇİMLENDİRME (İsimlerin ilk harfi büyük, soyisim BÜYÜK: Örn: Kadir GÜLŞEN)
   function formatNameSurname(str) {
     if (!str || str === "Belirtilmedi" || str === "...") return "Belirtilmedi";
     let parts = str.trim().split(/\s+/);
@@ -2382,11 +2402,13 @@ function activateAnalysisMode() {
   }
   window.formatNameSurname = formatNameSurname;
 
-  // GOOGLE İLE GİRİŞ BUTONU
-  const btnGoogleLogin = document.getElementById('btnGoogleLogin');
-  if (btnGoogleLogin) {
-    btnGoogleLogin.addEventListener('click', () => {
-      signInWithPopup(auth, provider).catch(error => {
+  // GOOGLE İLE GİRİŞ BUTONU (Düzeltildi)
+  const btnGoogleLoginModal = document.getElementById('btnGoogleLoginModal');
+  if (btnGoogleLoginModal) {
+    btnGoogleLoginModal.addEventListener('click', () => {
+      signInWithPopup(auth, provider).then(() => {
+        window.closeLoginOptionsModal();
+      }).catch(error => {
         if (window.showToast) window.showToast("Giriş hatası: " + error.message, "error");
       });
     });
@@ -2402,7 +2424,6 @@ function activateAnalysisMode() {
     });
   });
 
-// Zorunlu Çıkış Yapıp Giriş Ekranına Dönme Fonksiyonu
   window.forceSignOutToLogin = function() {
     window.isAdminSessionActive = false;
     signOut(auth).then(() => {
@@ -2414,7 +2435,7 @@ function activateAnalysisMode() {
     });
   };
   
-// OTURUM DİNLEYİCİ (Google ile Otomatik Girişi ve Yetkileri Yönetir)
+  // OTURUM DİNLEYİCİ
   onAuthStateChanged(auth, async (user) => {
     if (user && !window.isAdminSessionActive) {
       const userRef = doc(db, "kullanicilar", user.uid);
@@ -2483,7 +2504,6 @@ function activateAnalysisMode() {
     }
   });
 
-  // AKTİVİTE LOGLAMA YARDIMCISI
   window.logUserActivity = async function(islemTipi, detaylar) {
     if (!auth.currentUser) return;
     try {
@@ -2497,18 +2517,7 @@ function activateAnalysisMode() {
     } catch (e) { console.error("Log hatası:", e); }
   };
 
-// YÖNETİCİ GİRİŞİ BUTONUNA BASILINCA (Varsa Google Oturumunu Kapatır)
-  window.openAdminAuthModal = function() {
-    if (auth.currentUser) {
-      signOut(auth);
-    }
-    document.getElementById('adminUsernameInput').value = '';
-    document.getElementById('adminPasswordInput').value = '';
-    document.getElementById('adminAuthModal').style.display = 'flex';
-  };
-  
-  window.closeAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'none';
-
+  // YÖNETİCİ ŞİFRE DOĞRULAMA (Düzeltildi)
   window.submitAdminAuth = async function() {
     const userVal = document.getElementById('adminUsernameInput').value.trim();
     const passVal = document.getElementById('adminPasswordInput').value.trim();
@@ -2544,7 +2553,6 @@ function activateAnalysisMode() {
       const btnAdmin = document.getElementById('btnAdminPanel');
       if (btnAdmin) btnAdmin.style.display = 'inline-flex';
 
-      // Admin şifresiyle girenin Lisans Butonunu Gizle
       const btnRedeem = document.getElementById('btnRedeemLicense');
       if (btnRedeem) btnRedeem.style.display = 'none';
 
@@ -2564,16 +2572,6 @@ function activateAnalysisMode() {
     }
   };
 
-  // MANUEL SORU YÜKLEME BUTONU
-  window.manualLoadQuestions = function() {
-    if (typeof loadDataAndInit === 'function') {
-      loadDataAndInit();
-      const btnLoad = document.getElementById('btnManualLoadQuestions');
-      if (btnLoad) btnLoad.style.display = 'none';
-    }
-  };
-
-  // LİSANS REDEEM MODAL FONKSİYONLARI
   window.openRedeemModal = () => document.getElementById('redeemModal').style.display = 'flex';
   window.closeRedeemModal = () => document.getElementById('redeemModal').style.display = 'none';
 
@@ -2640,7 +2638,6 @@ function activateAnalysisMode() {
     }
   };
 
-  // ADMIN PANELİ SEKME GEÇİŞLERİ
   window.switchAdminTab = function(tabName) {
     const tabUsers = document.getElementById('adminTabUsers');
     const tabLicenses = document.getElementById('adminTabLicenses');
@@ -2714,11 +2711,9 @@ function activateAnalysisMode() {
     const queryStr = document.getElementById('adminUserSearchInput')?.value.trim().toLocaleLowerCase('tr-TR') || '';
     let list = allFetchedUsers;
 
-    // Kategori Süzgeci
     if (currentCategoryFilter === 'admin') list = list.filter(u => u.rol === 'admin');
     else if (currentCategoryFilter !== 'Tümü') list = list.filter(u => u.durum === currentCategoryFilter && u.rol !== 'admin');
 
-    // Arama Süzgeci (Ad, Soyad veya E-posta)
     if (queryStr !== '') {
       list = list.filter(u => {
         const nameMatch = (u.adSoyad || '').toLocaleLowerCase('tr-TR').includes(queryStr);
@@ -2854,7 +2849,7 @@ function activateAnalysisMode() {
     document.getElementById('adminTestDetailModal').style.display = 'none';
   };
 
-window.generateNewLicense = async function() {
+  window.generateNewLicense = async function() {
     const days = parseInt(document.getElementById('licenseDaysInput').value) || 30;
     const tier = document.getElementById('licenseTierSelect').value;
 
