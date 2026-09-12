@@ -170,7 +170,6 @@
       text-align: left;
     }
 
-    /* BÜYÜK YÖNETİCİ KONTROL MERKEZİ MODALİ */
     .admin-modal-card {
       max-width: 1250px !important;
       width: 95vw !important;
@@ -647,6 +646,7 @@
     .q-text { font-weight: bold; margin-bottom: 6pt; text-align: justify; white-space: pre-line !important; line-height: 1.4; }
     .q-options { display: flex !important; flex-direction: column !important; gap: 5pt !important; width: 100% !important; margin-top: 4pt !important; }
 
+    /* REQ 3 FIX: Şık harfi ve parantezin alt satıra düşmesini önleyen Flex yapısı */
     .q-option {
       display: flex !important;
       flex-direction: row !important;
@@ -656,6 +656,17 @@
       word-break: break-word !important;
       padding: 4px 6px;
       border-radius: 6px;
+    }
+
+    .q-opt-letter {
+      font-weight: bold;
+      white-space: nowrap !important;
+      flex-shrink: 0 !important;
+      display: inline-block;
+    }
+
+    .q-opt-text {
+      flex: 1 !important;
     }
 
     .interactive-mode .q-option { cursor: pointer; border: 1px solid transparent; }
@@ -673,7 +684,6 @@
     .q-status-badge.wrong { background-color: var(--accent-red); }
     .q-status-badge.blank { background-color: var(--accent-purple); }
 
-    /* ÜCRETSİZ KULLANICI KORUMA & FİLİGRAN KODLARI */
     .unselectable-content {
       -webkit-user-select: none !important;
       -moz-user-select: none !important;
@@ -697,7 +707,27 @@
       width: 90%;
     }
 
+    /* REQ 5 FIX: BASKI ALINIRKEN EKRAN KONTROLLERİNİ TAMAMEN GİZLE */
     @media print {
+      body {
+        background: white !important;
+        color: black !important;
+      }
+      .no-print, .action-bar, #loginScreen, .loading-overlay, .modal-overlay, #sideAnalysisPanel, .toast-container, .btn-admin-subtle {
+        display: none !important;
+        visibility: hidden !important;
+      }
+      .paper-viewport {
+        padding: 0 !important;
+        margin: 0 !important;
+        width: 100% !important;
+      }
+      .a4-sheet {
+        box-shadow: none !important;
+        margin: 0 !important;
+        padding: 10mm 5mm !important;
+        width: 100% !important;
+      }
       .print-watermark {
         display: block !important;
         position: fixed;
@@ -718,6 +748,39 @@
 </head>
 <body>
 
+  <!-- REQ 7: HATALI SORU BİLDİRİM MODALİ (KULLANICI) -->
+  <div id="reportQuestionModal" class="modal-overlay no-print" style="display: none; z-index: 28000;" onclick="if(event.target===this) closeReportQuestionModal()">
+    <div class="modal-card" style="max-width: 480px; width: 92%;">
+      <div class="modal-title" style="justify-content: space-between; color: #e11d48;">
+        <span>⚠️ Hatalı Soru Bildirimi</span>
+        <button class="btn-action" onclick="closeReportQuestionModal()">✕</button>
+      </div>
+      <div id="reportModalQuestionSummary" style="font-size: 0.85rem; color: #475569; background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 12px; font-weight: 600;"></div>
+      
+      <div class="input-control">
+        <label>Sizce Doğru Şık Hangisi? (İsteğe Bağlı):</label>
+        <select id="reportUserSuggestedOption" class="modern-input">
+          <option value="">Belirtilmedi (Emin Değilim)</option>
+          <option value="A">A Şıkkı</option>
+          <option value="B">B Şıkkı</option>
+          <option value="C">C Şıkkı</option>
+          <option value="D">D Şıkkı</option>
+          <option value="E">E Şıkkı</option>
+        </select>
+      </div>
+
+      <div class="input-control">
+        <label>Açıklama / Hata Nedeni (İsteğe Bağlı):</label>
+        <textarea id="reportUserComment" class="modern-input" rows="3" placeholder="Sorudaki imla hatası, yanlış şık veya içerik problemini açıklayabilirsiniz..."></textarea>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button class="btn-action btn-finish-test" style="flex: 1; justify-content: center;" onclick="submitQuestionReport()">🚀 Bildirimi Gönder</button>
+        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeReportQuestionModal()">İptal</button>
+      </div>
+    </div>
+  </div>
+
   <!-- YÖNETİCİ DETAYLI TEST ANALİZİ MODALİ -->
   <div id="adminTestDetailModal" class="modal-overlay no-print" style="display: none; z-index: 26000;">
     <div class="modal-card" style="max-width: 500px; width: 90%;">
@@ -734,7 +797,7 @@
     <div class="modal-card" style="max-width: 400px; width: 90%;">
       <div class="modal-title" style="color: #ef4444;">🚨 Kalıcı Silme Onayı</div>
       <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 15px;">
-        Seçilen kullanıcı(lar) veritabanından <strong>sonsuza kadar silinecektir</strong>. Lütfen onaylamak için yönetici şifrenizi giriniz:
+        Seçilen kullanıcı(lar) veritabanından <strong>sonsuza kadar silinecektir</strong>. Onaylamak için yönetici şifrenizi giriniz:
       </p>
       <input type="password" id="deleteConfirmAdminPassword" class="modern-input" placeholder="Yönetici Şifreniz" style="margin-bottom: 15px;">
       <div style="display: flex; gap: 10px;">
@@ -882,6 +945,7 @@
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin: 15px 0;">
           <div style="display: flex; gap: 8px;">
             <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar ve Yetkiler</button>
+            <button id="tabReportsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('reports')">🚨 Hatalı Soru Bildirimleri</button>
             <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
             <button id="tabSettingsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('settings')">🔒 Yönetici Şifre Ayarları</button>
           </div>
@@ -893,7 +957,6 @@
         <!-- SEKME 1: KULLANICI LİSTESİ VE TOPLU İŞLEMLER -->
         <div id="adminTabUsers" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
           
-          <!-- TOPLU İŞLEM BARİ & FİLTRELER -->
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
             <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
               <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); margin-right: 4px;">Toplu İşlem:</span>
@@ -920,7 +983,6 @@
             </div>
           </div>
 
-          <!-- KULLANICI TABLOSU -->
           <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
             <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
               <thead style="background: #f1f5f9; position: sticky; top: 0; z-index: 5;">
@@ -941,7 +1003,15 @@
           </div>
         </div>
 
-        <!-- SEKME 2: LİSANS ÜRETİCİ -->
+        <!-- REQ 7: SEKME: HATALI SORU BİLDİRİMLERİ (ADMIN) -->
+        <div id="adminTabReports" style="display: none; flex: 1; flex-direction: column; overflow: hidden;">
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 10px;">Kullanıcılar tarafından bildirilen hatalı soruları inceleyin ve geri bildirim gönderin:</p>
+          <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px;" id="adminQuestionReportsList">
+            Yükleniyor...
+          </div>
+        </div>
+
+        <!-- SEKME 3: LİSANS ÜRETİCİ -->
         <div id="adminTabLicenses" style="display: none;">
           <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">İstediğiniz gün ve üyelik türüne göre promosyon kodu oluşturun:</p>
           <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
@@ -963,7 +1033,7 @@
           </div>
         </div>
 
-        <!-- SEKME 3: ADMIN ŞİFRE DEĞİŞTİRME -->
+        <!-- SEKME 4: ADMIN ŞİFRE DEĞİŞTİRME -->
         <div id="adminTabSettings" style="display: none; max-width: 450px;">
           <h4 style="margin-bottom: 12px; color: var(--bg-dark);">🔐 Yönetici Şifresini Güncelle</h4>
           <div class="input-control">
@@ -1009,9 +1079,9 @@
       </div>
     </div>
 
-    <!-- AKTİVİTE DETAY MODALİ (GÜNLERE GÖRE GRUPLU VE GEÇİRİLEN SÜRE GÖSTERİMİ) -->
+    <!-- AKTİVİTE DETAY MODALİ -->
     <div id="activityModal" class="modal-overlay no-print" style="display: none; z-index: 25000;" onclick="if(event.target===this) closeActivityModal()">
-      <div class="modal-card" style="max-width: 700px; width: 92%; max-height: 85vh; display: flex; flex-direction: column;">
+      <div class="modal-card" style="max-width: 750px; width: 92%; max-height: 85vh; display: flex; flex-direction: column;">
         <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
           <span id="activityModalTitle">📊 Günlük Kullanıcı İstatistikleri</span>
           <div style="display: flex; gap: 8px;">
@@ -1123,6 +1193,7 @@
 
     <!-- ÖNİZLEME VE BASKI EKRANI -->
     <div id="previewScreen" class="preview-screen">
+      <!-- REQ 5: BASKI ALINIRKEN HİÇBİR ŞEKİLDE YAZDIRILMAYACAK AKSİYON BARI -->
       <div class="action-bar no-print">
         <div class="action-btn-group">
           <button class="btn-action" onclick="backToConfig()">⚙️ Ayarlara Dön</button>
@@ -1228,6 +1299,7 @@
   let isAnalysisActive = false;
   let testTimerInterval = null;
   let remainingSeconds = 0;
+  let currentReportingQuestionIndex = null;
 
   let currentKeyMode = 'none';
   let currentExpMode = 'none';
@@ -1299,13 +1371,14 @@
     return { displayName: cleanKonuName, konuKey: normStr(cleanKonuName), zorlukKey: detectedZorluk };
   }
 
+  /* REQ 3 FIX: Şık metnindeki başıboş parantezleri ve harfleri düzgün ayrıştırma */
   function extractAndCleanOptions(q) {
     if (!q || !q.secenekler) return [];
     let rawArr = Array.isArray(q.secenekler) ? q.secenekler : [q.secenekler];
     let fullText = rawArr.join(" ");
     let parts = fullText.split(/(?=\b[A-E][\)\.]\s*)/i).map(s => s.trim()).filter(Boolean);
-    if (parts.length >= 2) return parts.map(p => p.replace(/^[A-E][\)\.]\s*/i, '').trim());
-    return rawArr.map(p => String(p).replace(/^[A-E][\)\.]\s*/i, '').trim());
+    if (parts.length >= 2) return parts.map(p => p.replace(/^[A-E][\)\.]\s*/i, '').replace(/^\)\s*/, '').trim());
+    return rawArr.map(p => String(p).replace(/^[A-E][\)\.]\s*/i, '').replace(/^\)\s*/, '').trim());
   }
 
   function deduplicateQuestions(arr) {
@@ -1561,14 +1634,12 @@
     if (sheet) sheet.classList.remove('interactive-mode', 'analysis-mode');
   }
 
-  // KULLANICI SINIRLARI KONTROLÜ VE TEST OLUŞTURMA
   function proceedToExam() {
     const userTier = window.currentUserTier || 'Ücretsiz';
     const todayStr = new Date().toISOString().split('T')[0];
     const createdKey = `usage_created_${todayStr}`;
     let todayCreated = parseInt(localStorage.getItem(createdKey) || '0');
 
-    // Günlük Limitler (VIP/Premium: 500, Deneme: 100, Ücretsiz: 30)
     let maxLimit = 30;
     if (userTier === 'VIP' || userTier === 'Premium') maxLimit = 500;
     else if (userTier === 'Deneme') maxLimit = 100;
@@ -1606,7 +1677,6 @@
       currentQuestionsList = filtered.slice(0, count);
     }
 
-    // Limiti Güncelle
     localStorage.setItem(createdKey, (todayCreated + currentQuestionsList.length).toString());
 
     currentKeyMode = document.getElementById('keyModeSelect').value;
@@ -1672,7 +1742,6 @@
     else if (isAnalysisActive) { sheet.classList.add('analysis-mode'); sheet.classList.remove('interactive-mode'); }
     else { sheet.classList.remove('interactive-mode', 'analysis-mode'); }
 
-    // Ücretsiz Kullanıcı Koruması (Fare ile Seçim ve Kopyalama Engeli)
     const userTier = window.currentUserTier || 'Ücretsiz';
     if (userTier === 'Ücretsiz') {
       sheet.classList.add('unselectable-content');
@@ -1687,16 +1756,32 @@
       const correctIndices = getCorrectIndices(q);
       const correctLetter = getCorrectLetter(q);
       const userSelIdx = userAnswers[idx];
+      const meta = parseQuestionMeta(q);
 
       const qBox = document.createElement('div');
       qBox.className = 'question-block';
       const cleanOptions = extractAndCleanOptions(q);
 
       let statusBadgeHTML = '';
+      let topicBadgeHTML = '';
+      let reportBtnHTML = '';
+
+      // REQ 6: ANALİZ MODUNDA KONU BAŞLIĞI GÖSTERİMİ
       if (isAnalysisActive) {
+        topicBadgeHTML = `<div style="display:inline-block; background:#e0f2fe; color:#0369a1; font-size:0.75rem; font-weight:bold; padding:2px 8px; border-radius:4px; margin-bottom:6px;">📌 Konu: ${meta.displayName}</div><br>`;
+        
         if (userSelIdx === undefined) statusBadgeHTML = `<span class="q-status-badge blank">?</span> `;
         else if (correctIndices.includes(userSelIdx)) statusBadgeHTML = `<span class="q-status-badge correct">✓</span>`;
         else statusBadgeHTML = `<span class="q-status-badge wrong">✕</span>`;
+
+        // REQ 7: HATALI SORUYU RAPOR ET BUTONU
+        reportBtnHTML = `
+          <div style="margin-top: 8px; text-align: right;" class="no-print">
+            <button class="btn-action" style="font-size: 0.72rem; padding: 3px 8px; background: #fff1f2; color: #e11d48; border-color: #fecdd3;" onclick="openReportQuestionModal(${idx})">
+              ⚠️ Hatalı Soruyu Rapor Et
+            </button>
+          </div>
+        `;
       }
 
       let optionsHTML = '';
@@ -1709,9 +1794,11 @@
           if (userSelIdx === optIdx && !correctIndices.includes(optIdx)) optionClasses += ' wrong-choice';
         }
 
+        /* REQ 3 FIX: Şık Harfi ve Parantezi asla ayrılmayacak şekilde HTML kapsayıcısı */
         optionsHTML += `
           <div class="${optionClasses}" onclick="selectOption(${idx}, ${optIdx})">
-            <strong>${letter})</strong> <span>${optText}</span>
+            <span class="q-opt-letter">${letter})</span>
+            <span class="q-opt-text">${optText}</span>
           </div>
         `;
       });
@@ -1720,10 +1807,12 @@
       let inlineExpHTML = (!isTestActive && currentExpMode === 'inline') ? `<div class="q-inline-exp"><strong>💡 Çözüm Açıklaması:</strong>\n${getExplanation(q)}</div>` : '';
 
       qBox.innerHTML = `
+        ${topicBadgeHTML}
         <div class="q-text">${statusBadgeHTML}${qNum}. ${cleanMultiParagraphs(q.soruMetni) || 'Soru metni yok'}</div>
         <div class="q-options">${optionsHTML}</div>
         ${inlineAnswerHTML}
         ${inlineExpHTML}
+        ${reportBtnHTML}
       `;
       qContainer.appendChild(qBox);
 
@@ -1844,7 +1933,6 @@
     const modalBox = document.getElementById('modalTopicAnalysisBox');
     const btnAnalysis = document.getElementById('btnModalAnalysis');
 
-    // Ücretsiz Kullanıcıda Detaylı Analiz Gizlenir
     if (userTier === 'Ücretsiz') {
       if (modalBox) modalBox.innerHTML = `<div style="font-size:0.8rem; color:var(--accent-red); margin-top:10px;">⚠️ Ücretsiz üyelikte detaylı konu analizi kısıtlıdır.</div>`;
       if (btnAnalysis) btnAnalysis.style.display = 'none';
@@ -1907,7 +1995,7 @@
     showToast("Analiz modu aktif.", "success");
   }
 
-  // YAZDIRMA KONTROLÜ VE FİLİGRAN AYARLARI
+  /* REQ 4 FIX: PREMIUM, VIP VE ADMIN ROLLERİNDE ARKA PLAN MAİL FİLİGRANINI KALDIR */
   function triggerPrint() {
     const userTier = window.currentUserTier || 'Ücretsiz';
     const userEmail = window.currentUserEmail || 'Kullanıcı Maili';
@@ -1924,12 +2012,13 @@
       return;
     }
 
-    // Filigran Ayarlama
     const screenWatermark = document.getElementById('screenWatermark');
     const printWatermark = document.getElementById('printWatermark');
 
-    if (userTier === 'VIP' || userTier === 'Premium') {
-      printWatermark.innerText = userEmail;
+    // VIP, Premium ve Yönetici rollerinde filigran TAMAMEN KALDIRILDI
+    if (userTier === 'VIP' || userTier === 'Premium' || window.isAdminSessionActive || (window.currentUserData && window.currentUserData.rol === 'admin')) {
+      printWatermark.innerText = '';
+      printWatermark.style.display = 'none';
       screenWatermark.style.display = 'none';
     } else if (userTier === 'Deneme') {
       const text = `Nöroloji Soru Hazırlama Paneli ®\n${userEmail}`;
@@ -2056,7 +2145,6 @@
     });
   };
   
-  // OTURUM SÜRESİ TAKİBİ VEYA AKTİVİTE KAYDI
   async function saveSessionDuration() {
     if (!auth.currentUser || !sessionStartTime) return;
     const minutes = Math.max(1, Math.round((Date.now() - sessionStartTime) / 60000));
@@ -2074,7 +2162,6 @@
 
   window.addEventListener('beforeunload', () => { saveSessionDuration(); });
 
-  // OTURUM VE DENEME SÜRESİ KONTROLÜ
   onAuthStateChanged(auth, async (user) => {
     if (user && !window.isAdminSessionActive) {
       sessionStartTime = Date.now();
@@ -2089,16 +2176,22 @@
           sonGirisTarihi: serverTimestamp(),
           denemeBaslangicTarihi: serverTimestamp(),
           durum: "Deneme",
-          rol: "kullanici"
+          rol: (user.email === "kgulsen1994@gmail.com") ? "admin" : "kullanici"
         };
         await setDoc(userRef, currentUserData);
       } else {
         currentUserData = userSnap.data();
+        if (user.email === "kgulsen1994@gmail.com" && currentUserData.rol !== "admin") {
+          currentUserData.rol = "admin";
+          await updateDoc(userRef, { rol: "admin" });
+        }
         await updateDoc(userRef, { 
           sonGirisTarihi: serverTimestamp(),
           adSoyad: user.displayName || currentUserData.adSoyad || "Belirtilmedi"
         });
       }
+
+      window.currentUserData = currentUserData;
 
       if (currentUserData.durum === 'Engellendi') {
         signOut(auth);
@@ -2106,7 +2199,6 @@
         return;
       }
 
-      // Deneme Süresi (3 Gün) Kontrolü
       if (currentUserData.durum === 'Deneme') {
         const createdDate = currentUserData.denemeBaslangicTarihi?.toDate ? currentUserData.denemeBaslangicTarihi.toDate() : new Date();
         const diffDays = (new Date() - createdDate) / (1000 * 60 * 60 * 24);
@@ -2135,7 +2227,6 @@
 
       const tierBadge = document.getElementById('userTierBadge');
       if (tierBadge) {
-        // Deneme kullanıcısının ekranında Premium yazsın kuralı
         const displayStatus = (currentUserData.durum === 'Deneme') ? 'Premium' : currentUserData.durum;
         const st = isAdm ? '👑 Admin' : displayStatus;
         tierBadge.textContent = st;
@@ -2148,12 +2239,29 @@
       document.getElementById('mainApp').style.display = 'block';
 
       if (typeof masterPool !== 'undefined' && masterPool.length === 0) window.loadDataAndInit();
+
+      // REQ 7: KULLANICININ YANITLANMIŞ BİLDİRİMLERİNİ KONTROL ET
+      checkUserReportNotifications(user.uid);
+
     } else if (!window.isAdminSessionActive) {
       currentUserData = null;
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('mainApp').style.display = 'none';
     }
   });
+
+  // REQ 7: KULLANICIYA YÖNETİCİ GERİ BİLDİRİM BİLDİRİMİ
+  async function checkUserReportNotifications(userUid) {
+    try {
+      const q = query(collection(db, "hatali_sorular"), where("userId", "==", userUid), where("status", "==", "yanitlandi"), where("userNotified", "==", false));
+      const snap = await getDocs(q);
+      snap.forEach(async (docSnap) => {
+        const data = docSnap.data();
+        alert(`🚨 HATALI SORU BİLDİRİMİNİZE YÖNETİCİ CEVAP VERDİ!\n\nSoru: "${data.questionText.substring(0, 50)}..."\n\nYönetici Açıklaması:\n"${data.adminReply}"`);
+        await updateDoc(doc(db, "hatali_sorular", docSnap.id), { userNotified: true });
+      });
+    } catch(e) {}
+  }
 
   window.logUserActivity = async function(islemTipi, detaylar) {
     if (!auth.currentUser) return;
@@ -2168,7 +2276,6 @@
     } catch (e) {}
   };
 
-  // ADMIN GİRİŞİ VE ŞİFRE DOĞRULAMA
   window.submitAdminAuth = async function() {
     const userVal = document.getElementById('adminUsernameInput').value.trim();
     const passVal = document.getElementById('adminPasswordInput').value.trim();
@@ -2250,15 +2357,20 @@
     } catch (err) { showToast("Aktivasyon hatası: " + err.message, "error"); }
   };
 
-  // ADMIN PANEL SEKMELERİ
   window.switchAdminTab = function(tabName) {
     document.getElementById('adminTabUsers').style.display = tabName === 'users' ? 'flex' : 'none';
+    document.getElementById('adminTabReports').style.display = tabName === 'reports' ? 'flex' : 'none';
     document.getElementById('adminTabLicenses').style.display = tabName === 'licenses' ? 'block' : 'none';
     document.getElementById('adminTabSettings').style.display = tabName === 'settings' ? 'block' : 'none';
+    
     document.getElementById('tabUsersBtn').className = tabName === 'users' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
+    document.getElementById('tabReportsBtn').className = tabName === 'reports' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
     document.getElementById('tabLicensesBtn').className = tabName === 'licenses' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
     document.getElementById('tabSettingsBtn').className = tabName === 'settings' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
+    
     document.getElementById('adminSearchBoxWrapper').style.display = tabName === 'users' ? 'block' : 'none';
+
+    if (tabName === 'reports') loadAdminQuestionReports();
   };
 
   window.openAdminModal = async function() {
@@ -2287,13 +2399,23 @@
 
   window.filterAdminUsersSearch = () => renderUserRows();
 
+  /* REQ 2 FIX: GMAIL / ADMIN KULLANICISINI HER ZAMAN EN ÜSTTE TUT VE AKTİVİTELERİNİ GÖSTER */
   function renderUserRows() {
     const tbody = document.getElementById('adminUserTableBody');
     tbody.innerHTML = '';
     const queryStr = document.getElementById('adminUserSearchInput')?.value.trim().toLocaleLowerCase('tr-TR') || '';
-    let list = allFetchedUsers;
+    let list = [...allFetchedUsers];
 
-    if (currentCategoryFilter === 'admin') list = list.filter(u => u.rol === 'admin');
+    // ADMIN KULLANICISINI EN ÜSTE SIRALA
+    list.sort((a, b) => {
+      const isAAdmin = (a.rol === 'admin' || a.email === 'kgulsen1994@gmail.com');
+      const isBAdmin = (b.rol === 'admin' || b.email === 'kgulsen1994@gmail.com');
+      if (isAAdmin && !isBAdmin) return -1;
+      if (!isAAdmin && isBAdmin) return 1;
+      return 0;
+    });
+
+    if (currentCategoryFilter === 'admin') list = list.filter(u => u.rol === 'admin' || u.email === 'kgulsen1994@gmail.com');
     else if (currentCategoryFilter !== 'Tümü') list = list.filter(u => u.durum === currentCategoryFilter && u.rol !== 'admin');
 
     if (queryStr !== '') {
@@ -2306,16 +2428,17 @@
     }
 
     list.forEach(u => {
-      const isRoleAdmin = u.rol === 'admin';
+      const isRoleAdmin = (u.rol === 'admin' || u.email === 'kgulsen1994@gmail.com');
       const statusText = isRoleAdmin ? '👑 Yönetici' : (u.durum || 'Ücretsiz');
       const formattedName = formatNameSurname(u.adSoyad || u.email);
 
-      let actionTdHTML = '';
-      if (isRoleAdmin) {
-        actionTdHTML = `<span style="font-size: 0.75rem; color: #8b5cf6; font-weight: bold;">Korumalı Admin</span>`;
-      } else {
-        actionTdHTML = `
-          <button class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;" onclick="viewUserActivities('${u.id}', '${u.email}')">👁️ Aktivite</button>
+      // REQ 2 FIX: Admin için de Aktivite butonunu ekledik
+      let actionTdHTML = `
+        <button class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;" onclick="viewUserActivities('${u.id}', '${u.email}')">👁️ Aktivite</button>
+      `;
+
+      if (!isRoleAdmin) {
+        actionTdHTML += `
           <select class="modern-input" style="padding: 2px 6px; font-size: 0.75rem; width: auto;" onchange="changeUserStatus('${u.id}', this.value)">
             <option value="" disabled selected>Aksiyon</option>
             <option value="VIP">👑 VIP</option>
@@ -2326,10 +2449,14 @@
           </select>
           <button class="btn-action btn-finish-test" style="font-size: 0.75rem; padding: 4px 8px;" onclick="promptDeleteUser('${u.id}')">🗑️ Sil</button>
         `;
+      } else {
+        actionTdHTML += `<span style="font-size: 0.75rem; color: #8b5cf6; font-weight: bold; margin-left:5px;">Korumalı Admin</span>`;
       }
 
       const row = document.createElement('tr');
       row.style.borderBottom = '1px solid #e2e8f0';
+      if (isRoleAdmin) row.style.background = '#fcf5ff'; // Yönetici için hafif mor kaplama
+
       row.innerHTML = `
         <td style="padding: 10px; text-align: center;">
           ${!isRoleAdmin ? `<input type="checkbox" class="user-row-checkbox" value="${u.id}">` : ''}
@@ -2347,7 +2474,6 @@
     document.querySelectorAll('.user-row-checkbox').forEach(cb => cb.checked = masterCb.checked);
   };
 
-  // TOPLU YETKİ VERME VEYA SİLME
   window.applyBulkAction = async function() {
     const action = document.getElementById('bulkActionSelect').value;
     const selectedCbs = Array.from(document.querySelectorAll('.user-row-checkbox:checked')).map(cb => cb.value);
@@ -2365,7 +2491,6 @@
     }
   };
 
-  // KALICI KULLANICI SİLME (ŞİFRE ONAYLI)
   window.promptDeleteUser = function(uid) {
     userToDeleteTarget = [uid];
     document.getElementById('deleteConfirmAdminPassword').value = '';
@@ -2389,7 +2514,7 @@
     await fetchAndRenderUsers(currentCategoryFilter);
   };
 
-  // AKTİVİTE TAKİBİ: GÜNLERE GÖRE GRUPLAMA VE TEMİZLEME
+  /* REQ 1 FIX: AKTİVİTE LOGLARINDA KARIŞIK JSON YERİNE TÜRKÇE VE DÜZGÜN FORMAT GÖSTERİMİ */
   window.viewUserActivities = async function(uid, email) {
     currentInspectedUserUid = uid;
     document.getElementById('activityModal').style.display = 'flex';
@@ -2406,7 +2531,6 @@
         return;
       }
 
-      // Günlere Göre Gruplandır
       let grouped = {};
       snap.forEach(docSnap => {
         const data = docSnap.data();
@@ -2417,7 +2541,6 @@
 
       let html = '';
       for (const [dateKey, logs] of Object.entries(grouped)) {
-        // Toplam Geçirilen Dakika Hesabı
         let totalMins = 0;
         logs.forEach(l => { if (l.sureDakika) totalMins += l.sureDakika; });
 
@@ -2432,9 +2555,44 @@
 
         logs.forEach(l => {
           const timeStr = l.zaman?.toDate ? l.zaman.toDate().toLocaleTimeString('tr-TR') : '';
+          let renderedDetail = l.detay;
+
+          // JSON İçeriğini Türkçe Kart Olarak Ayrıştır
+          if (typeof l.detay === 'string' && l.detay.trim().startsWith('{')) {
+            try {
+              const parsed = JSON.parse(l.detay);
+              const cardId = `log_detail_${l.docId}`;
+              
+              let topicBreakdownHTML = '';
+              if (parsed.topicStats) {
+                for (const [tName, tData] of Object.entries(parsed.topicStats)) {
+                  topicBreakdownHTML += `
+                    <div style="font-size: 0.78rem; color: #334155; margin-top: 3px; padding: 2px 6px; background: #ffffff; border-radius: 4px; border: 1px solid #e2e8f0;">
+                      <strong>${tName}:</strong> Toplam ${tData.total} Soru ➔ 
+                      <span style="color:#10b981;">${tData.correct} Doğru</span>, 
+                      <span style="color:#ef4444;">${tData.wrong} Yanlış</span>, 
+                      <span style="color:#8b5cf6;">${tData.blank} Boş</span>
+                    </div>
+                  `;
+                }
+              }
+
+              renderedDetail = `
+                <span>${parsed.total} Soruluk Test Tamamlandı</span>
+                <button class="btn-action" style="padding:2px 8px; font-size:0.72rem; display:inline-flex; margin-left:8px;" onclick="toggleLogDetailCard('${cardId}')">📊 Detay Göster</button>
+                <div id="${cardId}" style="display:none; margin-top:8px; background:#eff6ff; padding:10px; border-radius:6px; border:1px solid #bfdbfe;">
+                  <div style="font-weight:bold; color:#1e40af; margin-bottom:4px;">Genel İstatistik:</div>
+                  <div>✅ ${parsed.correct} Doğru | ❌ ${parsed.wrong} Yanlış | ❓ ${parsed.blank} Boş</div>
+                  <div style="font-weight:bold; color:#1e40af; margin-top:8px; margin-bottom:4px;">Konu Detayları:</div>
+                  ${topicBreakdownHTML}
+                </div>
+              `;
+            } catch (err) {}
+          }
+
           html += `
-            <li style="padding: 4px 0; border-bottom: 1px dashed #e2e8f0; font-size: 0.82rem;">
-              <strong>${l.islem}:</strong> ${l.detay} <span style="color:#94a3b8; font-size:0.75rem;">(${timeStr})</span>
+            <li style="padding: 6px 0; border-bottom: 1px dashed #e2e8f0; font-size: 0.85rem;">
+              <strong>${l.islem}:</strong> ${renderedDetail} <span style="color:#94a3b8; font-size:0.75rem;">(${timeStr})</span>
             </li>
           `;
         });
@@ -2446,7 +2604,11 @@
     } catch (e) { logBox.innerHTML = `<span style="color:red;">Hata: ${e.message}</span>`; }
   };
 
-  // TEK GÜNÜ TEMİZLE
+  window.toggleLogDetailCard = function(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  };
+
   window.clearDayActivities = async function(dateStr) {
     if (!currentInspectedUserUid) return;
     const q = query(collection(db, "kullanicilar", currentInspectedUserUid, "aktiviteler"), where("tarihStr", "==", dateStr));
@@ -2456,7 +2618,6 @@
     window.viewUserActivities(currentInspectedUserUid, '');
   };
 
-  // TÜM AKTİVİTELERİ TEMİZLE
   window.clearAllActivities = async function() {
     if (!currentInspectedUserUid) return;
     const snap = await getDocs(collection(db, "kullanicilar", currentInspectedUserUid, "aktiviteler"));
@@ -2467,7 +2628,127 @@
 
   window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
 
-  // LİSANS KODU ÜRETME
+  // REQ 7: HATALI SORU BİLDİRİMİ SİSTEMİ (KULLANICI)
+  window.openReportQuestionModal = function(index) {
+    currentReportingQuestionIndex = index;
+    const q = currentQuestionsList[index];
+    document.getElementById('reportModalQuestionSummary').innerText = `Soru ${index + 1}: ${q.soruMetni.substring(0, 90)}...`;
+    document.getElementById('reportUserSuggestedOption').value = "";
+    document.getElementById('reportUserComment').value = "";
+    document.getElementById('reportQuestionModal').style.display = 'flex';
+  };
+
+  window.closeReportQuestionModal = function() {
+    document.getElementById('reportQuestionModal').style.display = 'none';
+  };
+
+  window.submitQuestionReport = async function() {
+    if (currentReportingQuestionIndex === null) return;
+    const q = currentQuestionsList[currentReportingQuestionIndex];
+    const suggestedOpt = document.getElementById('reportUserSuggestedOption').value;
+    const comment = document.getElementById('reportUserComment').value.trim();
+    const meta = parseQuestionMeta(q);
+
+    try {
+      await addDoc(collection(db, "hatali_sorular"), {
+        userId: auth.currentUser ? auth.currentUser.uid : "anonim",
+        userEmail: auth.currentUser ? auth.currentUser.email : "Anonim",
+        userName: auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Anonim",
+        questionText: q.soruMetni,
+        questionTopic: meta.displayName,
+        correctLetter: getCorrectLetter(q),
+        userSuggestedOption: suggestedOpt,
+        userComment: comment,
+        status: "bekliyor", // bekliyor, yanitlandi
+        adminReply: "",
+        userNotified: false,
+        createdAt: serverTimestamp()
+      });
+
+      window.closeReportQuestionModal();
+      showToast("Geri bildiriminiz yöneticiye ulaştı, değerlendirme başlatıldı.", "success");
+    } catch(err) {
+      showToast("Bildirim gönderilirken hata oluştu: " + err.message, "error");
+    }
+  };
+
+  // REQ 7: YÖNETİCİ PANELİ HATALI SORU BİLDİRİMLERİ LİSTELEME VE YANITLAMA
+  async function loadAdminQuestionReports() {
+    const box = document.getElementById('adminQuestionReportsList');
+    box.innerHTML = 'Bildirimler yükleniyor...';
+
+    try {
+      const q = query(collection(db, "hatali_sorular"), orderBy("createdAt", "desc"));
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        box.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">Henüz hatalı soru bildirimi yapılmamış.</p>';
+        return;
+      }
+
+      let html = '';
+      snap.forEach(docSnap => {
+        const d = docSnap.data();
+        const dateStr = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('tr-TR') : '';
+        const isAnswered = d.status === 'yanitlandi';
+
+        html += `
+          <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid ${isAnswered ? '#10b981' : '#ef4444'}; border-radius:8px; padding:12px; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <span style="font-weight:bold; color:#0f172a;">👤 ${d.userName} (${d.userEmail})</span>
+              <span style="font-size:0.75rem; color:#64748b;">${dateStr}</span>
+            </div>
+            <div style="font-size:0.85rem; color:#334155; margin-bottom:6px; background:#f8fafc; padding:8px; border-radius:6px;">
+              <strong>Soru [${d.questionTopic}]:</strong> ${d.questionText}<br>
+              <span style="color:#2563eb;">Sistemdeki Doğru Cevap: ${d.correctLetter}</span>
+            </div>
+            <div style="font-size:0.83rem; color:#475569; margin-bottom:8px;">
+              👉 <strong>Kullanıcının Önerdiği Şık:</strong> ${d.userSuggestedOption || 'Belirtilmedi'}<br>
+              📝 <strong>Kullanıcı Açıklaması:</strong> ${d.userComment || 'Açıklama yazılmadı.'}
+            </div>
+            
+            <div style="border-top:1px dashed #cbd5e1; padding-top:8px; margin-top:8px;">
+              ${isAnswered ? `
+                <div style="font-size:0.82rem; color:#047857; background:#d1fae5; padding:8px; border-radius:6px;">
+                  <strong>Yönetici Yanıtı:</strong> ${d.adminReply}
+                </div>
+              ` : `
+                <div style="display:flex; gap:8px;">
+                  <input type="text" id="adminReplyInput_${docSnap.id}" class="modern-input" style="padding:4px 8px; font-size:0.8rem;" placeholder="Kullanıcıya açıklama/yanıt yazın...">
+                  <button class="btn-action btn-toggle-on" style="padding:4px 12px; font-size:0.8rem;" onclick="replyToQuestionReport('${docSnap.id}')">Yanıtla & Gönder</button>
+                </div>
+              `}
+            </div>
+          </div>
+        `;
+      });
+
+      box.innerHTML = html;
+    } catch(err) {
+      box.innerHTML = `<span style="color:red;">Hata: ${err.message}</span>`;
+    }
+  }
+
+  window.replyToQuestionReport = async function(docId) {
+    const input = document.getElementById(`adminReplyInput_${docId}`);
+    const replyText = input.value.trim();
+    if (!replyText) { showToast("Lütfen bir yanıt yazınız.", "warning"); return; }
+
+    try {
+      await updateDoc(doc(db, "hatali_sorular", docId), {
+        adminReply: replyText,
+        status: "yanitlandi",
+        adminRepliedAt: serverTimestamp(),
+        userNotified: false
+      });
+
+      showToast("Yanıt kullanıcıya gönderildi.", "success");
+      loadAdminQuestionReports();
+    } catch(err) {
+      showToast("Yanıt gönderilirken hata oluştu: " + err.message, "error");
+    }
+  };
+
   window.generateNewLicense = async function() {
     const days = parseInt(document.getElementById('licenseDaysInput').value) || 30;
     const tier = document.getElementById('licenseTierSelect').value;
@@ -2487,7 +2768,6 @@
     showToast(`${days} Günlük ${tier} kodu üretildi.`, "success");
   };
 
-  // YÖNETİCİ ŞİFRE DEĞİŞTİRME
   window.changeAdminPassword = function() {
     const oldP = document.getElementById('adminOldPassInput').value.trim();
     const newP = document.getElementById('adminNewPassInput').value.trim();
