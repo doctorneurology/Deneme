@@ -1048,6 +1048,26 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     </div>
   </div>
 
+<!-- KULLANICI UYARI BİLDİRİM MODALİ (Örnek referans yer) -->
+  <div id="userWarningNoticeModal" class="modal-overlay no-print" style="display: none; z-index: 30000;">
+    ...
+  </div>
+
+  <!-- YENİ EKLENECEK DUYURU MODALI BURAYA -->
+  <div id="systemAnnouncementModal" class="modal-overlay no-print" style="display: none; z-index: 29500;">
+    <div class="modal-card" style="max-width: 500px; width: 90%; border-top: 5px solid #8b5cf6;">
+      <div class="modal-title" id="announcementModalTitle" style="color: #6b21a8;">📢 Sistem Duyurusu</div>
+      <div id="announcementModalContent" style="font-size: 0.9rem; color: #334155; margin-bottom: 18px; line-height: 1.5; background: #f8fafc; padding: 12px; border-radius: 8px; border: 1px solid #e2e8f0; white-space: pre-line;"></div>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <label style="font-size: 0.82rem; color: #64748b; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+          <input type="checkbox" id="chkDoNotShowToday"> Bu duyuruyu bugün bir daha gösterme
+        </label>
+        <button class="btn-action btn-toggle-on" style="padding: 6px 16px;" onclick="closeAnnouncementModal()">Anladım ve Kapat</button>
+      </div>
+    </div>
+  </div>
+  
   <!-- BİLDİRİM SİLME UYARI MODALİ (ADMIN) -->
   <div id="adminConfirmDeleteReportsModal" class="modal-overlay no-print" style="display: none; z-index: 29500;">
     <div class="modal-card" style="max-width: 420px; width: 90%;">
@@ -1433,6 +1453,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
             <button id="tabUploadedQuestionsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('uploadedQuestions')">📥 Kullanıcıların Yüklediği Sorular</button>
             <button id="tabChatBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('chat')">💬 Kullanıcı Mesajları <span id="adminChatUnreadBadge" style="display:none;" class="unread-badge-dot"></span></button>
             <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
+            <button id="tabAnnounceBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('announcements')">📢 Duyuru / Bilgi Gönder</button>
             <button id="tabSettingsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('settings')">🔒 Yönetici Şifre Ayarları</button>
           </div>
           <div style="width: 280px;" id="adminSearchBoxWrapper">
@@ -1571,6 +1592,42 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           </div>
         </div>
 
+
+        <!-- YENİ EKLENECEK DUYURU SEKME İÇERİĞİ BURAYA -->
+        <div id="adminTabAnnouncements" style="display: none; flex-direction: column; gap: 15px; max-width: 600px;">
+          <h4 style="color: var(--bg-dark);">📢 Kullanıcı Ekranlarına Duyuru / Bildirim Gönder</h4>
+          
+          <div class="input-control">
+            <label>Hedef Kullanıcı:</label>
+            <select id="announceTargetSelect" class="modern-input">
+              <option value="ALL" selected>🌐 Tüm Kullanıcılar</option>
+            </select>
+          </div>
+
+          <div class="input-control">
+            <label>Duyuru Başlığı:</label>
+            <input type="text" id="announceTitleInput" class="modern-input" placeholder="Örn: Sistem Bakımı / Yeni Güncelleme">
+          </div>
+
+          <div class="input-control">
+            <label>Duyuru Metni:</label>
+            <textarea id="announceTextInput" class="modern-input" rows="4" placeholder="Kullanıcıların ekranında görünecek mesajı yazın..."></textarea>
+          </div>
+
+          <div class="input-control">
+            <label>Gösterim Süresi (Ekranda Kaç Gün Kalacak?):</label>
+            <select id="announceDurationSelect" class="modern-input">
+              <option value="0">⚡ Tek Seferlik (İlk Girişte Görünür ve Kapanır)</option>
+              <option value="1" selected>📅 1 Gün Boyunca</option>
+              <option value="3">📅 3 Gün Boyunca</option>
+              <option value="7">📅 7 Gün Boyunca</option>
+              <option value="30">📅 30 Gün Boyunca</option>
+            </select>
+          </div>
+
+          <button class="btn-action btn-toggle-on" style="padding: 10px;" onclick="sendSystemAnnouncement()">🚀 Duyuruyu Yayınla</button>
+        </div>
+        
         <!-- SEKME 5: ADMIN ŞİFRE VE KULLANICI ADI AYARLARI -->
         <div id="adminTabSettings" style="display: none; max-width: 450px;">
           <h4 style="margin-bottom: 12px; color: var(--bg-dark);">🔐 Yönetici Kullanıcı Adı & Şifre Güncelle</h4>
@@ -3024,6 +3081,37 @@ window.acknowledgeUserWarning = async function() {
     }
   };
 
+function listenIncomingAdminNotifications(uid) {
+  // 1. Canlı Destek Mesaj Bildirimleri
+  const chatQ = query(collection(db, "sohbetler", uid, "mesajlar"));
+  onSnapshot(chatQ, (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === "added") {
+        const m = change.doc.data();
+        if ((m.senderRole === "admin" || m.senderUid === "admin") && m.zaman) {
+          const msgTime = m.zaman.toDate ? m.zaman.toDate().getTime() : Date.now();
+          if (Date.now() - msgTime < 10000) { // Son 10 saniye içinde geldiyse
+            showToast("💬 Yöneticiden yeni bir canlı destek mesajınız var!", "info");
+          }
+        }
+      }
+    });
+  });
+
+  // 2. Hatalı Soru Bildirimi Yanıtlandı Bildirimleri
+  const reportQ = query(collection(db, "hatali_sorular"), where("userId", "==", uid));
+  onSnapshot(reportQ, (snapshot) => {
+    snapshot.docChanges().forEach((change) => {
+      if (change.type === "modified") {
+        const d = change.doc.data();
+        if (d.status === "yanitlandi") {
+          showToast("📋 Hatalı soru bildiriminize yöneticiden yanıt geldi!", "success");
+        }
+      }
+    });
+  });
+}
+  
   onAuthStateChanged(auth, async (user) => {
     if (user && !window.isAdminSessionActive) {
       sessionStartTime = Date.now();
@@ -3313,6 +3401,9 @@ window.uploadQuestionFile = async function() {
     if (uCb) uCb.checked = false;
     document.querySelectorAll('.user-row-checkbox').forEach(cb => cb.checked = false);
 
+// switchAdminTab fonksiyonu içine şunu ekleyin:
+if (tabName === 'announcements') loadAnnouncementUsersList();
+    
     const rCb = document.getElementById('selectAllReportsCheckbox');
     if (rCb) rCb.checked = false;
     document.querySelectorAll('.report-row-checkbox').forEach(cb => cb.checked = false);
@@ -3361,6 +3452,23 @@ if (tabName === 'users' || tabName === 'reports' || tabName === 'chat') {
     await fetchAndRenderUsers('Tümü');
   };
 
+
+async function loadAnnouncementUsersList() {
+  const select = document.getElementById('announceTargetSelect');
+  if (!select) return;
+  select.innerHTML = '<option value="ALL" selected>🌐 Tüm Kullanıcılar</option>';
+  try {
+    const snap = await getDocs(collection(db, "kullanicilar"));
+    snap.forEach(docSnap => {
+      const u = docSnap.data();
+      const opt = document.createElement('option');
+      opt.value = docSnap.id;
+      opt.textContent = `👤 ${u.adSoyad || u.email} (${u.email})`;
+      select.appendChild(opt);
+    });
+  } catch(e) {}
+}
+  
   async function fetchAndRenderUsers(filterCategory) {
     currentCategoryFilter = filterCategory;
     const tbody = document.getElementById('adminUserTableBody');
