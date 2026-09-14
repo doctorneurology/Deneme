@@ -2812,6 +2812,116 @@ if (window.checkDailyLimitAndIncrement) {
   document.addEventListener('DOMContentLoaded', () => {
     initDragAndDrop();
   });
+// ... diğer fonksiyonların olduğu yerin en altı ...
+
+let currentAnnouncementId = null;
+
+window.sendSystemAnnouncement = async function() {
+  const target = document.getElementById('announceTargetSelect').value;
+  const title = document.getElementById('announceTitleInput').value.trim();
+  const text = document.getElementById('announceTextInput').value.trim();
+  const durationDays = parseInt(document.getElementById('announceDurationSelect').value);
+
+  if (!title || !text) {
+    showToast("Lütfen duyuru başlığı ve metnini doldurunuz.", "warning");
+    return;
+  }
+
+  try {
+    await addDoc(collection(db, "sistem_duyurulari"), {
+      targetUserUid: target,
+      title: title,
+      text: text,
+      durationDays: durationDays,
+      createdAt: serverTimestamp()
+    });
+
+    showToast("Duyuru başarıyla yayınlandı.", "success");
+    document.getElementById('announceTitleInput').value = '';
+    document.getElementById('announceTextInput').value = '';
+  } catch (err) {
+    showToast("Duyuru yayınlanırken hata: " + err.message, "error");
+  }
+};
+
+async function checkSystemAnnouncements(userUid) {
+  const todayStr = new Date().toISOString().split('T')[0];
+  const hiddenTodayKey = `hide_announce_date_${userUid}`;
+
+  if (localStorage.getItem(hiddenTodayKey) === todayStr) return;
+
+  try {
+    const snap = await getDocs(collection(db, "sistem_duyurulari"));
+    if (snap.empty) return;
+
+    let validAnnouncements = [];
+
+    snap.forEach(docSnap => {
+      const data = docSnap.data();
+      const annId = docSnap.id;
+
+      if (data.targetUserUid !== 'ALL' && data.targetUserUid !== userUid) return;
+      if (data.durationDays === 0 && localStorage.getItem(`closed_ann_${annId}`)) return;
+
+      const createdDate = data.createdAt?.toDate ? data.createdAt.toDate() : new Date();
+      if (data.durationDays > 0) {
+        const diffDays = (new Date() - createdDate) / (1000 * 60 * 60 * 24);
+        if (diffDays > data.durationDays) return;
+      }
+
+      validAnnouncements.push({ id: annId, ...data });
+    });
+
+    if (validAnnouncements.length > 0) {
+      validAnnouncements.sort((a, b) => (b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0) - (a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0));
+      const activeAnn = validAnnouncements[0];
+
+      currentAnnouncementId = activeAnn.id;
+      document.getElementById('announcementModalTitle').innerText = `📢 ${activeAnn.title}`;
+      document.getElementById('announcementModalContent').innerText = activeAnn.text;
+      document.getElementById('chkDoNotShowToday').checked = false;
+      document.getElementById('systemAnnouncementModal').style.display = 'flex';
+    }
+  } catch (e) {
+    console.error("Duyuru çekme hatası:", e);
+  }
+}
+
+window.closeAnnouncementModal = function() {
+  const userUid = auth.currentUser ? auth.currentUser.uid : 'guest';
+  const chkToday = document.getElementById('chkDoNotShowToday').checked;
+
+  if (chkToday) {
+    const todayStr = new Date().toISOString().split('T')[0];
+    localStorage.setItem(`hide_announce_date_${userUid}`, todayStr);
+  }
+
+  if (currentAnnouncementId) {
+    localStorage.setItem(`closed_ann_${currentAnnouncementId}`, 'true');
+  }
+
+  document.getElementById('systemAnnouncementModal').style.display = 'none';
+};
+
+// YENİ EKLENEN FONKSİYON: loadAnnouncementUsersList
+async function loadAnnouncementUsersList() {
+  const select = document.getElementById('announceTargetSelect');
+  if (!select) return;
+  select.innerHTML = '<option value="ALL" selected>🌐 Tüm Kullanıcılar</option>';
+  try {
+    const snap = await getDocs(collection(db, "kullanicilar"));
+    snap.forEach(docSnap => {
+      const u = docSnap.data();
+      const opt = document.createElement('option');
+      opt.value = docSnap.id;
+      opt.textContent = `👤 ${u.adSoyad || u.email} (${u.email})`;
+      select.appendChild(opt);
+    });
+  } catch(e) {}
+}
+
+</script> <!-- Modül script etiketinin bittiği yer -->
+  
 </script>
 
 <!-- FIREBASE & GELİŞTİRİLMİŞ MODÜL KODLARI -->
