@@ -1410,12 +1410,12 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           </button>
         </div>
         
-        <!-- YÖNETİCİ SEKMELERİ -->
+        <!-- YÖNETİCİ SEKMELERİ (MADDE 1: BUTON İSMİ GÜNCELLENDİ) -->
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin: 15px 0;">
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
             <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar ve Yetkiler</button>
             <button id="tabReportsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('reports')">🚨 Hatalı Soru Bildirimleri</button>
-            <button id="tabUploadedQuestionsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('uploadedQuestions')">📥 Kullanıcı Soruları</button>
+            <button id="tabUploadedQuestionsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('uploadedQuestions')">📥 Kullanıcıların Yüklediği Sorular</button>
             <button id="tabChatBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('chat')">💬 Kullanıcı Mesajları <span id="adminChatUnreadBadge" style="display:none;" class="unread-badge-dot"></span></button>
             <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
             <button id="tabSettingsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('settings')">🔒 Yönetici Şifre Ayarları</button>
@@ -1425,7 +1425,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           </div>
         </div>
 
-        <!-- SEKME 1: KULLANICI LİSTESİ -->
+        <!-- SEKME 1: KULLANICI LİSTESİ (MADDE 3: UYARI ALANLAR & SIRALAMA SEÇENEĞİ) -->
         <div id="adminTabUsers" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
           <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
             <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
@@ -1442,14 +1442,25 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
               <button class="btn-action btn-toggle-on" style="padding: 4px 10px; font-size: 0.8rem;" onclick="applyBulkAction()">Uygula</button>
             </div>
 
-            <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-              <button class="btn-action filter-btn btn-toggle-on" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Tümü', this)">Tümü</button>
-              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('admin', this)">👑 Yönetici</button>
-              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('VIP', this)">👑 VIP</button>
-              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Premium', this)">⭐ Premium</button>
-              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Deneme', this)">⏳ Deneme</button>
-              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Ücretsiz', this)">🆓 Ücretsiz</button>
-              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Engellendi', this)">🚫 Engelli</button>
+            <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+              <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted);">Sıralama:</span>
+              <select id="adminUserSortSelect" class="modern-input" style="padding: 4px 8px; font-size: 0.8rem; width: auto;" onchange="renderUserRows()">
+                <option value="stars_desc" selected>⭐ Yıldız (Çoktan Aza)</option>
+                <option value="name_asc">🔤 Ad Soyad (A-Z)</option>
+                <option value="role_desc">👑 Yetki / Rol Sırası</option>
+              </select>
+
+              <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-left: 6px;">
+                <button class="btn-action filter-btn btn-toggle-on" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Tümü', this)">Tümü</button>
+                <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('admin', this)">👑 Yönetici</button>
+                <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('VIP', this)">👑 VIP</button>
+                <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Premium', this)">⭐ Premium</button>
+                <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Deneme', this)">⏳ Deneme</button>
+                <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Ücretsiz', this)">🆓 Ücretsiz</button>
+                <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Engellendi', this)">🚫 Engelli</button>
+                <!-- MADDE 3 YENİLİK: UYARI ALAN KULLANICILARI FİLTRELEME BUTONU -->
+                <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem; background: #fef3c7; color: #b45309; border-color: #fde68a;" onclick="filterAdminUsers('UyarıAlanlar', this)">⚠️ Uyarı Alanlar</button>
+              </div>
             </div>
           </div>
 
@@ -1629,7 +1640,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
               <span class="user-name-target">...</span>
               <span id="userTierBadge" style="padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0; color: #475569;">Ücretsiz</span>
               <button class="btn-logout-sm btn-logout-action">Çıkış</button>
-              <!-- MADDE 3 YENİLİK: UYARI ALAN KULLANICININ YILDIZLARI -->
               <span id="mainUserWarningStars" style="margin-left: 4px; font-size: 0.95rem; color: #f59e0b;"></span>
             </div>
           </div>
@@ -1643,8 +1653,9 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
               🔑 Lisans Kodu Kullan
             </button>
 
+            <!-- MADDE 2: BUTON METNİ SADELEŞTİRİLDİ -->
             <button id="btnUploadUserQuestion" class="btn-action" style="font-size: 0.78rem; padding: 6px 12px; background: #2563eb; color: white; border-color: #1d4ed8;" onclick="openUserQuestionUploadModal()">
-              📤 Soru Gönder (Doc/Docx)
+              📤 Soru Gönder
             </button>
 
             <button id="btnCheckMyReports" class="btn-action" style="font-size: 0.78rem; padding: 6px 12px; background: #0284c7; color: white; border-color: #0369a1;" onclick="openUserReportsModal()">
@@ -2851,7 +2862,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     return false;
   }
 
-  // MADDE 3 YENİLİK: UYARI SAYISINA GÖRE YILDIZLARI GÜNCELLE
   function updateMainUserStarsDisplay(warnCount) {
     const starsSpan = document.getElementById('mainUserWarningStars');
     if (starsSpan) {
@@ -3186,35 +3196,60 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     } catch (e) { tbody.innerHTML = `<tr><td colspan="6" style="color:red; padding:10px;">Hata: ${e.message}</td></tr>`; }
   }
 
+  // MADDE 3 YENİLİK: UYARI ALANLAR FİLTRESİ SEÇİLDİĞİNDE VARSAYILAN OLARAK YILDIZ SIRALAMASI AÇILIR
   window.filterAdminUsers = function(cat, btnElem) {
     document.querySelectorAll('.filter-btn').forEach(b => b.className = 'btn-action filter-btn btn-toggle-off');
     btnElem.className = 'btn-action filter-btn btn-toggle-on';
     currentCategoryFilter = cat;
+    if (cat === 'UyarıAlanlar') {
+      const sortSelect = document.getElementById('adminUserSortSelect');
+      if (sortSelect) sortSelect.value = 'stars_desc';
+    }
     renderUserRows();
   };
 
   window.filterAdminUsersSearch = () => renderUserRows();
 
+  // MADDE 3 YENİLİK: DİNAMİK SIRALAMA VE UYARI ALAN KULLANICI FİLTRELEME
   function renderUserRows() {
     const tbody = document.getElementById('adminUserTableBody');
     tbody.innerHTML = '';
     const queryStr = document.getElementById('adminUserSearchInput')?.value.trim().toLocaleLowerCase('tr-TR') || '';
     let list = [...allFetchedUsers];
 
+    if (currentCategoryFilter === 'admin') list = list.filter(u => u.rol === 'admin' || u.email === 'kgulsen1994@gmail.com');
+    else if (currentCategoryFilter === 'UyarıAlanlar') list = list.filter(u => (u.uyariSayisi || 0) > 0);
+    else if (currentCategoryFilter !== 'Tümü') list = list.filter(u => u.durum === currentCategoryFilter && u.rol !== 'admin');
+
+    if (queryStr !== '') {
+      list = list.filter(u => (u.adSoyad || '').toLocaleLowerCase('tr-TR').includes(queryStr) || (u.email || '').toLocaleLowerCase('tr-TR').includes(queryStr));
+    }
+
+    const sortVal = document.getElementById('adminUserSortSelect')?.value || 'stars_desc';
+
     list.sort((a, b) => {
+      if (sortVal === 'stars_desc') {
+        const warnA = a.uyariSayisi || 0;
+        const warnB = b.uyariSayisi || 0;
+        if (warnB !== warnA) return warnB - warnA;
+      } else if (sortVal === 'name_asc') {
+        const nameA = (a.adSoyad || a.email || '');
+        const nameB = (b.adSoyad || b.email || '');
+        const comp = nameA.localeCompare(nameB, 'tr-TR');
+        if (comp !== 0) return comp;
+      } else if (sortVal === 'role_desc') {
+        const roleOrder = { 'admin': 1, 'VIP': 2, 'Premium': 3, 'Deneme': 4, 'Ücretsiz': 5, 'Engellendi': 6 };
+        const getOrder = (u) => (u.rol === 'admin' || u.email === 'kgulsen1994@gmail.com') ? 1 : (roleOrder[u.durum] || 99);
+        const diff = getOrder(a) - getOrder(b);
+        if (diff !== 0) return diff;
+      }
+
       const isAAdmin = (a.rol === 'admin' || a.email === 'kgulsen1994@gmail.com');
       const isBAdmin = (b.rol === 'admin' || b.email === 'kgulsen1994@gmail.com');
       if (isAAdmin && !isBAdmin) return -1;
       if (!isAAdmin && isBAdmin) return 1;
       return 0;
     });
-
-    if (currentCategoryFilter === 'admin') list = list.filter(u => u.rol === 'admin' || u.email === 'kgulsen1994@gmail.com');
-    else if (currentCategoryFilter !== 'Tümü') list = list.filter(u => u.durum === currentCategoryFilter && u.rol !== 'admin');
-
-    if (queryStr !== '') {
-      list = list.filter(u => (u.adSoyad || '').toLocaleLowerCase('tr-TR').includes(queryStr) || (u.email || '').toLocaleLowerCase('tr-TR').includes(queryStr));
-    }
 
     if (list.length === 0) {
       tbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center;">Kullanıcı bulunamadı.</td></tr>';
@@ -3235,7 +3270,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         starsHTML = '<span style="color:#cbd5e1;">-</span>';
       }
 
-      // MADDE 3 YENİLİK: YÖNETİCİ UYARI YILDIZLARINI EKSİLTME VE TEMİZLEME BUTONLARI
       let warnControlsHTML = '';
       if (!isRoleAdmin && warnCount > 0) {
         warnControlsHTML = `
@@ -3288,7 +3322,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     });
   }
 
-  // MADDE 3 YENİLİK: UYARI / YILDIZ SİLME FONKSİYONLARI
   window.reduceUserWarning = async function(uid) {
     try {
       const uRef = doc(db, "kullanicilar", uid);
@@ -3308,7 +3341,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
   window.clearUserWarnings = async function(uid) {
     try {
       await updateDoc(doc(db, "kullanicilar", uid), { uyariSayisi: 0 });
-      showToast("Kullanıcının tüm uyarı yıldızları temizlendi.", "success");
+      showToast("Kullanıcının tüm uyari yıldızları temizlendi.", "success");
       await fetchAndRenderUsers(currentCategoryFilter);
     } catch(err) {
       showToast("Yıldızlar temizlenirken hata oluştu: " + err.message, "error");
@@ -3538,7 +3571,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
   window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
 
-  // MADDE 1 & MADDE 2 YENİLİK: HATALI SORU BİLDİRİMLERİ SOHBETİ (KULLANICI TARAFI)
   window.openUserReportsModal = function() {
     document.getElementById('userReportsModal').style.display = 'flex';
     if (!auth.currentUser) return;
@@ -3742,7 +3774,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     }
   };
 
-  // MADDE 2 YENİLİK: YÖNETİCİ HATALI SORU BİLDİRİMLERİ SOHBET AKIŞI
   async function loadAdminQuestionReports() {
     const box = document.getElementById('adminQuestionReportsList');
     box.innerHTML = '<p style="text-align:center; color:#64748b;">Bildirimler yükleniyor...</p>';
@@ -3841,7 +3872,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
               </div>
             ` : ''}
 
-            <!-- WHATSAPP SOHBET ALANI (ADMIN) -->
             <div class="whatsapp-container" style="height:auto; max-height:320px; margin:10px 0;">
               <div class="whatsapp-header" style="font-size:0.8rem; padding:6px 12px;">
                 <span>💬 Kullanıcı ile Canlı Bildirim Sohbeti</span>
