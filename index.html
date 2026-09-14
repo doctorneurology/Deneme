@@ -810,7 +810,7 @@
 </head>
 <body>
 
-  <!-- KULLANICI HATALI BİLDİRİMLERİM MODALİ (ÖZET & DETAY İÇİN TIKLA BUTONLU) -->
+  <!-- KULLANICI HATALI BİLDİRİMLERİM MODALİ -->
   <div id="userReportsModal" class="modal-overlay no-print" style="display: none; z-index: 26000;" onclick="if(event.target===this) closeUserReportsModal()">
     <div class="modal-card" style="max-width: 750px; width: 92%; max-height: 85vh; display: flex; flex-direction: column;">
       <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
@@ -819,6 +819,27 @@
       </div>
       <div id="userReportsList" style="flex: 1; overflow-y: auto; margin-top: 15px; padding-right: 5px;">
         Yükleniyor...
+      </div>
+    </div>
+  </div>
+
+  <!-- MODERN TOPLU YANITLA MODALİ (ADMIN) -->
+  <div id="adminBulkReplyModal" class="modal-overlay no-print" style="display: none; z-index: 29000;" onclick="if(event.target===this) closeAdminBulkReplyModal()">
+    <div class="modal-card" style="max-width: 480px; width: 92%;">
+      <div class="modal-title" style="justify-content: space-between; color: var(--primary);">
+        <span>💬 Seçilen Bildirimleri Toplu Yanıtla</span>
+        <button class="btn-action" onclick="closeAdminBulkReplyModal()">✕</button>
+      </div>
+      <p id="bulkReplyCountText" style="font-size: 0.85rem; color: #475569; margin-bottom: 12px; font-weight: 600;"></p>
+      
+      <div class="input-control">
+        <label>Ortak Yanıt Mesajınız:</label>
+        <textarea id="adminBulkReplyText" class="modern-input" rows="4" placeholder="Seçilen tüm bildirimler için iletilecek yanıtı yazın..."></textarea>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="executeAdminBulkReply()">🚀 Yanıtları Gönder</button>
+        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeAdminBulkReplyModal()">İptal</button>
       </div>
     </div>
   </div>
@@ -1097,13 +1118,14 @@
           </div>
         </div>
 
-        <!-- SEKME 2: HATALI SORU BİLDİRİMLERİ (YÖNETİCİ DETAYLI GÖRÜNTÜLEME VE YANITLAMA) -->
+        <!-- SEKME 2: HATALI SORU BİLDİRİMLERİ (TOPLU YANIT, TOPLU SİLME VE DETAYLAR) -->
         <div id="adminTabReports" style="display: none; flex: 1; flex-direction: column; overflow: hidden;">
-          <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border);">
+          <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border); flex-wrap: wrap; gap: 10px;">
             <div style="display: flex; gap: 8px; align-items: center;">
               <input type="checkbox" id="selectAllReportsCheckbox" onchange="toggleSelectAllReports(this)">
               <span style="font-size: 0.8rem; font-weight: bold;">Tümünü Seç</span>
-              <button class="btn-action btn-toggle-on" style="font-size: 0.8rem; padding: 4px 10px;" onclick="openBulkReportReplyModal()">💬 Seçilenleri Toplu Yanıtla</button>
+              <button class="btn-action btn-toggle-on" style="font-size: 0.8rem; padding: 4px 10px;" onclick="openAdminBulkReplyModal()">💬 Seçilenleri Toplu Yanıtla</button>
+              <button class="btn-action btn-finish-test" style="font-size: 0.8rem; padding: 4px 10px;" onclick="deleteSelectedAdminReports()">🗑️ Seçilenleri Sil</button>
             </div>
             <span style="font-size: 0.8rem; color: var(--text-muted);">Gelen soru bildirimlerinin tüm detaylarını ve şıklarını inceleyebilirsiniz.</span>
           </div>
@@ -1113,7 +1135,7 @@
           </div>
         </div>
 
-        <!-- SEKME 3: KULLANICI MESAJLARI (TEK TEK VEYA TOPLU SİLMELİ YÖNETİM) -->
+        <!-- SEKME 3: KULLANICI MESAJLARI -->
         <div id="adminTabChat" style="display: none; flex: 1; gap: 15px; overflow: hidden;">
           <div style="width: 330px; border: 1px solid var(--border); border-radius: 8px; display: flex; flex-direction: column; background: #f8fafc;">
             <div style="padding: 10px; border-bottom: 1px solid var(--border); font-weight: bold; font-size: 0.85rem; background: #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
@@ -1240,7 +1262,6 @@
                 ⚙️ Yönetici Paneli
               </button>
 
-              <!-- GÜNCELLENEN KULLANICI BUTONLARI -->
               <button id="btnCheckMyReports" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #0284c7; color: white; border-color: #0369a1;" onclick="openUserReportsModal()">
                 📋 Hatalı Soru Bildirimlerimi Kontrol Et
               </button>
@@ -1318,7 +1339,7 @@
         </button>
 
         <div class="feedback-note">
-          görüş,öneri ve yanlış soru bildirimi için: <a href="mailto:kgulsen1994@gmail.com">kgulsen1994@gmail.com</a>
+          Görüş, öneri ve yanlış soru bildirimi için: <a href="mailto:kgulsen1994@gmail.com">kgulsen1994@gmail.com</a>
         </div>
 
       </div>
@@ -2375,7 +2396,14 @@
     const passVal = document.getElementById('adminPasswordInput').value.trim();
     if (!userVal || !passVal) { showToast("Lütfen tüm alanları doldurunuz.", "warning"); return; }
 
-    let currentAdminPass = localStorage.getItem('customAdminPassword') || "noroloji2026";
+    let currentAdminPass = "noroloji2026";
+    try {
+      const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
+      if (cfgSnap.exists() && cfgSnap.data().sifre) {
+        currentAdminPass = cfgSnap.data().sifre;
+      }
+    } catch(e) {}
+
     let isAuthorized = (userVal === "admin" && passVal === currentAdminPass);
 
     if (!isAuthorized) {
@@ -2596,7 +2624,12 @@
 
   window.executeUserDeletion = async function() {
     const enteredPass = document.getElementById('deleteConfirmAdminPassword').value.trim();
-    let currentAdminPass = localStorage.getItem('customAdminPassword') || "noroloji2026";
+    let currentAdminPass = "noroloji2026";
+    try {
+      const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
+      if (cfgSnap.exists() && cfgSnap.data().sifre) currentAdminPass = cfgSnap.data().sifre;
+    } catch(e) {}
+
     if (enteredPass !== currentAdminPass) { showToast("Hatalı yönetici şifresi! Silme iptal edildi.", "error"); return; }
 
     if (Array.isArray(userToDeleteTarget)) {
@@ -2729,7 +2762,7 @@
 
   window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
 
-  // MADDE 3: KULLANICI HATALI BİLDİRİMLERİMİ KONTROL ET (INDEX HATASI GİDERİLDİ + DETAY İÇİN TIKLA BUTONLU AKIŞ)
+  // KULLANICI HATALI BİLDİRİMLERİM KONTROL ET & YANITLANANLARI SİLME ÖZELLİĞİ
   window.openUserReportsModal = async function() {
     document.getElementById('userReportsModal').style.display = 'flex';
     const box = document.getElementById('userReportsList');
@@ -2741,7 +2774,6 @@
     }
 
     try {
-      // FIREBASE COMPOSITE INDEX HATASINI GİDERMEK İÇİN ORDERBY CLIENT-SIDE İLE YAPILIYOR
       const q = query(collection(db, "hatali_sorular"), where("userId", "==", auth.currentUser.uid));
       const snap = await getDocs(q);
 
@@ -2753,7 +2785,6 @@
       let reports = [];
       snap.forEach(docSnap => reports.push({ id: docSnap.id, ...docSnap.data() }));
 
-      // İstemci tarafında en yeni bildirimi üstte sırala
       reports.sort((a, b) => {
         const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
         const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
@@ -2765,7 +2796,6 @@
         const isAnswered = d.status === 'yanitlandi';
         const dateStr = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('tr-TR') : '';
 
-        // Şıkları biçimlendir
         let optionsHTML = '';
         if (Array.isArray(d.questionOptions) && d.questionOptions.length > 0) {
           optionsHTML = d.questionOptions.map((opt, i) => {
@@ -2775,26 +2805,31 @@
           }).join('');
         }
 
+        // MADDE 1: YANITLANAN BİLDİRİMLER İÇİN SİLME BUTONU
+        let deleteReportBtnHTML = isAnswered ? `
+          <button class="btn-action btn-finish-test" style="font-size:0.75rem; padding:3px 8px;" onclick="deleteUserReport('${d.id}')">🗑️ Bildirimi Sil</button>
+        ` : '';
+
         html += `
-          <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid ${isAnswered ? '#10b981' : '#f59e0b'}; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:var(--shadow-sm);">
+          <div id="userReportCard_${d.id}" style="background:#ffffff; border:1px solid var(--border); border-left:4px solid ${isAnswered ? '#10b981' : '#f59e0b'}; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:var(--shadow-sm);">
             
-            <!-- ÖZET BAŞLIK BİLGİSİ -->
             <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
               <div>
                 <span style="font-weight:bold; color:#0f172a; font-size:0.9rem;">📌 Konu: ${d.questionTopic || 'Genel'}</span>
                 <span style="font-size:0.75rem; color:#64748b; margin-left:8px;">(${dateStr})</span>
               </div>
-              <span style="padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:bold; background:${isAnswered ? '#d1fae5' : '#fef3c7'}; color:${isAnswered ? '#047857' : '#b45309'};">
-                ${isAnswered ? '✅ Yanıtlandı' : '⏳ Değerlendirmede'}
-              </span>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:bold; background:${isAnswered ? '#d1fae5' : '#fef3c7'}; color:${isAnswered ? '#047857' : '#b45309'};">
+                  ${isAnswered ? '✅ Yanıtlandı' : '⏳ Değerlendirmede'}
+                </span>
+                ${deleteReportBtnHTML}
+              </div>
             </div>
 
-            <!-- KISA ÖZET -->
             <div style="font-size:0.85rem; color:#475569; margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
               <strong>Soru:</strong> ${d.questionText}
             </div>
 
-            <!-- DETAY İÇİN TIKLA BUTONU VE GİZLİ DETAY ALANI -->
             <div style="margin-top:10px; display:flex; justify-function:space-between; align-items:center;">
               <button class="btn-action btn-toggle-on" style="font-size:0.78rem; padding:4px 12px;" onclick="toggleUserReportDetail('${d.id}')">
                 🔍 Detay İçin Tıkla
@@ -2858,7 +2893,17 @@
 
   window.closeUserReportsModal = () => document.getElementById('userReportsModal').style.display = 'none';
 
-  // KULLANICININ YÖNETİCİ CEVABINA YANIT VERMESİ
+  window.deleteUserReport = async function(docId) {
+    if (!confirm("Bu bildirim kaydını silmek istediğinize emin misiniz?")) return;
+    try {
+      await deleteDoc(doc(db, "hatali_sorular", docId));
+      showToast("Bildiriminiz silindi.", "success");
+      openUserReportsModal();
+    } catch(err) {
+      showToast("Silme hatası: " + err.message, "error");
+    }
+  };
+
   window.sendUserFollowup = async function(docId) {
     const input = document.getElementById(`userFollowupInput_${docId}`);
     const text = input.value.trim();
@@ -2875,7 +2920,7 @@
     } catch(err) { showToast("Hata: " + err.message, "error"); }
   };
 
-  // MADDE 4: ADMİN BİLDİRİM DETAYLARINDA SORUYU VE TÜM ŞIKLARI GÖRÜNTÜLEME
+  // ADMİN BİLDİRİM DETAYLARI VE YÖNETİMİ
   async function loadAdminQuestionReports() {
     const box = document.getElementById('adminQuestionReportsList');
     box.innerHTML = '<p style="text-align:center; color:#64748b;">Bildirimler yükleniyor...</p>';
@@ -2918,7 +2963,10 @@
                 <input type="checkbox" class="report-row-checkbox" value="${d.id}">
                 <span style="font-weight:bold; color:#0f172a;">👤 ${d.userName} (${d.userEmail})</span>
               </div>
-              <span style="font-size:0.75rem; color:#64748b;">${dateStr}</span>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:0.75rem; color:#64748b;">${dateStr}</span>
+                <button class="msg-delete-btn" onclick="deleteSingleAdminReport('${d.id}')" title="Bildirimi Sil">🗑️</button>
+              </div>
             </div>
             
             <div style="font-size:0.85rem; color:#334155; margin-bottom:6px; background:#f8fafc; padding:8px; border-radius:6px;">
@@ -2998,26 +3046,61 @@
     } catch(err) { showToast("Hata: " + err.message, "error"); }
   };
 
-  window.openBulkReportReplyModal = async function() {
+  // MADDE 2: MODERN TOPLU YANITLA MODALİ
+  window.openAdminBulkReplyModal = function() {
     const selected = Array.from(document.querySelectorAll('.report-row-checkbox:checked')).map(cb => cb.value);
     if (selected.length === 0) { showToast("Lütfen en az bir bildirim seçiniz.", "warning"); return; }
+    
+    document.getElementById('bulkReplyCountText').innerText = `${selected.length} adet seçili bildirim için toplu yanıt oluşturuluyor:`;
+    document.getElementById('adminBulkReplyText').value = '';
+    document.getElementById('adminBulkReplyModal').style.display = 'flex';
+  };
 
-    const bulkText = prompt(`${selected.length} adet seçili bildirime toplu yanıtınızı yazın:`);
-    if (!bulkText || !bulkText.trim()) return;
+  window.closeAdminBulkReplyModal = function() {
+    document.getElementById('adminBulkReplyModal').style.display = 'none';
+  };
+
+  window.executeAdminBulkReply = async function() {
+    const selected = Array.from(document.querySelectorAll('.report-row-checkbox:checked')).map(cb => cb.value);
+    const bulkText = document.getElementById('adminBulkReplyText').value.trim();
+    if (!bulkText) { showToast("Lütfen yanıt mesajını yazınız.", "warning"); return; }
 
     for (let id of selected) {
       await updateDoc(doc(db, "hatali_sorular", id), {
-        adminReply: bulkText.trim(),
+        adminReply: bulkText,
         status: "yanitlandi",
         adminRepliedAt: serverTimestamp(),
         userNotified: false
       });
     }
     showToast(`${selected.length} bildirime toplu yanıt gönderildi.`, "success");
+    closeAdminBulkReplyModal();
     loadAdminQuestionReports();
   };
 
-  // MADDE 1: 7 GÜN SONRA KULLANICIDAN OTOMATİK SİLİNEN MESAJLAR (YÖNETİCİDE KALIR)
+  // MADDE 3: SEÇİLENLERİ TOPLU SİLME VE TEKLİ SİLME (ADMIN)
+  window.deleteSingleAdminReport = async function(docId) {
+    if (!confirm("Bu bildirimi silmek istediğinize emin misiniz?")) return;
+    try {
+      await deleteDoc(doc(db, "hatali_sorular", docId));
+      showToast("Bildirim silindi.", "success");
+      loadAdminQuestionReports();
+    } catch(err) { showToast("Hata: " + err.message, "error"); }
+  };
+
+  window.deleteSelectedAdminReports = async function() {
+    const selected = Array.from(document.querySelectorAll('.report-row-checkbox:checked')).map(cb => cb.value);
+    if (selected.length === 0) { showToast("Lütfen silmek istediğiniz bildirimleri seçiniz.", "warning"); return; }
+    if (!confirm(`${selected.length} adet seçili bildirim tamamen silinecektir. Onaylıyor musunuz?`)) return;
+
+    for (let id of selected) {
+      await deleteDoc(doc(db, "hatali_sorular", id));
+    }
+    showToast(`${selected.length} bildirim silindi.`, "success");
+    loadAdminQuestionReports();
+  };
+
+  // KULLANICI MESAJLARI & WHATSAPP
   window.openUserChatModal = function() {
     if (!auth.currentUser) { showToast("Lütfen önce giriş yapınız.", "warning"); return; }
     document.getElementById('userChatModal').style.display = 'flex';
@@ -3047,7 +3130,6 @@
         const m = docSnap.data();
         if (m.deletedByUser) return;
 
-        // 7 GÜNLÜK OTOMATİK GİZLEME FİLTRESİ
         const msgTime = m.zaman?.toDate ? m.zaman.toDate().getTime() : Date.now();
         if (msgTime < sevenDaysAgoMs) return;
 
@@ -3122,7 +3204,6 @@
     showToast("Mesajınız silindi.", "success");
   };
 
-  // MADDE 1: ADMIN SOHBETLERİ TEK TEK VEYA TOPLU SİLME
   async function loadAdminChatList() {
     const userListBox = document.getElementById('adminChatUserList');
     userListBox.innerHTML = '<p style="padding:15px; font-size:0.8rem; color:#64748b;">Sohbetler getiriliyor...</p>';
@@ -3354,21 +3435,31 @@
     showToast(`${days} Günlük ${tier} kodu üretildi.`, "success");
   };
 
-  window.changeAdminPassword = function() {
+  // MADDE 4: YÖNETİCİ ŞİFRESİNİN FIREBASE'E KAYDEDİLEREK KALICI HALE GETİRİLMESİ
+  window.changeAdminPassword = async function() {
     const oldP = document.getElementById('adminOldPassInput').value.trim();
     const newP = document.getElementById('adminNewPassInput').value.trim();
     const confirmP = document.getElementById('adminNewPassConfirmInput').value.trim();
-    let currentAdminPass = localStorage.getItem('customAdminPassword') || "noroloji2026";
+    
+    let currentAdminPass = "noroloji2026";
+    try {
+      const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
+      if (cfgSnap.exists() && cfgSnap.data().sifre) currentAdminPass = cfgSnap.data().sifre;
+    } catch(e) {}
 
     if (oldP !== currentAdminPass) { showToast("Mevcut şifre hatalı!", "error"); return; }
     if (!newP || newP.length < 4) { showToast("Yeni şifre en az 4 karakter olmalıdır.", "warning"); return; }
     if (newP !== confirmP) { showToast("Yeni şifreler uyuşmuyor!", "warning"); return; }
 
-    localStorage.setItem('customAdminPassword', newP);
-    showToast("Yönetici şifreniz başarıyla değiştirildi.", "success");
-    document.getElementById('adminOldPassInput').value = '';
-    document.getElementById('adminNewPassInput').value = '';
-    document.getElementById('adminNewPassConfirmInput').value = '';
+    try {
+      await setDoc(doc(db, "sistem_ayarlari", "admin_config"), { sifre: newP }, { merge: true });
+      showToast("Yönetici şifreniz başarıyla Firebase'e kaydedildi ve kalıcı hale getirildi.", "success");
+      document.getElementById('adminOldPassInput').value = '';
+      document.getElementById('adminNewPassInput').value = '';
+      document.getElementById('adminNewPassConfirmInput').value = '';
+    } catch(err) {
+      showToast("Şifre kaydedilirken hata oluştu: " + err.message, "error");
+    }
   };
 
   window.changeUserStatus = async function(uid, newStatus) {
