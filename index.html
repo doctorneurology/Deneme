@@ -730,7 +730,7 @@
     }
 
     .chat-bubble {
-      max-width: 75%;
+      max-width: 80%;
       padding: 8px 12px;
       border-radius: 10px;
       font-size: 0.88rem;
@@ -790,7 +790,6 @@
 
     .unread-row { background: #f0fdf4 !important; font-weight: bold; }
 
-    /* MADDE 2: ENGELLENMİŞ KULLANICI EKRANI GÖRSELİ */
     .banned-screen-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -833,7 +832,81 @@
 </head>
 <body>
 
-  <!-- MADDE 2: ENGELLENEN KULLANICI EKRANI (TAM KİLİT) -->
+  <!-- MADDE 4: SORU GÖNDERME KURAL VE BİLGİLENDİRME MODALİ -->
+  <div id="userQuestionUploadRulesModal" class="modal-overlay no-print" style="display: none; z-index: 28500;">
+    <div class="modal-card" style="max-width: 560px; width: 92%; border-top: 6px solid #2563eb;">
+      <div class="modal-title" style="color: #1e40af;">📤 Soru Gönderme Paneli ve Kuralları</div>
+      
+      <div style="font-size: 0.86rem; color: #334155; margin-bottom: 12px; line-height: 1.5;">
+        <p style="margin-bottom: 8px;">Soru havuzuna katkıda bulunmak için sorularınızı <strong>.doc</strong> veya <strong>.docx</strong> formatında yükleyebilirsiniz.</p>
+        <div style="background: #fef2f2; border: 1px solid #fecdd3; padding: 10px; border-radius: 8px; color: #991b1b; font-size: 0.82rem; margin-bottom: 10px;">
+          <strong>⚠️ DİKKAT:</strong> Yüklenen sorular yönetici ekibi tarafından kontrol edilecektir. Sorularda argo, küfür veya uygunsuz içerik tespiti halinde <strong>kullanıcı sistemden kalıcı olarak engellenecektir</strong>.
+        </div>
+        <div style="background: #eff6ff; border: 1px solid #bfdbfe; padding: 10px; border-radius: 8px; color: #1e40af; font-size: 0.82rem; margin-bottom: 10px;">
+          <strong>ℹ️ NOT:</strong> Soru formatına uygun olmayan dosyalar yayınlanmayacaktır.
+        </div>
+      </div>
+
+      <div style="font-weight: bold; font-size: 0.85rem; color: #0f172a; margin-bottom: 6px;">Zorunlu Soru Format Örneği:</div>
+      <pre style="background: #0f172a; color: #38bdf8; padding: 12px; border-radius: 8px; font-size: 0.78rem; font-family: monospace; overflow-x: auto; max-height: 180px; margin-bottom: 16px; line-height: 1.4;">
+===
+Konu: Baş Ağrısı
+Zorluk: Kolay
+Soru: Santral sinir sisteminde miyelin kılıfı hangi hücre oluşturur?
+A) Schwann Hücresi
+B) Oligodendrosit
+C) Astrosit
+D) Mikroglia
+E) Ependim Hücresi
+Cevap: B
+Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
+===
+
+===
+Konu: Baş Ağrısı
+Zorluk: Orta
+Soru: Akut inmede kanamayı ekarte etmek için ilk çekilecek tetkik hangisidir?
+A) Kranial MRG
+B) Kontrastsız Beyin BT
+C) DSA
+D) PET-BT
+E) BT Anjiyografi
+Cevap: B
+Açıklama: İlk tercih kontrastsız beyin BT'dir.
+===</pre>
+
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="acceptUploadRules()">👍 Kuralları Kabul Ediyorum</button>
+        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeUserQuestionUploadRulesModal()">✕ İptal ve Kapat</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MADDE 4: KULLANICI DOSYA SEÇME MODALİ -->
+  <div id="userQuestionFilePickerModal" class="modal-overlay no-print" style="display: none; z-index: 28600;">
+    <div class="modal-card" style="max-width: 440px; width: 90%;">
+      <div class="modal-title" style="justify-content: space-between;">
+        <span>📁 Dosya Seç ve Yükle</span>
+        <button class="btn-action" onclick="closeUserQuestionFilePickerModal()">✕</button>
+      </div>
+      
+      <p style="font-size: 0.85rem; color: #475569; margin-bottom: 15px;">
+        Lütfen bilgisayarınızdan hazırdaki <strong>.doc</strong> veya <strong>.docx</strong> uzantılı soru dosyanızı seçiniz.
+      </p>
+
+      <div class="input-control">
+        <label>Soru Dosyası (.doc, .docx):</label>
+        <input type="file" id="userQuestionFileInput" class="modern-input" accept=".doc,.docx">
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button class="btn-action btn-print" style="flex: 1; justify-content: center;" onclick="uploadQuestionFile()">🚀 Yükle ve Gönder</button>
+        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeUserQuestionFilePickerModal()">İptal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ENGELLENMİŞ KULLANICI EKRANI -->
   <div id="bannedUserScreen" class="banned-screen-overlay" style="display: none;">
     <div class="banned-card">
       <div style="font-size: 3.5rem; margin-bottom: 10px;">🚫</div>
@@ -844,7 +917,7 @@
     </div>
   </div>
 
-  <!-- MADDE 2: KULLANICI UYARI BİLDİRİM MODALİ (BÜYÜK EKRAN ORTASI) -->
+  <!-- KULLANICI UYARI BİLDİRİM MODALİ -->
   <div id="userWarningNoticeModal" class="modal-overlay no-print" style="display: none; z-index: 30000;">
     <div class="modal-card" style="max-width: 520px; width: 92%; border-top: 6px solid #f59e0b; text-align: center;">
       <div style="font-size: 3rem; margin-bottom: 8px;">⚠️</div>
@@ -865,7 +938,7 @@
     </div>
   </div>
 
-  <!-- MADDE 1: MODERN BİLDİRİM SİLME UYARI MODALİ (ADMIN) -->
+  <!-- BİLDİRİM SİLME UYARI MODALİ (ADMIN) -->
   <div id="adminConfirmDeleteReportsModal" class="modal-overlay no-print" style="display: none; z-index: 29500;">
     <div class="modal-card" style="max-width: 420px; width: 90%;">
       <div class="modal-title" style="color: #ef4444;">🚨 Bildirim Silme Onayı</div>
@@ -879,7 +952,7 @@
     </div>
   </div>
 
-  <!-- MADDE 2: YÖNETİCİ KULLANICI UYARMA MODALİ (ADMIN) -->
+  <!-- YÖNETİCİ KULLANICI UYARMA MODALİ (ADMIN) -->
   <div id="adminWarnUserModal" class="modal-overlay no-print" style="display: none; z-index: 29000;" onclick="if(event.target===this) closeAdminWarnUserModal()">
     <div class="modal-card" style="max-width: 480px; width: 92%;">
       <div class="modal-title" style="justify-content: space-between; color: #d97706;">
@@ -913,7 +986,7 @@
     </div>
   </div>
 
-  <!-- MODERN TOPLU YANITLA MODALİ (ADMIN) -->
+  <!-- TOPLU YANITLA MODALİ (ADMIN) -->
   <div id="adminBulkReplyModal" class="modal-overlay no-print" style="display: none; z-index: 29000;" onclick="if(event.target===this) closeAdminBulkReplyModal()">
     <div class="modal-card" style="max-width: 480px; width: 92%;">
       <div class="modal-title" style="justify-content: space-between; color: var(--primary);">
@@ -934,11 +1007,11 @@
     </div>
   </div>
 
-  <!-- KULLANICI / WHATSAPP İLETİŞİM MODALİ -->
+  <!-- MADDE 3: KULLANICI / WHATSAPP İLETİŞİM MODALİ (EMOJİ GÜNCELLENDİ) -->
   <div id="userChatModal" class="modal-overlay no-print" style="display: none; z-index: 26000;" onclick="if(event.target===this) closeUserChatModal()">
     <div class="modal-card" style="max-width: 550px; width: 94%; padding: 18px;">
       <div class="modal-title" style="justify-content: space-between; margin-bottom: 12px;">
-        <span>💬 Yönetici ile Canlı Destek</span>
+        <span>💬👨‍⚕️ Yönetici ile Canlı Destek</span>
         <button class="btn-action" onclick="closeUserChatModal()">✕ Kapat</button>
       </div>
       
@@ -1151,6 +1224,8 @@
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
             <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar ve Yetkiler</button>
             <button id="tabReportsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('reports')">🚨 Hatalı Soru Bildirimleri</button>
+            <!-- MADDE 4: YÜKLENEN SORULAR SEKMESİ (ADMIN) -->
+            <button id="tabUploadedQuestionsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('uploadedQuestions')">📥 Kullanıcı Soruları</button>
             <button id="tabChatBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('chat')">💬 Kullanıcı Mesajları <span id="adminChatUnreadBadge" style="display:none;" class="unread-badge-dot"></span></button>
             <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
             <button id="tabSettingsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('settings')">🔒 Yönetici Şifre Ayarları</button>
@@ -1197,7 +1272,6 @@
                   </th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">Ad Soyad</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
-                  <!-- MADDE 2: UYARI SÜTUNU VE YILDIZ SAYISI -->
                   <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: center;">Uyarı</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">Rol / Durum</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">Aksiyonlar</th>
@@ -1210,7 +1284,7 @@
           </div>
         </div>
 
-        <!-- SEKME 2: HATALI SORU BİLDİRİMLERİ (TOPLU YANIT, TOPLU SİLME VE DETAYLAR) -->
+        <!-- SEKME 2: HATALI SORU BİLDİRİMLERİ -->
         <div id="adminTabReports" style="display: none; flex: 1; flex-direction: column; overflow: hidden;">
           <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border); flex-wrap: wrap; gap: 10px;">
             <div style="display: flex; gap: 8px; align-items: center;">
@@ -1223,6 +1297,16 @@
           </div>
           
           <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px;" id="adminQuestionReportsList">
+            Yükleniyor...
+          </div>
+        </div>
+
+        <!-- MADDE 4: SEKME - KULLANICILAR TARAFINDAN YÜKLENEN SORULAR (ADMIN) -->
+        <div id="adminTabUploadedQuestions" style="display: none; flex: 1; flex-direction: column; overflow: hidden;">
+          <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border);">
+            <span style="font-size: 0.85rem; color: #475569; font-weight: 600;">📥 Kullanıcılar tarafından sisteme yüklenen .doc ve .docx uzantılı soru dosyaları listesi:</span>
+          </div>
+          <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px;" id="adminUploadedQuestionsList">
             Yükleniyor...
           </div>
         </div>
@@ -1271,7 +1355,7 @@
           </div>
         </div>
 
-        <!-- SEKME 5: ADMIN ŞİFRE VE KULLANICI ADI AYARLARI (MADDE 3) -->
+        <!-- SEKME 5: ADMIN ŞİFRE VE KULLANICI ADI AYARLARI -->
         <div id="adminTabSettings" style="display: none; max-width: 450px;">
           <h4 style="margin-bottom: 12px; color: var(--bg-dark);">🔐 Yönetici Kullanıcı Adı & Şifre Güncelle</h4>
           <div class="input-control">
@@ -1358,12 +1442,18 @@
                 ⚙️ Yönetici Paneli
               </button>
 
+              <!-- MADDE 4: SORU GÖNDER BUTONU (PREMIUM / VIP / ADMIN İÇİN) -->
+              <button id="btnUploadUserQuestion" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #2563eb; color: white; border-color: #1d4ed8;" onclick="openUserQuestionUploadModal()">
+                📤 Soru Gönder (Doc/Docx)
+              </button>
+
               <button id="btnCheckMyReports" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #0284c7; color: white; border-color: #0369a1;" onclick="openUserReportsModal()">
                 📋 Hatalı Soru Bildirimlerimi Kontrol Et
               </button>
 
+              <!-- MADDE 3: CANLI DESTİK BUTON EMOJİSİ -->
               <button id="btnContactAdmin" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #059669; color: white; border-color: #047857;" onclick="openUserChatModal()">
-                💬 Yöneticiyle İletişime Geç
+                💬👨‍⚕️ Yönetici ile Canlı Destek
               </button>
             </div>
           </div>
@@ -1434,6 +1524,7 @@
           İlerle ve Testi Oluştur ➔
         </button>
 
+        <!-- MADDE 2: İMLA DÜZELTMESİ YAPILAN YAZI -->
         <div class="feedback-note">
           Görüş, öneri ve yanlış soru bildirimi için: <a href="mailto:kgulsen1994@gmail.com">kgulsen1994@gmail.com</a>
         </div>
@@ -1454,6 +1545,11 @@
         </div>
 
         <div class="action-btn-group">
+          <!-- MADDE 5: DETAYLI KONU ANALİZİ TEKRAR AÇMA BUTONU -->
+          <button id="btnOpenSideAnalysis" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important;" onclick="openSideAnalysisPanel()">
+            📊 Detaylı Konu Analizi
+          </button>
+
           <button id="toggleKeyBtn" class="btn-action btn-toggle-off" onclick="cycleKeyMode()">
             🔑 Cevap Anahtarı: <strong>GİZLİ</strong> 🙈
           </button>
@@ -1876,6 +1972,7 @@
     document.getElementById('btnFinishTestTop').style.display = 'none';
     document.getElementById('bottomFinishBtn').style.display = 'none';
     document.getElementById('timerDisplay').style.display = 'none';
+    document.getElementById('btnOpenSideAnalysis').style.display = 'none';
 
     const sheet = document.getElementById('a4PaperSheet');
     if (sheet) sheet.classList.remove('interactive-mode', 'analysis-mode');
@@ -2107,6 +2204,7 @@
     document.getElementById('btnStartTest').style.display = 'none';
     document.getElementById('btnFinishTestTop').style.display = 'inline-flex';
     document.getElementById('bottomFinishBtn').style.display = 'block';
+    document.getElementById('btnOpenSideAnalysis').style.display = 'none';
 
     const timerChecked = document.getElementById('testTimerToggle').checked;
     if (timerChecked) {
@@ -2180,6 +2278,7 @@
     if (userTier === 'Ücretsiz') {
       if (modalBox) modalBox.innerHTML = `<div style="font-size:0.8rem; color:var(--accent-red); margin-top:10px;">⚠️ Ücretsiz üyelikte detaylı konu analizi kısıtlıdır.</div>`;
       if (btnAnalysis) btnAnalysis.style.display = 'none';
+      document.getElementById('btnOpenSideAnalysis').style.display = 'none';
     } else {
       if (modalBox) {
         let html = `<h4 style="font-size:0.9rem; margin-bottom:8px; color:var(--bg-dark);">📋 Konu Bazlı Başarı Dağılımı</h4>`;
@@ -2194,6 +2293,7 @@
         modalBox.innerHTML = html;
       }
       if (btnAnalysis) btnAnalysis.style.display = 'inline-flex';
+      document.getElementById('btnOpenSideAnalysis').style.display = 'inline-flex';
     }
 
     document.getElementById('testResultModal').style.display = 'flex';
@@ -2215,6 +2315,16 @@
     document.getElementById('expModeSelect').value = 'inline';
     document.getElementById('keyModeSelect').value = 'none';
 
+    openSideAnalysisPanel();
+    buildPaperView(currentQuestionsList);
+    showToast("Analiz modu aktif.", "success");
+  }
+
+  // MADDE 5: DETAYLI KONU ANALİZİ PANELİNİ TEKRAR AÇMA İŞLEVİ
+  window.openSideAnalysisPanel = function() {
+    const userTier = window.currentUserTier || 'Ücretsiz';
+    if (userTier === 'Ücretsiz') return;
+
     const panel = document.getElementById('sideAnalysisPanel');
     const content = document.getElementById('sideAnalysisContent');
     
@@ -2234,10 +2344,12 @@
       content.innerHTML = html;
       panel.style.display = 'block';
     }
+  };
 
-    buildPaperView(currentQuestionsList);
-    showToast("Analiz modu aktif.", "success");
-  }
+  window.closeSideAnalysisPanel = function() {
+    const panel = document.getElementById('sideAnalysisPanel');
+    if (panel) panel.style.display = 'none';
+  };
 
   function triggerPrint() {
     const userTier = window.currentUserTier || 'Ücretsiz';
@@ -2305,11 +2417,6 @@
     document.getElementById('configScreen').style.display = 'block';
   }
 
-  window.closeSideAnalysisPanel = function() {
-    const panel = document.getElementById('sideAnalysisPanel');
-    if (panel) panel.style.display = 'none';
-  };
-
   window.openLoginOptionsModal = () => document.getElementById('loginOptionsModal').style.display = 'flex';
   window.closeLoginOptionsModal = () => document.getElementById('loginOptionsModal').style.display = 'none';
   window.openAdminAuthModal = () => {
@@ -2320,7 +2427,7 @@
   window.closeAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'none';
 </script>
 
-<!-- FIREBASE & UYARI/ENGELLEME SİSTEMİ -->
+<!-- FIREBASE & GELİŞTİRİLMİŞ MODÜL KODLARI -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -2399,7 +2506,6 @@
     });
   };
 
-  // MADDE 2: ENGELLENMİŞ KULLANICI KONTROLÜ
   function checkAndHandleBannedUser(data) {
     if (data.durum === 'Engellendi') {
       const durText = data.engellenmeSuresiText || 'Süresiz / Kalıcı';
@@ -2423,7 +2529,6 @@
     return false;
   }
 
-  // MADDE 2: CANLI UYARI DİNLEYİCİSİ (EKRAN ORTASINDA UYARI)
   function listenUserWarnings(uid) {
     if (warningUnsubscribe) warningUnsubscribe();
     const userRef = doc(db, "kullanicilar", uid);
@@ -2547,7 +2652,6 @@
     } catch (e) {}
   };
 
-  // MADDE 3: YÖNETİCİ KULLANICI ADI VE ŞİFRESİNİN FİREBASE'DEN KONTROLÜ
   window.submitAdminAuth = async function() {
     const userVal = document.getElementById('adminUsernameInput').value.trim();
     const passVal = document.getElementById('adminPasswordInput').value.trim();
@@ -2602,6 +2706,71 @@
     }
   };
 
+  // MADDE 4: SORU GÖNDERME PANİLİ MODAL İŞLEMLERİ
+  window.openUserQuestionUploadModal = function() {
+    const userTier = window.currentUserTier || 'Ücretsiz';
+    if (userTier === 'Ücretsiz' || userTier === 'Deneme') {
+      showToast("Soru gönderme paneli yalnızca Premium ve VIP üyelerimize özeldir.", "warning");
+      return;
+    }
+    document.getElementById('userQuestionUploadRulesModal').style.display = 'flex';
+  };
+
+  window.closeUserQuestionUploadRulesModal = function() {
+    document.getElementById('userQuestionUploadRulesModal').style.display = 'none';
+  };
+
+  window.acceptUploadRules = function() {
+    closeUserQuestionUploadRulesModal();
+    document.getElementById('userQuestionFileInput').value = '';
+    document.getElementById('userQuestionFilePickerModal').style.display = 'flex';
+  };
+
+  window.closeUserQuestionFilePickerModal = function() {
+    document.getElementById('userQuestionFilePickerModal').style.display = 'none';
+  };
+
+  window.uploadQuestionFile = async function() {
+    const input = document.getElementById('userQuestionFileInput');
+    if (!input.files || input.files.length === 0) {
+      showToast("Lütfen yüklenecek bir dosya seçiniz.", "warning");
+      return;
+    }
+
+    const file = input.files[0];
+    const fileName = file.name;
+    const ext = fileName.split('.').pop().toLowerCase();
+
+    if (ext !== 'doc' && ext !== 'docx') {
+      showToast("Yalnızca .doc ve .docx uzantılı dosyalar kabul edilir.", "error");
+      return;
+    }
+
+    showToast("Dosya veritabanına aktarılıyor...", "info");
+
+    const reader = new FileReader();
+    reader.onload = async function(e) {
+      const base64Data = e.target.result;
+      try {
+        await addDoc(collection(db, "kullanici_yuklenen_sorular"), {
+          userUid: auth.currentUser ? auth.currentUser.uid : "anonim",
+          userName: auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Anonim",
+          userEmail: auth.currentUser ? auth.currentUser.email : "Anonim",
+          userTier: window.currentUserTier || 'Kullanıcı',
+          fileName: fileName,
+          fileData: base64Data,
+          uploadedAt: serverTimestamp()
+        });
+
+        showToast("Soru dosyanız başarıyla yüklendi! Yönetici ekibi inceleyecektir.", "success");
+        closeUserQuestionFilePickerModal();
+      } catch(err) {
+        showToast("Dosya yüklenirken hata oluştu: " + err.message, "error");
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   window.openRedeemModal = () => document.getElementById('redeemModal').style.display = 'flex';
   window.closeRedeemModal = () => document.getElementById('redeemModal').style.display = 'none';
 
@@ -2632,7 +2801,6 @@
     } catch (err) { showToast("Aktivasyon hatası: " + err.message, "error"); }
   };
 
-  // MADDE 4: SEKMELER ARASI GEÇİŞTE TOPLU SEÇİM KUTULARININ SIFIRLANMASI
   window.switchAdminTab = function(tabName) {
     const uCb = document.getElementById('selectAllUsersCheckbox');
     if (uCb) uCb.checked = false;
@@ -2648,12 +2816,14 @@
 
     document.getElementById('adminTabUsers').style.display = tabName === 'users' ? 'flex' : 'none';
     document.getElementById('adminTabReports').style.display = tabName === 'reports' ? 'flex' : 'none';
+    document.getElementById('adminTabUploadedQuestions').style.display = tabName === 'uploadedQuestions' ? 'flex' : 'none';
     document.getElementById('adminTabChat').style.display = tabName === 'chat' ? 'flex' : 'none';
     document.getElementById('adminTabLicenses').style.display = tabName === 'licenses' ? 'block' : 'none';
     document.getElementById('adminTabSettings').style.display = tabName === 'settings' ? 'block' : 'none';
     
     document.getElementById('tabUsersBtn').className = tabName === 'users' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
     document.getElementById('tabReportsBtn').className = tabName === 'reports' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
+    document.getElementById('tabUploadedQuestionsBtn').className = tabName === 'uploadedQuestions' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
     document.getElementById('tabChatBtn').className = tabName === 'chat' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
     document.getElementById('tabLicensesBtn').className = tabName === 'licenses' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
     document.getElementById('tabSettingsBtn').className = tabName === 'settings' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
@@ -2661,6 +2831,7 @@
     document.getElementById('adminSearchBoxWrapper').style.display = tabName === 'users' ? 'block' : 'none';
 
     if (tabName === 'reports') loadAdminQuestionReports();
+    if (tabName === 'uploadedQuestions') loadAdminUploadedQuestions();
     if (tabName === 'chat') loadAdminChatList();
   };
 
@@ -2690,7 +2861,6 @@
 
   window.filterAdminUsersSearch = () => renderUserRows();
 
-  // MADDE 2: UYARI SAYISI VE YILDIZLARIN TABLODA GÖSTERİLMESİ
   function renderUserRows() {
     const tbody = document.getElementById('adminUserTableBody');
     tbody.innerHTML = '';
@@ -2826,7 +2996,6 @@
     await fetchAndRenderUsers(currentCategoryFilter);
   };
 
-  // MADDE 2: KULLANICIYI UYARMA İŞLEMLERİ (ADMIN MODAL)
   window.openAdminWarnUserModal = function(userUid, userName, messageText = "") {
     currentWarnUserUid = userUid;
     currentWarnUserName = userName;
@@ -2875,7 +3044,6 @@
     }
   };
 
-  // AKTİVİTE TAKİBİ
   window.viewUserActivities = async function(uid, email) {
     currentInspectedUserUid = uid;
     document.getElementById('activityModal').style.display = 'flex';
@@ -2995,7 +3163,7 @@
 
   window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
 
-  // KULLANICI HATALI BİLDİRİMLERİM KONTROL ET & YANITLANANLARI SİLME ÖZELLİĞİ
+  // MADDE 1: KULLANICI HATALI BİLDİRİMLERİM MODALİ (TEK KART KİLENME, DİNAMİK BUTON VE WHATSAPP SOHBET FORMATI)
   window.openUserReportsModal = async function() {
     document.getElementById('userReportsModal').style.display = 'flex';
     const box = document.getElementById('userReportsList');
@@ -3028,22 +3196,15 @@
       reports.forEach(d => {
         const isAnswered = d.status === 'yanitlandi';
         const dateStr = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('tr-TR') : '';
-
-        let optionsHTML = '';
-        if (Array.isArray(d.questionOptions) && d.questionOptions.length > 0) {
-          optionsHTML = d.questionOptions.map((opt, i) => {
-            const letter = String.fromCharCode(65 + i);
-            const isCorrect = (d.correctLetter || '').includes(letter);
-            return `<div style="padding:4px 8px; margin-top:2px; border-radius:4px; font-size:0.82rem; ${isCorrect ? 'background:#d1fae5; font-weight:bold; color:#065f46;' : 'background:#ffffff; color:#334155;'}">${letter}) ${opt}</div>`;
-          }).join('');
-        }
+        const replyDateStr = d.adminRepliedAt?.toDate ? d.adminRepliedAt.toDate().toLocaleString('tr-TR') : '';
+        const followupDateStr = d.userFollowupAt?.toDate ? d.userFollowupAt.toDate().toLocaleString('tr-TR') : '';
 
         let deleteReportBtnHTML = isAnswered ? `
           <button class="btn-action btn-finish-test" style="font-size:0.75rem; padding:3px 8px;" onclick="deleteUserReport('${d.id}')">🗑️ Bildirimi Sil</button>
         ` : '';
 
         html += `
-          <div id="userReportCard_${d.id}" style="background:#ffffff; border:1px solid var(--border); border-left:4px solid ${isAnswered ? '#10b981' : '#f59e0b'}; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:var(--shadow-sm);">
+          <div id="userReportCard_${d.id}" class="user-report-card-item" style="background:#ffffff; border:1px solid var(--border); border-left:4px solid ${isAnswered ? '#10b981' : '#f59e0b'}; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:var(--shadow-sm);">
             
             <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
               <div>
@@ -3063,46 +3224,58 @@
             </div>
 
             <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
-              <button class="btn-action btn-toggle-on" style="font-size:0.78rem; padding:4px 12px;" onclick="toggleUserReportDetail('${d.id}')">
+              <button id="toggleReportBtn_${d.id}" class="btn-action btn-toggle-on" style="font-size:0.78rem; padding:4px 12px;" onclick="toggleUserReportDetail('${d.id}')">
                 🔍 Detay İçin Tıkla
               </button>
             </div>
 
             <div id="reportDetailCard_${d.id}" style="display:none; margin-top:12px; border-top:1px dashed #cbd5e1; padding-top:12px;">
               
-              <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin-bottom:6px;">📄 Tam Soru Metni:</div>
+              <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin-bottom:6px;">📄 Sorunun Detayı ve Seçenekleri:</div>
               <div style="font-size:0.85rem; color:#334155; background:#f8fafc; padding:10px; border-radius:6px; margin-bottom:10px; white-space:pre-line;">${d.questionText}</div>
 
-              ${optionsHTML ? `
-                <div style="font-size:0.85rem; font-weight:bold; color:#0f172a; margin-bottom:4px;">Seçenekler:</div>
-                <div style="background:#f1f5f9; padding:8px; border-radius:6px; margin-bottom:10px;">${optionsHTML}</div>
-              ` : ''}
-
-              <div style="background:#eff6ff; padding:8px 12px; border-radius:6px; font-size:0.83rem; color:#1e40af; margin-bottom:8px;">
-                ✔ <strong>Sistemdeki Doğru Cevap:</strong> ${d.correctLetter || 'Belirtilmedi'} | 
-                👉 <strong>Sizin Doğru Dediğiniz Şık:</strong> ${d.userSuggestedOption || 'Belirtilmedi'}
-              </div>
-
-              <div style="font-size:0.83rem; color:#475569; background:#fff; border:1px solid #e2e8f0; padding:8px; border-radius:6px; margin-bottom:10px;">
-                📝 <strong>Sizin İtiraz Açıklamanız:</strong> ${d.userComment || 'Açıklama girilmedi.'}
-              </div>
-
-              ${isAnswered ? `
-                <div style="background:#f0fdf4; border:1px solid #bbf7d0; padding:10px; border-radius:6px; font-size:0.85rem; color:#166534; margin-bottom:10px;">
-                  <strong>👨‍⚕️ Yöneticinin Cevabı:</strong> ${d.adminReply}
+              <!-- KRONOLOJİK WHATSAPP TARZI SOHBET AKIŞI -->
+              <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin:14px 0 8px 0;">💬 Mesajlaşma Geçmişi:</div>
+              
+              <div class="whatsapp-container" style="height:auto; max-height:360px; margin-bottom:12px;">
+                <div class="whatsapp-header" style="font-size:0.82rem; padding:8px 12px;">
+                  <span>📋 Bildirim & Yanıt Akışı</span>
                 </div>
-              ` : ''}
+                <div class="whatsapp-messages" style="padding:12px;">
+                  
+                  <!-- 1. MESAJ: İLK BİLDİRİM (KULLANICI) -->
+                  <div class="chat-bubble sent">
+                    <div style="font-weight:bold; font-size:0.75rem; color:#065f46; margin-bottom:2px;">Siz (Hatalı Soru Bildirimi)</div>
+                    <div>👉 <strong>Önerilen Şık:</strong> ${d.userSuggestedOption || 'Belirtilmedi'}</div>
+                    <div style="margin-top:4px;">📝 <strong>İtiraz Açıklaması:</strong> ${d.userComment || 'Açıklama belirtilmedi.'}</div>
+                    <div class="chat-meta"><span>${dateStr}</span></div>
+                  </div>
 
-              ${d.userFollowup ? `
-                <div style="background:#fef3c7; border:1px solid #fde68a; padding:8px; border-radius:6px; font-size:0.82rem; color:#92400e; margin-bottom:10px;">
-                  💬 <strong>Sizin Son Takip Cevabınız:</strong> ${d.userFollowup}
+                  <!-- 2. MESAJ: YÖNETİCİ YANITI (YÖNETİCİ) -->
+                  ${isAnswered ? `
+                    <div class="chat-bubble received">
+                      <div style="font-weight:bold; font-size:0.75rem; color:#1e40af; margin-bottom:2px;">👨‍⚕️ Yönetici Yanıtı</div>
+                      <div>${d.adminReply}</div>
+                      <div class="chat-meta"><span>${replyDateStr || dateStr}</span></div>
+                    </div>
+                  ` : ''}
+
+                  <!-- 3. MESAJ: KULLANICI TAKİP MESAJI (KULLANICI) -->
+                  ${d.userFollowup ? `
+                    <div class="chat-bubble sent">
+                      <div style="font-weight:bold; font-size:0.75rem; color:#065f46; margin-bottom:2px;">Siz (Takip Cevabı)</div>
+                      <div>${d.userFollowup}</div>
+                      <div class="chat-meta"><span>${followupDateStr || dateStr}</span></div>
+                    </div>
+                  ` : ''}
+
                 </div>
-              ` : ''}
+              </div>
 
               ${isAnswered ? `
                 <div style="display:flex; gap:8px; margin-top:8px;">
-                  <input type="text" id="userFollowupInput_${d.id}" class="modern-input" style="padding:4px 8px; font-size:0.8rem;" placeholder="Yönetici yanıtına cevabınızı yazın...">
-                  <button class="btn-action btn-toggle-on" style="padding:4px 10px; font-size:0.8rem;" onclick="sendUserFollowup('${d.id}')">Gönder</button>
+                  <input type="text" id="userFollowupInput_${d.id}" class="modern-input" style="padding:6px 10px; font-size:0.82rem;" placeholder="Yönetici yanıtına takip mesajı yazın...">
+                  <button class="btn-action btn-toggle-on" style="padding:6px 14px; font-size:0.82rem;" onclick="sendUserFollowup('${d.id}')">Gönder ➔</button>
                 </div>
               ` : ''}
 
@@ -3118,9 +3291,25 @@
     }
   };
 
+  // MADDE 1: DETAYLARA TIKLAYINCA DİĞER BİLDİRİMLERİ GİZLEME VE BUTON YAZISINI "DETAYI KAPAT" YAPMA
   window.toggleUserReportDetail = function(id) {
     const card = document.getElementById(`reportDetailCard_${id}`);
-    if (card) card.style.display = card.style.display === 'none' ? 'block' : 'none';
+    const btn = document.getElementById(`toggleReportBtn_${id}`);
+    const allCards = document.querySelectorAll('.user-report-card-item');
+
+    if (!card) return;
+
+    if (card.style.display === 'none') {
+      allCards.forEach(c => {
+        if (c.id !== `userReportCard_${id}`) c.style.display = 'none';
+      });
+      card.style.display = 'block';
+      if (btn) btn.innerText = '🔍 Detayı Kapat';
+    } else {
+      allCards.forEach(c => c.style.display = 'block');
+      card.style.display = 'none';
+      if (btn) btn.innerText = '🔍 Detay İçin Tıkla';
+    }
   };
 
   window.closeUserReportsModal = () => document.getElementById('userReportsModal').style.display = 'none';
@@ -3152,7 +3341,6 @@
     } catch(err) { showToast("Hata: " + err.message, "error"); }
   };
 
-  // ADMİN BİLDİRİM DETAYLARI VE YÖNETİMİ (MADDE 2: UYAR BUTONU EKLENDİ)
   async function loadAdminQuestionReports() {
     const box = document.getElementById('adminQuestionReportsList');
     box.innerHTML = '<p style="text-align:center; color:#64748b;">Bildirimler yükleniyor...</p>';
@@ -3253,6 +3441,90 @@
     } catch(err) { box.innerHTML = `<span style="color:red;">Hata: ${err.message}</span>`; }
   }
 
+  // MADDE 4: YÜKLENEN SORU DOSYALARINI ADMİN PANELİNDE LİSTELEME VE İNDİRME
+  async function loadAdminUploadedQuestions() {
+    const box = document.getElementById('adminUploadedQuestionsList');
+    box.innerHTML = '<p style="text-align:center; color:#64748b;">Yüklenen sorular listeleniyor...</p>';
+
+    try {
+      const snap = await getDocs(collection(db, "kullanici_yuklenen_sorular"));
+
+      if (snap.empty) {
+        box.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">Henüz kullanıcılar tarafından soru dosyası yüklenmemiş.</p>';
+        return;
+      }
+
+      let files = [];
+      snap.forEach(docSnap => files.push({ id: docSnap.id, ...docSnap.data() }));
+
+      files.sort((a, b) => {
+        const timeA = a.uploadedAt?.toDate ? a.uploadedAt.toDate().getTime() : 0;
+        const timeB = b.uploadedAt?.toDate ? b.uploadedAt.toDate().getTime() : 0;
+        return timeB - timeA;
+      });
+
+      let html = '';
+      files.forEach(f => {
+        const dateStr = f.uploadedAt?.toDate ? f.uploadedAt.toDate().toLocaleString('tr-TR') : 'Tarih Belirtilmedi';
+
+        html += `
+          <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid #2563eb; border-radius:8px; padding:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <div style="font-weight:bold; font-size:0.9rem; color:#0f172a;">📄 ${f.fileName}</div>
+              <div style="font-size:0.8rem; color:#64748b; margin-top:3px;">
+                👤 <strong>Yükleyen:</strong> ${f.userName} (${f.userEmail}) | <strong>Üyelik:</strong> ${f.userTier} | 📅 <strong>Tarih:</strong> ${dateStr}
+              </div>
+            </div>
+
+            <div style="display:flex; gap:8px;">
+              <button class="btn-action btn-toggle-on" style="font-size:0.8rem; padding:6px 14px; background:#10b981 !important; border-color:#059669 !important;" onclick="downloadUploadedQuestionFile('${f.id}', '${f.fileName}')">
+                📥 Tek Tıkla İndir
+              </button>
+              <button class="btn-action btn-finish-test" style="font-size:0.8rem; padding:6px 12px;" onclick="deleteUploadedQuestionFile('${f.id}')">
+                🗑️ Sil
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      box.innerHTML = html;
+    } catch(err) {
+      box.innerHTML = `<span style="color:red;">Hata: ${err.message}</span>`;
+    }
+  }
+
+  window.downloadUploadedQuestionFile = async function(docId, fileName) {
+    try {
+      const docSnap = await getDoc(doc(db, "kullanici_yuklenen_sorular", docId));
+      if (!docSnap.exists()) { showToast("Dosya bulunamadı.", "error"); return; }
+      
+      const fileData = docSnap.data().fileData;
+      if (!fileData) { showToast("Dosya verisi eksik.", "error"); return; }
+
+      const link = document.createElement('a');
+      link.href = fileData;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Dosya indiriliyor...", "success");
+    } catch(err) {
+      showToast("İndirme hatası: " + err.message, "error");
+    }
+  };
+
+  window.deleteUploadedQuestionFile = async function(docId) {
+    if (!confirm("Bu yüklenen soru dosyasını silmek istediğinize emin misiniz?")) return;
+    try {
+      await deleteDoc(doc(db, "kullanici_yuklenen_sorular", docId));
+      showToast("Soru dosyası kaydı silindi.", "success");
+      loadAdminUploadedQuestions();
+    } catch(err) {
+      showToast("Silme hatası: " + err.message, "error");
+    }
+  };
+
   window.toggleSelectAllReports = function(masterCb) {
     document.querySelectorAll('.report-row-checkbox').forEach(cb => cb.checked = masterCb.checked);
   };
@@ -3313,7 +3585,6 @@
     loadAdminQuestionReports();
   };
 
-  // MADDE 1: MODERN BİLDİRİM SİLME UYARI MODALİ UYGULAMASI
   window.promptDeleteSingleAdminReport = function(docId) {
     reportsToDeleteTarget = [docId];
     document.getElementById('deleteReportsWarningText').innerHTML = `Seçilen <strong>1 adet hatalı soru bildirimi</strong> sistemden kalıcı olarak silinecektir.`;
@@ -3343,7 +3614,6 @@
     loadAdminQuestionReports();
   };
 
-  // KULLANICI MESAJLARI & WHATSAPP (MADDE 2: UYAR BUTONU EKLENDİ)
   window.openUserChatModal = function() {
     if (!auth.currentUser) { showToast("Lütfen önce giriş yapınız.", "warning"); return; }
     document.getElementById('userChatModal').style.display = 'flex';
@@ -3686,7 +3956,6 @@
     showToast(`${days} Günlük ${tier} kodu üretildi.`, "success");
   };
 
-  // MADDE 3: FİREBASE'E YÖNETİCİ KULLANICI ADI & ŞİFRE KAYDI
   window.changeAdminPassword = async function() {
     const newU = document.getElementById('adminNewUsernameInput').value.trim();
     const oldP = document.getElementById('adminOldPassInput').value.trim();
