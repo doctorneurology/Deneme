@@ -3373,29 +3373,34 @@ window.uploadQuestionFile = async function() {
     document.querySelectorAll('.user-row-checkbox').forEach(cb => cb.checked = masterCb.checked);
   };
 
-  window.applyBulkAction = async function() {
-    const action = document.getElementById('bulkActionSelect').value;
-    const selectedCbs = Array.from(document.querySelectorAll('.user-row-checkbox:checked')).map(cb => cb.value);
-    if (!action || selectedCbs.length === 0) { showToast("Lütfen yetki ve en az bir kullanıcı seçiniz.", "warning"); return; }
+window.applyBulkAction = async function() {
+  if (!window.isAdminSessionActive && (!window.currentUserData || window.currentUserData.rol !== 'admin')) {
+    showToast("Bu işlemi yapmaya yetkiniz bulunmamaktadır!", "error");
+    return;
+  }
 
-    if (action === 'DELETE') {
-      userToDeleteTarget = selectedCbs;
-      document.getElementById('adminConfirmDeleteModal').style.display = 'flex';
-    } else {
-      for (let uid of selectedCbs) {
-        if (action === 'Engellendi') {
-          await updateDoc(doc(db, "kullanicilar", uid), {
-            durum: "Engellendi",
-            engellenmeSuresiText: "Süresiz / Kalıcı (Toplu İşlem)"
-          });
-        } else {
-          await updateDoc(doc(db, "kullanicilar", uid), { durum: action });
-        }
+  const action = document.getElementById('bulkActionSelect').value;
+  const selectedCbs = Array.from(document.querySelectorAll('.user-row-checkbox:checked')).map(cb => cb.value);
+  if (!action || selectedCbs.length === 0) { showToast("Lütfen yetki ve en az bir kullanıcı seçiniz.", "warning"); return; }
+
+  if (action === 'DELETE') {
+    userToDeleteTarget = selectedCbs;
+    document.getElementById('adminConfirmDeleteModal').style.display = 'flex';
+  } else {
+    for (let uid of selectedCbs) {
+      if (action === 'Engellendi') {
+        await updateDoc(doc(db, "kullanicilar", uid), {
+          durum: "Engellendi",
+          engellenmeSuresiText: "Süresiz / Kalıcı (Toplu İşlem)"
+        });
+      } else {
+        await updateDoc(doc(db, "kullanicilar", uid), { durum: action });
       }
-      showToast(`${selectedCbs.length} kullanıcının durumu ${action} olarak güncellendi.`, "success");
-      await fetchAndRenderUsers(currentCategoryFilter);
     }
-  };
+    showToast(`${selectedCbs.length} kullanıcının durumu ${action} olarak güncellendi.`, "success");
+    await fetchAndRenderUsers(currentCategoryFilter);
+  }
+};
 
   window.promptDeleteUser = function(uid) {
     userToDeleteTarget = [uid];
@@ -3405,25 +3410,30 @@ window.uploadQuestionFile = async function() {
 
   window.closeAdminConfirmDeleteModal = () => document.getElementById('adminConfirmDeleteModal').style.display = 'none';
 
-  window.executeUserDeletion = async function() {
-    const enteredPass = document.getElementById('deleteConfirmAdminPassword').value.trim();
-    let currentAdminPass = "noroloji2026";
-    try {
-      const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
-      if (cfgSnap.exists() && cfgSnap.data().sifre) currentAdminPass = cfgSnap.data().sifre;
-    } catch(e) {}
+window.executeUserDeletion = async function() {
+  if (!window.isAdminSessionActive && (!window.currentUserData || window.currentUserData.rol !== 'admin')) {
+    showToast("Bu işlemi yapmaya yetkiniz bulunmamaktadır!", "error");
+    return;
+  }
 
-    if (enteredPass !== currentAdminPass) { showToast("Hatalı yönetici şifresi! Silme iptal edildi.", "error"); return; }
+  const enteredPass = document.getElementById('deleteConfirmAdminPassword').value.trim();
+  let currentAdminPass = "noroloji2026";
+  try {
+    const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
+    if (cfgSnap.exists() && cfgSnap.data().sifre) currentAdminPass = cfgSnap.data().sifre;
+  } catch(e) {}
 
-    if (Array.isArray(userToDeleteTarget)) {
-      for (let uid of userToDeleteTarget) {
-        await deleteDoc(doc(db, "kullanicilar", uid));
-      }
-      showToast(`${userToDeleteTarget.length} kullanıcı veritabanından kalıcı olarak silindi.`, "success");
+  if (enteredPass !== currentAdminPass) { showToast("Hatalı yönetici şifresi! Silme iptal edildi.", "error"); return; }
+
+  if (Array.isArray(userToDeleteTarget)) {
+    for (let uid of userToDeleteTarget) {
+      await deleteDoc(doc(db, "kullanicilar", uid));
     }
-    window.closeAdminConfirmDeleteModal();
-    await fetchAndRenderUsers(currentCategoryFilter);
-  };
+    showToast(`${userToDeleteTarget.length} kullanıcı veritabanından kalıcı olarak silindi.`, "success");
+  }
+  window.closeAdminConfirmDeleteModal();
+  await fetchAndRenderUsers(currentCategoryFilter);
+};
 
   window.openAdminWarnUserModal = function(userUid, userName, messageText = "") {
     currentWarnUserUid = userUid;
