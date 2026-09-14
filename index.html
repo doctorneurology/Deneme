@@ -118,7 +118,7 @@
     }
 
     .user-profile-badge {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 10px;
       background: #f1f5f9;
@@ -268,11 +268,6 @@
       border-bottom: 2px solid var(--surface);
       padding-bottom: 20px;
       margin-bottom: 28px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
     }
 
     .panel-title {
@@ -779,6 +774,39 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      position: relative;
+    }
+
+    /* MADDE 2 YENİLİK: WHATSAPP TARZI EMOJI PICKER POPUP */
+    .emoji-picker-popup {
+      position: absolute;
+      bottom: 54px;
+      left: 10px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.25);
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 6px;
+      z-index: 2000;
+      max-height: 180px;
+      overflow-y: auto;
+    }
+
+    .emoji-picker-popup span {
+      font-size: 1.35rem;
+      cursor: pointer;
+      text-align: center;
+      padding: 4px;
+      border-radius: 6px;
+      transition: background 0.15s;
+      user-select: none;
+    }
+
+    .emoji-picker-popup span:hover {
+      background: #f1f5f9;
     }
 
     .unread-badge-dot {
@@ -812,7 +840,6 @@
       border-top: 6px solid #ef4444;
     }
 
-    /* MODERN SÜRÜKLE BIRAK YÜKLEME ALANI */
     .file-drop-area {
       border: 2px dashed #cbd5e1;
       border-radius: 12px;
@@ -828,7 +855,6 @@
       background: #eff6ff;
     }
 
-    /* EKSİK CEVAP ANAHTARI VE ÇÖZÜM AÇIKLAMASI BİÇİMLENDİRMELERİ */
     .answer-key-card {
       margin-top: 25px;
       padding: 15px;
@@ -919,7 +945,7 @@
 </head>
 <body>
 
-  <!-- MADDE 4: SORU GÖNDERME KURAL VE BİLGİLENDİRME MODALİ -->
+  <!-- SORU GÖNDERME KURAL MODALİ -->
   <div id="userQuestionUploadRulesModal" class="modal-overlay no-print" style="display: none; z-index: 28500;">
     <div class="modal-card" style="max-width: 560px; width: 92%; border-top: 6px solid #2563eb;">
       <div class="modal-title" style="color: #1e40af;">📤 Soru Gönderme Paneli ve Kuralları</div>
@@ -956,7 +982,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     </div>
   </div>
 
-  <!-- MADDE 3 YENİLİK: MODERN SÜRÜKLE BIRAK KULLANICI DOSYA SEÇME MODALİ -->
+  <!-- SÜRÜKLE BIRAK KULLANICI DOSYA SEÇME MODALİ -->
   <div id="userQuestionFilePickerModal" class="modal-overlay no-print" style="display: none; z-index: 28600;">
     <div class="modal-card" style="max-width: 480px; width: 90%;">
       <div class="modal-title" style="justify-content: space-between;">
@@ -1092,7 +1118,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     </div>
   </div>
 
-  <!-- MADDE 3: KULLANICI / WHATSAPP İLETİŞİM MODALİ -->
+  <!-- MADDE 2 YENİLİK: KULLANICI / WHATSAPP İLETİŞİM MODALİ (EMOJİ DESTEKLİ) -->
   <div id="userChatModal" class="modal-overlay no-print" style="display: none; z-index: 26000;" onclick="if(event.target===this) closeUserChatModal()">
     <div class="modal-card" style="max-width: 550px; width: 94%; padding: 18px;">
       <div class="modal-title" style="justify-content: space-between; margin-bottom: 12px;">
@@ -1108,6 +1134,30 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           Yükleniyor...
         </div>
         <div class="whatsapp-footer">
+          <!-- EMOJİ SEÇİCİ POPUP (KULLANICI) -->
+          <div id="userEmojiPicker" class="emoji-picker-popup" style="display: none;">
+            <span onclick="insertEmoji('userChatMessageInput', '😀', 'userEmojiPicker')">😀</span>
+            <span onclick="insertEmoji('userChatMessageInput', '😂', 'userEmojiPicker')">😂</span>
+            <span onclick="insertEmoji('userChatMessageInput', '😊', 'userEmojiPicker')">😊</span>
+            <span onclick="insertEmoji('userChatMessageInput', '😍', 'userEmojiPicker')">😍</span>
+            <span onclick="insertEmoji('userChatMessageInput', '🙏', 'userEmojiPicker')">🙏</span>
+            <span onclick="insertEmoji('userChatMessageInput', '👍', 'userEmojiPicker')">👍</span>
+            <span onclick="insertEmoji('userChatMessageInput', '👎', 'userEmojiPicker')">👎</span>
+            <span onclick="insertEmoji('userChatMessageInput', '🧠', 'userEmojiPicker')">🧠</span>
+            <span onclick="insertEmoji('userChatMessageInput', '👨‍⚕️', 'userEmojiPicker')">👨‍⚕️</span>
+            <span onclick="insertEmoji('userChatMessageInput', '🩺', 'userEmojiPicker')">🩺</span>
+            <span onclick="insertEmoji('userChatMessageInput', '💊', 'userEmojiPicker')">💊</span>
+            <span onclick="insertEmoji('userChatMessageInput', '⚠️', 'userEmojiPicker')">⚠️</span>
+            <span onclick="insertEmoji('userChatMessageInput', '✅', 'userEmojiPicker')">✅</span>
+            <span onclick="insertEmoji('userChatMessageInput', '❌', 'userEmojiPicker')">❌</span>
+            <span onclick="insertEmoji('userChatMessageInput', '❓', 'userEmojiPicker')">❓</span>
+            <span onclick="insertEmoji('userChatMessageInput', '🎉', 'userEmojiPicker')">🎉</span>
+            <span onclick="insertEmoji('userChatMessageInput', '🔥', 'userEmojiPicker')">🔥</span>
+            <span onclick="insertEmoji('userChatMessageInput', '👏', 'userEmojiPicker')">👏</span>
+          </div>
+
+          <button class="btn-action" style="padding: 6px 10px; font-size: 1.1rem; background: transparent; border: none;" onclick="toggleEmojiPicker('userEmojiPicker')">😊</button>
+          <!-- MADDE 3 YENİLİK: ENTER TUŞU DESTEĞİ -->
           <input type="text" id="userChatMessageInput" class="modern-input" style="flex:1;" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter') sendUserChatMessage()">
           <button class="btn-action btn-toggle-on" onclick="sendUserChatMessage()">Gönder ➔</button>
         </div>
@@ -1148,7 +1198,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     </div>
   </div>
 
-  <!-- MADDE 2 YENİLİK: ÇIKTI SAYFASI VE BAŞLIK DÜZENLEME MODALİ -->
+  <!-- ÇIKTI SAYFASI VE BAŞLIK DÜZENLEME MODALİ -->
   <div id="headerCustomizerModal" class="modal-overlay no-print" style="display: none; z-index: 28000;" onclick="if(event.target===this) closeHeaderCustomizerModal()">
     <div class="modal-card" style="max-width: 480px; width: 92%;">
       <div class="modal-title" style="justify-content: space-between; color: #1e293b;">
@@ -1444,7 +1494,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           </div>
         </div>
 
-        <!-- SEKME - KULLANICILAR TARAFINDAN YÜKLENEN SORULAR (ADMIN) -->
+        <!-- SEKME: YÜKLENEN SORULAR -->
         <div id="adminTabUploadedQuestions" style="display: none; flex: 1; flex-direction: column; overflow: hidden;">
           <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border);">
             <span style="font-size: 0.85rem; color: #475569; font-weight: 600;">📥 Kullanıcılar tarafından sisteme yüklenen .doc ve .docx uzantılı soru dosyaları listesi:</span>
@@ -1568,44 +1618,49 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     <div id="configScreen" class="config-screen">
       <div class="config-card">
         
-        <div class="panel-header" style="position: relative;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
+        <!-- MADDE 1 YENİLİK: DÜZENLENMİŞ VE HİZALANMIŞ PANEL ÜST BİLGİ ALANI -->
+        <div class="panel-header" style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
+          
+          <!-- SATIR 1: EN ÜSTTE SOLDAB AŞLIK VE SAĞDA STATUS DOT -->
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div class="panel-title">
               <span>🧠</span> Nöroloji Soru Hazırlama Paneli
             </div>
-            
-            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-              <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Edildiği"></span>
-              
-              <button id="btnRedeemLicense" class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openRedeemModal()">
-                🔑 Lisans Kodu Kullan
-              </button>
-
-              <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openAdminModal()">
-                ⚙️ Yönetici Paneli
-              </button>
-
-              <button id="btnUploadUserQuestion" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #2563eb; color: white; border-color: #1d4ed8;" onclick="openUserQuestionUploadModal()">
-                📤 Soru Gönder (Doc/Docx)
-              </button>
-
-              <button id="btnCheckMyReports" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #0284c7; color: white; border-color: #0369a1;" onclick="openUserReportsModal()">
-                📋 Hatalı Soru Bildirimlerimi Kontrol Et
-              </button>
-
-              <button id="btnContactAdmin" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #059669; color: white; border-color: #047857;" onclick="openUserChatModal()">
-                💬👨‍⚕️ Yönetici ile Canlı Destek
-              </button>
-            </div>
+            <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Edildiği"></span>
           </div>
           
-          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+          <!-- SATIR 2: KULLANICI ADI SOYADI, YETKİ VE ÇIKIŞ TUŞU -->
+          <div>
             <div class="user-profile-badge">
               <span class="user-name-target">...</span>
               <span id="userTierBadge" style="padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0; color: #475569;">Ücretsiz</span>
               <button class="btn-logout-sm btn-logout-action">Çıkış</button>
             </div>
           </div>
+
+          <!-- SATIR 3: BİRAZ BOŞLUK SONRASI TEK SATIRDA SIRALANMIŞ AKSİYON BUTONLARI -->
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%; margin-top: 4px;">
+            <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openAdminModal()">
+              ⚙️ Yönetici Paneli
+            </button>
+
+            <button id="btnRedeemLicense" class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openRedeemModal()">
+              🔑 Lisans Kodu Kullan
+            </button>
+
+            <button id="btnUploadUserQuestion" class="btn-action" style="font-size: 0.78rem; padding: 6px 12px; background: #2563eb; color: white; border-color: #1d4ed8;" onclick="openUserQuestionUploadModal()">
+              📤 Soru Gönder (Doc/Docx)
+            </button>
+
+            <button id="btnCheckMyReports" class="btn-action" style="font-size: 0.78rem; padding: 6px 12px; background: #0284c7; color: white; border-color: #0369a1;" onclick="openUserReportsModal()">
+              📋 Hatalı Soru Bildirimlerimi Kontrol Et
+            </button>
+
+            <button id="btnContactAdmin" class="btn-action" style="font-size: 0.78rem; padding: 6px 12px; background: #059669; color: white; border-color: #047857;" onclick="openUserChatModal()">
+              💬👨‍⚕️ Yönetici ile Canlı Destek
+            </button>
+          </div>
+
         </div>
 
         <div class="config-grid">
@@ -1696,7 +1751,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
             📖 Çözüm Açıklamaları: <strong>GİZLİ</strong> 🙈
           </button>
 
-          <!-- MADDE 2 YENİLİK: ÇIKTI SAYFASI DÜZENLEME BUTONU -->
           <button id="btnHeaderCustomizer" class="btn-action" style="background: #8b5cf6 !important; border-color: #7c3aed !important; color: white !important;" onclick="openHeaderCustomizerModal()">
             🎨 Çıktı Sayfası Düzenle
           </button>
@@ -1725,7 +1779,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
         <div class="a4-sheet" id="a4PaperSheet">
           
-          <!-- MADDE 1 & MADDE 2 YENİLİK: DİNAMİK VE TEMİZLENSİN DÜZENLENEBİLİR SINAV BAŞLIĞI -->
           <div class="exam-header" id="examHeaderBlock">
             <div class="exam-main-title" id="examMainTitleDisplay">NÖROLOJİ SORU HAZIRLAMA PANELİ</div>
             <table>
@@ -1805,6 +1858,28 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
   let currentKeyMode = 'none';
   let currentExpMode = 'none';
 
+  // MADDE 2 YENİLİK: EMOJİ EKLEME VE POPUP KONTROL FONKSİYONLARI
+  function toggleEmojiPicker(pickerId) {
+    const picker = document.getElementById(pickerId);
+    if (picker) {
+      picker.style.display = (picker.style.display === 'none' || !picker.style.display) ? 'grid' : 'none';
+    }
+  }
+  window.toggleEmojiPicker = toggleEmojiPicker;
+
+  function insertEmoji(inputId, emoji, pickerId) {
+    const input = document.getElementById(inputId);
+    if (input) {
+      input.value += emoji;
+      input.focus();
+    }
+    if (pickerId) {
+      const picker = document.getElementById(pickerId);
+      if (picker) picker.style.display = 'none';
+    }
+  }
+  window.insertEmoji = insertEmoji;
+
   function cleanMultiParagraphs(text) {
     if (!text) return '';
     return String(text).replace(/\n\s*\n/g, '\n').trim();
@@ -1865,7 +1940,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     return { displayName: cleanKonuName, konuKey: normStr(cleanKonuName), zorlukKey: detectedZorluk };
   }
 
-  // TIBBİ ŞIKLARDA PARSE/BÖLÜNME RİSKİNİ ÖNLEYEN GÜVENLİ TEMİZLEYİCİ
   function extractAndCleanOptions(q) {
     if (!q || !q.secenekler) return [];
     if (Array.isArray(q.secenekler) && q.secenekler.length > 1) {
@@ -2234,7 +2308,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
   }
   window.cycleExpMode = cycleExpMode;
 
-  // MADDE 2 YENİLİK: DİNAMİK BAŞLIK VE ELEMAN DÜZENLEME
   function updateHeaderLayout() {
     const titleInput = document.getElementById('customTitleInput')?.value || '';
     const showTitle = document.getElementById('chkShowTitle')?.checked;
@@ -2626,7 +2699,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
   };
   window.closeAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'none';
 
-  // MADDE 3 YENİLİK: SÜRÜKLE BIRAK DOSYA SÜRÜKLEME DINLEYICILERI
   function initDragAndDrop() {
     const dropArea = document.getElementById('dragDropArea');
     if (!dropArea) return;
@@ -3522,7 +3594,8 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
               ${isAnswered ? `
                 <div style="display:flex; gap:8px; margin-top:8px;">
-                  <input type="text" id="userFollowupInput_${d.id}" class="modern-input" style="padding:6px 10px; font-size:0.82rem;" placeholder="Yönetici yanıtına takip mesajı yazın...">
+                  <!-- MADDE 3 YENİLİK: ENTER TUŞU İLE MESAJ GÖNDERME -->
+                  <input type="text" id="userFollowupInput_${d.id}" class="modern-input" style="padding:6px 10px; font-size:0.82rem;" placeholder="Yönetici yanıtına takip mesajı yazın..." onkeydown="if(event.key==='Enter') sendUserFollowup('${d.id}')">
                   <button class="btn-action btn-toggle-on" style="padding:6px 14px; font-size:0.82rem;" onclick="sendUserFollowup('${d.id}')">Gönder ➔</button>
                 </div>
               ` : ''}
@@ -3675,7 +3748,8 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
               <div id="editReplyForm_${d.id}" style="${isAnswered ? 'display:none;' : ''} margin-top:6px;">
                 <div style="display:flex; gap:8px;">
-                  <input type="text" id="adminReplyInput_${d.id}" class="modern-input" style="padding:4px 8px; font-size:0.8rem;" placeholder="Yanıtınızı yazın..." value="${d.adminReply || ''}">
+                  <!-- MADDE 3 YENİLİK: ENTER TUŞU İLE YANITLA -->
+                  <input type="text" id="adminReplyInput_${d.id}" class="modern-input" style="padding:4px 8px; font-size:0.8rem;" placeholder="Yanıtınızı yazın..." value="${d.adminReply || ''}" onkeydown="if(event.key==='Enter') replyToQuestionReport('${d.id}')">
                   <button class="btn-action btn-toggle-on" style="padding:4px 12px; font-size:0.8rem;" onclick="replyToQuestionReport('${d.id}')">Kaydet & Gönder</button>
                 </div>
               </div>
@@ -4056,6 +4130,30 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         Mesajlar yükleniyor...
       </div>
       <div class="whatsapp-footer">
+        <!-- MADDE 2 YENİLİK: YÖNETİCİ EMOJİ SEÇİCİ POPUP -->
+        <div id="adminEmojiPicker" class="emoji-picker-popup" style="display: none;">
+          <span onclick="insertEmoji('adminChatMessageInput', '😀', 'adminEmojiPicker')">😀</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '😂', 'adminEmojiPicker')">😂</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '😊', 'adminEmojiPicker')">😊</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '😍', 'adminEmojiPicker')">😍</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '🙏', 'adminEmojiPicker')">🙏</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '👍', 'adminEmojiPicker')">👍</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '👎', 'adminEmojiPicker')">👎</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '🧠', 'adminEmojiPicker')">🧠</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '👨‍⚕️', 'adminEmojiPicker')">👨‍⚕️</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '🩺', 'adminEmojiPicker')">🩺</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '💊', 'adminEmojiPicker')">💊</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '⚠️', 'adminEmojiPicker')">⚠️</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '✅', 'adminEmojiPicker')">✅</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '❌', 'adminEmojiPicker')">❌</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '❓', 'adminEmojiPicker')">❓</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '🎉', 'adminEmojiPicker')">🎉</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '🔥', 'adminEmojiPicker')">🔥</span>
+          <span onclick="insertEmoji('adminChatMessageInput', '👏', 'adminEmojiPicker')">👏</span>
+        </div>
+
+        <button class="btn-action" style="padding: 6px 10px; font-size: 1.1rem; background: transparent; border: none;" onclick="toggleEmojiPicker('adminEmojiPicker')">😊</button>
+        <!-- MADDE 3 YENİLİK: ENTER TUŞU İLE MESAJ GÖNDERME -->
         <input type="text" id="adminChatMessageInput" class="modern-input" style="flex:1;" placeholder="Kullanıcıya yanıt yazın..." onkeydown="if(event.key==='Enter') sendAdminChatMessage()">
         <button class="btn-action btn-toggle-on" onclick="sendAdminChatMessage()">Gönder ➔</button>
       </div>
