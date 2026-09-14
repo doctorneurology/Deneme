@@ -2221,22 +2221,13 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     if (sheet) sheet.classList.remove('interactive-mode', 'analysis-mode');
   }
 
-  function proceedToExam() {
-    const userTier = window.currentUserTier || 'Ücretsiz';
-    const todayStr = new Date().toISOString().split('T')[0];
-    const createdKey = `usage_created_${todayStr}`;
-    let todayCreated = parseInt(localStorage.getItem(createdKey) || '0');
+  async function proceedToExam() {
+const count = parseInt(document.getElementById('questionCount').value) || 10;
 
-    let maxLimit = 30;
-    if (userTier === 'VIP' || userTier === 'Premium') maxLimit = 500;
-    else if (userTier === 'Deneme') maxLimit = 100;
-
-    const count = parseInt(document.getElementById('questionCount').value) || 10;
-
-    if (todayCreated + count > maxLimit) {
-      showToast(`Günlük soru oluşturma limitinize ulaştınız! (${userTier} Hak: ${maxLimit}, Bugün Üretilen: ${todayCreated})`, 'error');
-      return;
-    }
+if (window.checkDailyLimitAndIncrement) {
+  const isAllowed = await window.checkDailyLimitAndIncrement('create', count);
+  if (!isAllowed) return;
+}
 
     const selectedTopics = Array.from(document.querySelectorAll('.topic-check:checked')).map(cb => cb.value);
     const selectedDiffs = Array.from(document.querySelectorAll('.diff-check:checked')).map(cb => cb.value);
@@ -2263,8 +2254,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       if (document.getElementById('shuffleToggle').checked) filtered = shuffle(filtered);
       currentQuestionsList = filtered.slice(0, count);
     }
-
-    localStorage.setItem(createdKey, (todayCreated + currentQuestionsList.length).toString());
 
     currentKeyMode = document.getElementById('keyModeSelect').value;
     currentExpMode = document.getElementById('expModeSelect').value;
@@ -2629,21 +2618,14 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     if (panel) panel.style.display = 'none';
   };
 
-  function triggerPrint() {
-    const userTier = window.currentUserTier || 'Ücretsiz';
-    const userEmail = window.currentUserEmail || 'Kullanıcı Maili';
-    const todayStr = new Date().toISOString().split('T')[0];
-    const printKey = `usage_printed_${todayStr}`;
-    let todayPrinted = parseInt(localStorage.getItem(printKey) || '0');
+  async function triggerPrint() {
+const userTier = window.currentUserTier || 'Ücretsiz';
+const userEmail = window.currentUserEmail || 'Kullanıcı Maili';
 
-    let printLimit = 10;
-    if (userTier === 'VIP' || userTier === 'Premium') printLimit = 100;
-    else if (userTier === 'Deneme') printLimit = 50;
-
-    if (todayPrinted + currentQuestionsList.length > printLimit) {
-      showToast(`Günlük soru yazdırma limitinize ulaştınız! (${userTier} Hak: ${printLimit})`, 'error');
-      return;
-    }
+if (window.checkDailyLimitAndIncrement) {
+  const isAllowed = await window.checkDailyLimitAndIncrement('print', currentQuestionsList.length);
+  if (!isAllowed) return;
+}
 
     const screenWatermark = document.getElementById('screenWatermark');
     const printWatermark = document.getElementById('printWatermark');
@@ -2662,8 +2644,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       screenWatermark.innerText = text;
       screenWatermark.style.display = 'block';
     }
-
-    localStorage.setItem(printKey, (todayPrinted + currentQuestionsList.length).toString());
 
     if (window.logUserActivity) {
       window.logUserActivity("Baskı / PDF Alındı", `${currentQuestionsList.length} Soru Çıktı Alındı.`);
@@ -2988,7 +2968,44 @@ const provider = new GoogleAuthProvider();
       document.getElementById('mainApp').style.display = 'none';
     }
   });
+window.checkDailyLimitAndIncrement = async function(type, count) {
+  if (!auth.currentUser) return true;
+  if (window.isAdminSessionActive || (window.currentUserData && window.currentUserData.rol === 'admin')) return true;
 
+  const uid = auth.currentUser.uid;
+  const userRef = doc(db, "kullanicilar", uid);
+  const userSnap = await getDoc(userRef);
+  if (!userSnap.exists()) return true;
+
+  const userData = userSnap.data();
+  const userTier = userData.durum || 'Ücretsiz';
+  const todayStr = new Date().toISOString().split('T')[0];
+
+  let maxLimit = 30;
+  if (type === 'create') {
+    if (userTier === 'VIP' || userTier === 'Premium') maxLimit = 500;
+    else if (userTier === 'Deneme') maxLimit = 100;
+  } else if (type === 'print') {
+    maxLimit = 10;
+    if (userTier === 'VIP' || userTier === 'Premium') maxLimit = 100;
+    else if (userTier === 'Deneme') maxLimit = 50;
+  }
+
+  const fieldName = type === 'create' ? 'gunlukUretim' : 'gunlukYazdirma';
+  const limitData = userData[fieldName] || { tarih: "", adet: 0 };
+  let currentAdet = (limitData.tarih === todayStr) ? (limitData.adet || 0) : 0;
+
+  if (currentAdet + count > maxLimit) {
+    showToast(`Günlük ${type === 'create' ? 'soru oluşturma' : 'yazdırma'} limitinize ulaştınız! (${userTier} Hak: ${maxLimit}, Bugün Kullanılan: ${currentAdet})`, 'error');
+    return false;
+  }
+
+  await updateDoc(userRef, {
+    [fieldName]: { tarih: todayStr, adet: currentAdet + count }
+  });
+
+  return true;
+};
   window.logUserActivity = async function(islemTipi, detaylar) {
     if (!auth.currentUser) return;
     try {
