@@ -2887,13 +2887,22 @@ const provider = new GoogleAuthProvider();
     });
   }
 
-  window.acknowledgeUserWarning = async function() {
+window.acknowledgeUserWarning = async function() {
     if (!auth.currentUser) return;
-    await updateDoc(doc(db, "kullanicilar", auth.currentUser.uid), {
-      "activeWarning.read": true
-    });
-    document.getElementById('userWarningNoticeModal').style.display = 'none';
-    showToast("Uyarı okundu olarak işaretlendi.", "info");
+    try {
+      // Önce ekranı gizle ki takılı kalmış hissi vermesin
+      document.getElementById('userWarningNoticeModal').style.display = 'none';
+      
+      // Veritabanını güncelle
+      await updateDoc(doc(db, "kullanicilar", auth.currentUser.uid), {
+        "activeWarning.read": true,
+        "hasWarning": false
+      });
+      
+      if (window.showToast) showToast("Uyarı okundu olarak işaretlendi.", "info");
+    } catch (err) {
+      console.error("Uyarı kapatılırken hata:", err);
+    }
   };
 
   onAuthStateChanged(auth, async (user) => {
@@ -3743,7 +3752,7 @@ window.executeUserDeletion = async function() {
               </div>
 
               <div style="display:flex; gap:8px; margin-top:8px;">
-                <input type="text" id="userReportFollowupInput_${d.id}" class="modern-input" style="padding:6px 10px; font-size:0.82rem;" placeholder="Yöneticiye ek yanıt yazın..." onkeydown="if(event.key==='Enter') sendUserReportChatMessage('${d.id}')">
+                <input type="text" id="userReportFollowupInput_${d.id}" class="modern-input" style="padding:6px 10px; font-size:0.82rem;" placeholder="Yöneticiye ek yanıt yazın..." onkeydown="if(event.key==='Enter'){ event.preventDefault(); sendUserReportChatMessage('${d.id}')">
                 <button class="btn-action btn-toggle-on" style="padding:6px 14px; font-size:0.82rem;" onclick="sendUserReportChatMessage('${d.id}')">Gönder ➔</button>
               </div>
 
@@ -4678,7 +4687,7 @@ window.renderAdminChatList = function() {
     }
   };
 
-  window.changeUserStatus = async function(uid, newStatus) {
+window.changeUserStatus = async function(uid, newStatus) {
     if (!newStatus) return;
     if (newStatus === 'Engellendi') {
       await updateDoc(doc(db, "kullanicilar", uid), {
@@ -4686,9 +4695,15 @@ window.renderAdminChatList = function() {
         engellenmeSuresiText: "Süresiz / Kalıcı (Yönetici Tarafından)"
       });
     } else {
-      await updateDoc(doc(db, "kullanicilar", uid), { durum: newStatus });
+      // Engeli kaldır veya başka bir role geçir (Yıldızları ve engel nedenlerini de sıfırlar)
+      await updateDoc(doc(db, "kullanicilar", uid), { 
+        durum: newStatus,
+        uyariSayisi: 0,
+        engellenmeNedenleri: [],
+        activeWarning: null
+      });
     }
-    showToast(`Durum "${newStatus}" olarak güncellendi.`, 'success');
+    showToast(`Kullanıcı durumu "${newStatus}" olarak güncellendi ve kısıtlamaları kaldırıldı.`, 'success');
     await fetchAndRenderUsers(currentCategoryFilter);
   };
 </script>
