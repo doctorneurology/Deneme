@@ -1447,11 +1447,11 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
             <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
               <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted);">Sıralama:</span>
-              <select id="adminUserSortSelect" class="modern-input" style="padding: 4px 8px; font-size: 0.8rem; width: auto;" onchange="renderUserRows()">
-                <option value="stars_desc" selected>⭐ Yıldız (Çoktan Aza)</option>
-                <option value="name_asc">🔤 Ad Soyad (A-Z)</option>
-                <option value="role_desc">👑 Yetki / Rol Sırası</option>
-              </select>
+<select id="adminUserSortSelect" class="modern-input" style="padding: 4px 8px; font-size: 0.8rem; width: auto;" onchange="renderUserRows()">
+  <option value="role_desc" selected>👑 Yetki / Rol Sırası</option>
+  <option value="stars_desc">🚨 Uyarı/Kırmızı Alarm (Çoktan Aza)</option>
+  <option value="name_asc">🔤 Ad Soyad (A-Z)</option>
+</select>
 
               <div style="display: flex; gap: 4px; flex-wrap: wrap; margin-left: 6px;">
                 <button class="btn-action filter-btn btn-toggle-on" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Tümü', this)">Tümü</button>
@@ -1564,7 +1564,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           <h4 style="margin-bottom: 12px; color: var(--bg-dark);">🔐 Yönetici Kullanıcı Adı & Şifre Güncelle</h4>
           <div class="input-control">
             <label>Yeni Yönetici Kullanıcı Adı:</label>
-            <input type="text" id="adminNewUsernameInput" class="modern-input" placeholder="admin">
+            <input type="text" id="adminNewUsernameInput" class="modern-input" placeholder="Yeni Kullanıcı Adı">
           </div>
           <div class="input-control">
             <label>Mevcut Şifre:</label>
@@ -2861,12 +2861,12 @@ const provider = new GoogleAuthProvider();
     return false;
   }
 
-  function updateMainUserStarsDisplay(warnCount) {
-    const starsSpan = document.getElementById('mainUserWarningStars');
-    if (starsSpan) {
-      starsSpan.innerHTML = (warnCount > 0) ? '⭐'.repeat(warnCount) : '';
-    }
+function updateMainUserStarsDisplay(warnCount) {
+  const starsSpan = document.getElementById('mainUserWarningStars');
+  if (starsSpan) {
+    starsSpan.innerHTML = (warnCount > 0) ? '🚨'.repeat(warnCount) : '';
   }
+}
 
   function listenUserWarnings(uid) {
     if (warningUnsubscribe) warningUnsubscribe();
@@ -3283,7 +3283,7 @@ if (tabName === 'users' || tabName === 'reports' || tabName === 'chat') {
       list = list.filter(u => (u.adSoyad || '').toLocaleLowerCase('tr-TR').includes(queryStr) || (u.email || '').toLocaleLowerCase('tr-TR').includes(queryStr));
     }
 
-    const sortVal = document.getElementById('adminUserSortSelect')?.value || 'stars_desc';
+    const sortVal = document.getElementById('adminUserSortSelect')?.value || 'role_desc';
 
     list.sort((a, b) => {
       if (sortVal === 'stars_desc') {
@@ -3319,22 +3319,23 @@ if (tabName === 'users' || tabName === 'reports' || tabName === 'chat') {
       const statusText = isRoleAdmin ? '👑 Yönetici' : (u.durum || 'Ücretsiz');
       const formattedName = formatNameSurname(u.adSoyad || u.email);
 
-      const warnCount = u.uyariSayisi || 0;
-      let starsHTML = '';
-      if (warnCount > 0) {
-        starsHTML = '⭐'.repeat(warnCount);
-        if (warnCount >= 3) starsHTML += ' <span style="color:#ef4444; font-weight:bold;" title="3 veya üzeri uyarı aldı!">🚨</span>';
-      } else {
-        starsHTML = '<span style="color:#cbd5e1;">-</span>';
-      }
+// Aratın ve Değiştirin:
+const warnCount = u.uyariSayisi || 0;
+let starsHTML = '';
+if (warnCount > 0) {
+  starsHTML = '🚨'.repeat(warnCount);
+  if (warnCount >= 3) starsHTML += ' <span style="color:#ef4444; font-weight:bold;" title="3 veya üzeri uyarı aldı!">⛔</span>';
+} else {
+  starsHTML = '<span style="color:#cbd5e1;">-</span>';
+}
 
-      let warnControlsHTML = '';
-      if (!isRoleAdmin && warnCount > 0) {
-        warnControlsHTML = `
-          <button class="btn-action" style="font-size:0.7rem; padding:2px 6px; background:#fef3c7; color:#b45309; border-color:#fde68a;" onclick="reduceUserWarning('${u.id}')" title="1 Yıldız/Uyarı Eksilt">➖ Yıldız Sil</button>
-          <button class="btn-action" style="font-size:0.7rem; padding:2px 6px; background:#fee2e2; color:#dc2626; border-color:#fca5a5;" onclick="clearUserWarnings('${u.id}')" title="Tüm Yıldızları Sıfırla">🧹 Sıfırla</button>
-        `;
-      }
+let warnControlsHTML = '';
+if (!isRoleAdmin && warnCount > 0) {
+  warnControlsHTML = `
+    <button class="btn-action" style="font-size:0.7rem; padding:2px 6px; background:#fee2e2; color:#dc2626; border-color:#fca5a5;" onclick="reduceUserWarning('${u.id}')" title="1 Alarm/Uyarı Eksilt">➖ Alarm Sil</button>
+    <button class="btn-action" style="font-size:0.7rem; padding:2px 6px; background:#fee2e2; color:#dc2626; border-color:#fca5a5;" onclick="clearUserWarnings('${u.id}')" title="Tüm Alarmları Sıfırla">🧹 Sıfırla</button>
+  `;
+}
 
       let actionTdHTML = `
         <button class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;" onclick="viewUserActivities('${u.id}', '${u.email}')">👁️ Aktivite</button>
@@ -3380,31 +3381,31 @@ if (tabName === 'users' || tabName === 'reports' || tabName === 'chat') {
     });
   }
 
-  window.reduceUserWarning = async function(uid) {
-    try {
-      const uRef = doc(db, "kullanicilar", uid);
-      const uSnap = await getDoc(uRef);
-      if (uSnap.exists()) {
-        const currentWarns = uSnap.data().uyariSayisi || 0;
-        const newWarns = Math.max(0, currentWarns - 1);
-        await updateDoc(uRef, { uyariSayisi: newWarns });
-        showToast("Kullanıcının 1 uyarısı/yıldızı silindi.", "success");
-        await fetchAndRenderUsers(currentCategoryFilter);
-      }
-    } catch(err) {
-      showToast("Yıldız silinirken hata oluştu: " + err.message, "error");
-    }
-  };
-
-  window.clearUserWarnings = async function(uid) {
-    try {
-      await updateDoc(doc(db, "kullanicilar", uid), { uyariSayisi: 0 });
-      showToast("Kullanıcının tüm uyari yıldızları temizlendi.", "success");
+window.reduceUserWarning = async function(uid) {
+  try {
+    const uRef = doc(db, "kullanicilar", uid);
+    const uSnap = await getDoc(uRef);
+    if (uSnap.exists()) {
+      const currentWarns = uSnap.data().uyariSayisi || 0;
+      const newWarns = Math.max(0, currentWarns - 1);
+      await updateDoc(uRef, { uyariSayisi: newWarns });
+      showToast("Kullanıcının 1 uyarısı/alarmı silindi.", "success");
       await fetchAndRenderUsers(currentCategoryFilter);
-    } catch(err) {
-      showToast("Yıldızlar temizlenirken hata oluştu: " + err.message, "error");
     }
-  };
+  } catch(err) {
+    showToast("İşlem sırasında hata oluştu: " + err.message, "error");
+  }
+};
+
+window.clearUserWarnings = async function(uid) {
+  try {
+    await updateDoc(doc(db, "kullanicilar", uid), { uyariSayisi: 0 });
+    showToast("Kullanıcının tüm uyarı alarmları temizlendi.", "success");
+    await fetchAndRenderUsers(currentCategoryFilter);
+  } catch(err) {
+    showToast("İşlem sırasında hata oluştu: " + err.message, "error");
+  }
+};
 
   window.toggleSelectAllUsers = function(masterCb) {
     document.querySelectorAll('.user-row-checkbox').forEach(cb => cb.checked = masterCb.checked);
@@ -4649,43 +4650,66 @@ window.renderAdminChatList = function() {
     showToast(`${days} Günlük ${tier} kodu üretildi.`, "success");
   };
 
-  window.changeAdminPassword = async function() {
-    const newU = document.getElementById('adminNewUsernameInput').value.trim();
-    const oldP = document.getElementById('adminOldPassInput').value.trim();
-    const newP = document.getElementById('adminNewPassInput').value.trim();
-    const confirmP = document.getElementById('adminNewPassConfirmInput').value.trim();
-    
-    let currentAdminPass = "noroloji2026";
-    try {
-      const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
-      if (cfgSnap.exists() && cfgSnap.data().sifre) currentAdminPass = cfgSnap.data().sifre;
-    } catch(e) {}
+window.changeAdminPassword = async function() {
+  const newU = document.getElementById('adminNewUsernameInput').value.trim();
+  const oldP = document.getElementById('adminOldPassInput').value.trim();
+  const newP = document.getElementById('adminNewPassInput').value.trim();
+  const confirmP = document.getElementById('adminNewPassConfirmInput').value.trim();
+  
+  let currentAdminPass = "noroloji2026";
+  try {
+    const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
+    if (cfgSnap.exists() && cfgSnap.data().sifre) currentAdminPass = cfgSnap.data().sifre;
+  } catch(e) {}
 
-    if (oldP !== currentAdminPass) { showToast("Mevcut şifre hatalı!", "error"); return; }
-    if (newP && newP.length < 4) { showToast("Yeni şifre en az 4 karakter olmalıdır.", "warning"); return; }
-    if (newP && newP !== confirmP) { showToast("Yeni şifreler uyuşmuyor!", "warning"); return; }
+  // Herhangi bir değişiklik yapmak için mevcut şifre zorunludur
+  if (!oldP) { 
+    showToast("İşlem yapabilmek için mevcut şifrenizi girmeniz gerekmektedir!", "warning"); 
+    return; 
+  }
 
-    try {
-      let updatePayload = {};
-      if (newU) updatePayload.kullaniciAdi = newU;
-      if (newP) updatePayload.sifre = newP;
+  if (oldP !== currentAdminPass) { 
+    showToast("Mevcut şifre hatalı!", "error"); 
+    return; 
+  }
 
-      if (Object.keys(updatePayload).length === 0) {
-        showToast("Lütfen güncellemek istediğiniz bilgileri giriniz.", "warning");
-        return;
-      }
-
-      await setDoc(doc(db, "sistem_ayarlari", "admin_config"), updatePayload, { merge: true });
-      showToast("Yönetici kullanıcı adı ve şifreniz kalıcı olarak Firebase'e kaydedildi.", "success");
-      
-      document.getElementById('adminNewUsernameInput').value = '';
-      document.getElementById('adminOldPassInput').value = '';
-      document.getElementById('adminNewPassInput').value = '';
-      document.getElementById('adminNewPassConfirmInput').value = '';
-    } catch(err) {
-      showToast("Bilgiler kaydedilirken hata oluştu: " + err.message, "error");
+  // Şifre değiştirilmek isteniyorsa denetimler
+  if (newP) {
+    if (newP === oldP) {
+      showToast("Yeni şifre, mevcut şifreniz ile aynı olamaz!", "error");
+      return;
     }
-  };
+    if (newP.length < 4) { 
+      showToast("Yeni şifre en az 4 karakter olmalıdır.", "warning"); 
+      return; 
+    }
+    if (newP !== confirmP) { 
+      showToast("Yeni şifreler uyuşmuyor!", "warning"); 
+      return; 
+    }
+  }
+
+  if (!newU && !newP) {
+    showToast("Lütfen güncellemek istediğiniz kullanıcı adı veya yeni şifreyi giriniz.", "warning");
+    return;
+  }
+
+  try {
+    let updatePayload = {};
+    if (newU) updatePayload.kullaniciAdi = newU;
+    if (newP) updatePayload.sifre = newP;
+
+    await setDoc(doc(db, "sistem_ayarlari", "admin_config"), updatePayload, { merge: true });
+    showToast("Yönetici bilgileriniz başarıyla güncellendi.", "success");
+    
+    document.getElementById('adminNewUsernameInput').value = '';
+    document.getElementById('adminOldPassInput').value = '';
+    document.getElementById('adminNewPassInput').value = '';
+    document.getElementById('adminNewPassConfirmInput').value = '';
+  } catch(err) {
+    showToast("Bilgiler kaydedilirken hata oluştu: " + err.message, "error");
+  }
+};
 
 window.changeUserStatus = async function(uid, newStatus) {
     if (!newStatus) return;
