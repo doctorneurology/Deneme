@@ -2738,6 +2738,10 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       showToast("Lütfen sadece .doc veya .docx formatında dosya seçiniz.", "error");
       return;
     }
+    if (file.size > 700 * 1024) {
+  showToast("Dosya boyutu 700 KB sınırını aşıyor! Lütfen dosya içindeki resimleri küçülterek veya çıkararak tekrar deneyiniz.", "error");
+  return;
+}
     currentSelectedUploadFile = file;
     document.getElementById('dropZoneContent').style.display = 'none';
     const fileInfo = document.getElementById('selectedFileInfo');
@@ -2763,7 +2767,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, addDoc, deleteDoc, query, where, onSnapshot, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
+  import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
   const firebaseConfig = {
     apiKey: "AIzaSyB8dZe4nDuvU2SjH2FzX3r7sgGtohE6mo4",
     authDomain: "noroloji-soru-bankasi.firebaseapp.com",
@@ -2773,10 +2777,11 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     appId: "1:847076697635:web:f26dbbd758e9211225b396"
   };
 
-  const app = initializeApp(firebaseConfig);
-  const auth = getAuth(app);
-  const db = getFirestore(app);
-  const provider = new GoogleAuthProvider();
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const storage = getStorage(app);
+const provider = new GoogleAuthProvider();
 
   let currentUserData = null;
   let allFetchedUsers = [];
@@ -3074,46 +3079,45 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     document.getElementById('userQuestionFilePickerModal').style.display = 'none';
   };
 
-  window.uploadQuestionFile = async function() {
-    const file = currentSelectedUploadFile || (document.getElementById('userQuestionFileInput').files ? document.getElementById('userQuestionFileInput').files[0] : null);
-    
-    if (!file) {
-      showToast("Lütfen yüklenecek bir dosya seçiniz.", "warning");
-      return;
-    }
+window.uploadQuestionFile = async function() {
+  const file = currentSelectedUploadFile || (document.getElementById('userQuestionFileInput').files ? document.getElementById('userQuestionFileInput').files[0] : null);
+  
+  if (!file) {
+    showToast("Lütfen yüklenecek bir dosya seçiniz.", "warning");
+    return;
+  }
 
-    const fileName = file.name;
-    const ext = fileName.split('.').pop().toLowerCase();
+  const fileName = file.name;
+  const ext = fileName.split('.').pop().toLowerCase();
 
-    if (ext !== 'doc' && ext !== 'docx') {
-      showToast("Yalnızca .doc ve .docx uzantılı dosyalar kabul edilir.", "error");
-      return;
-    }
+  if (ext !== 'doc' && ext !== 'docx') {
+    showToast("Yalnızca .doc ve .docx uzantılı dosyalar kabul edilir.", "error");
+    return;
+  }
 
-    showToast("Dosya veritabanına aktarılıyor...", "info");
+  showToast("Dosya yükleniyor...", "info");
 
-    const reader = new FileReader();
-    reader.onload = async function(e) {
-      const base64Data = e.target.result;
-      try {
-        await addDoc(collection(db, "kullanici_yuklenen_sorular"), {
-          userUid: auth.currentUser ? auth.currentUser.uid : "anonim",
-          userName: auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Anonim",
-          userEmail: auth.currentUser ? auth.currentUser.email : "Anonim",
-          userTier: window.currentUserTier || 'Kullanıcı',
-          fileName: fileName,
-          fileData: base64Data,
-          uploadedAt: serverTimestamp()
-        });
+  try {
+    const fileRef = ref(storage, `soru_dosyalari/${Date.now()}_${fileName}`);
+    await uploadBytes(fileRef, file);
+    const downloadURL = await getDownloadURL(fileRef);
 
-        showToast("Soru dosyanız başarıyla yüklendi! Yönetici ekibi inceleyecektir.", "success");
-        closeUserQuestionFilePickerModal();
-      } catch(err) {
-        showToast("Dosya yüklenirken hata oluştu: " + err.message, "error");
-      }
-    };
-    reader.readAsDataURL(file);
-  };
+    await addDoc(collection(db, "kullanici_yuklenen_sorular"), {
+      userUid: auth.currentUser ? auth.currentUser.uid : "anonim",
+      userName: auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Anonim",
+      userEmail: auth.currentUser ? auth.currentUser.email : "Anonim",
+      userTier: window.currentUserTier || 'Kullanıcı',
+      fileName: fileName,
+      fileData: downloadURL,
+      uploadedAt: serverTimestamp()
+    });
+
+    showToast("Soru dosyanız başarıyla yükledi!", "success");
+    closeUserQuestionFilePickerModal();
+  } catch(err) {
+    showToast("Dosya yüklenirken hata oluştu: " + err.message, "error");
+  }
+};
 
   window.openRedeemModal = () => document.getElementById('redeemModal').style.display = 'flex';
   window.closeRedeemModal = () => document.getElementById('redeemModal').style.display = 'none';
@@ -3939,77 +3943,101 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     }
   };
 
-  async function loadAdminUploadedQuestions() {
-    const box = document.getElementById('adminUploadedQuestionsList');
-    box.innerHTML = '<p style="text-align:center; color:#64748b;">Yüklenen sorular listeleniyor...</p>';
+async function loadAdminUploadedQuestions() {
+  const box = document.getElementById('adminUploadedQuestionsList');
+  box.innerHTML = '<p style="text-align:center; color:#64748b;">Yüklenen sorular listeleniyor...</p>';
 
-    try {
-      const snap = await getDocs(collection(db, "kullanici_yuklenen_sorular"));
+  try {
+    const snap = await getDocs(collection(db, "kullanici_yuklenen_sorular"));
 
-      if (snap.empty) {
-        box.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">Henüz kullanıcılar tarafından soru dosyası yüklenmemiş.</p>';
-        return;
+    if (snap.empty) {
+      box.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">Henüz kullanıcılar tarafından soru dosyası yüklenmemiş.</p>';
+      return;
+    }
+
+    let files = [];
+    const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+    const now = Date.now();
+
+    // 7 günü dolan dosyaları temizle, kalanları listele
+    for (let docSnap of snap.docs) {
+      const f = docSnap.data();
+      if (f.downloadedAt?.toDate) {
+        const downloadedTime = f.downloadedAt.toDate().getTime();
+        if (now - downloadedTime > sevenDaysMs) {
+          await deleteDoc(doc(db, "kullanici_yuklenen_sorular", docSnap.id));
+          continue;
+        }
       }
+      files.push({ id: docSnap.id, ...f });
+    }
 
-      let files = [];
-      snap.forEach(docSnap => files.push({ id: docSnap.id, ...docSnap.data() }));
+    if (files.length === 0) {
+      box.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">Süresi dolan tüm dosyalar otomatik temizlendi. Aktif dosya yok.</p>';
+      return;
+    }
 
-      files.sort((a, b) => {
-        const timeA = a.uploadedAt?.toDate ? a.uploadedAt.toDate().getTime() : 0;
-        const timeB = b.uploadedAt?.toDate ? b.uploadedAt.toDate().getTime() : 0;
-        return timeB - timeA;
-      });
+    files.sort((a, b) => {
+      const timeA = a.uploadedAt?.toDate ? a.uploadedAt.toDate().getTime() : 0;
+      const timeB = b.uploadedAt?.toDate ? b.uploadedAt.toDate().getTime() : 0;
+      return timeB - timeA;
+    });
 
-      let html = '';
-      files.forEach(f => {
-        const dateStr = f.uploadedAt?.toDate ? f.uploadedAt.toDate().toLocaleString('tr-TR') : 'Tarih Belirtilmedi';
+    let html = '';
+    files.forEach(f => {
+      const dateStr = f.uploadedAt?.toDate ? f.uploadedAt.toDate().toLocaleString('tr-TR') : 'Tarih Belirtilmedi';
+      const downloadStatus = f.downloadedAt?.toDate ? ` (📥 İndirildi - 7 gün sonra silinecek)` : '';
 
-        html += `
-          <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid #2563eb; border-radius:8px; padding:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-            <div>
-              <div style="font-weight:bold; font-size:0.9rem; color:#0f172a;">📄 ${f.fileName}</div>
-              <div style="font-size:0.8rem; color:#64748b; margin-top:3px;">
-                👤 <strong>Yükleyen:</strong> ${f.userName} (${f.userEmail}) | <strong>Üyelik:</strong> ${f.userTier} | 📅 <strong>Tarih:</strong> ${dateStr}
-              </div>
-            </div>
-
-            <div style="display:flex; gap:8px;">
-              <button class="btn-action btn-toggle-on" style="font-size:0.8rem; padding:6px 14px; background:#10b981 !important; border-color:#059669 !important;" onclick="downloadUploadedQuestionFile('${f.id}', '${f.fileName}')">
-                📥 Tek Tıkla İndir
-              </button>
-              <button class="btn-action btn-finish-test" style="font-size:0.8rem; padding:6px 12px;" onclick="deleteUploadedQuestionFile('${f.id}')">
-                🗑️ Sil
-              </button>
+      html += `
+        <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid #2563eb; border-radius:8px; padding:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+          <div>
+            <div style="font-weight:bold; font-size:0.9rem; color:#0f172a;">📄 ${f.fileName} <span style="font-size:0.75rem; color:#d97706;">${downloadStatus}</span></div>
+            <div style="font-size:0.8rem; color:#64748b; margin-top:3px;">
+              👤 <strong>Yükleyen:</strong> ${f.userName} (${f.userEmail}) | <strong>Üyelik:</strong> ${f.userTier} | 📅 <strong>Tarih:</strong> ${dateStr}
             </div>
           </div>
-        `;
-      });
 
-      box.innerHTML = html;
-    } catch(err) {
-      box.innerHTML = `<span style="color:red;">Hata: ${err.message}</span>`;
-    }
+          <div style="display:flex; gap:8px;">
+            <button class="btn-action btn-toggle-on" style="font-size:0.8rem; padding:6px 14px; background:#10b981 !important; border-color:#059669 !important;" onclick="downloadUploadedQuestionFile('${f.id}', '${f.fileName}')">
+              📥 Tek Tıkla İndir
+            </button>
+            <button class="btn-action btn-finish-test" style="font-size:0.8rem; padding:6px 12px;" onclick="deleteUploadedQuestionFile('${f.id}')">
+              🗑️ Sil
+            </button>
+          </div>
+        </div>
+      `;
+    });
+
+    box.innerHTML = html;
+  } catch(err) {
+    box.innerHTML = `<span style="color:red;">Hata: ${err.message}</span>`;
   }
+}
 
-  window.downloadUploadedQuestionFile = async function(docId, fileName) {
-    try {
-      const docSnap = await getDoc(doc(db, "kullanici_yuklenen_sorular", docId));
-      if (!docSnap.exists()) { showToast("Dosya bulunamadı.", "error"); return; }
-      
-      const fileData = docSnap.data().fileData;
-      if (!fileData) { showToast("Dosya verisi eksik.", "error"); return; }
+window.downloadUploadedQuestionFile = async function(docId, fileName) {
+  try {
+    const docRef = doc(db, "kullanici_yuklenen_sorular", docId);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) { showToast("Dosya bulunamadı.", "error"); return; }
+    
+    const fileData = docSnap.data().fileData;
+    if (!fileData) { showToast("Dosya verisi eksik.", "error"); return; }
 
-      const link = document.createElement('a');
-      link.href = fileData;
-      link.download = fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showToast("Dosya indiriliyor...", "success");
-    } catch(err) {
-      showToast("İndirme hatası: " + err.message, "error");
-    }
-  };
+    // Yönetici indirdiğinde 7 günlük silme sayacı başlatılır
+    await updateDoc(docRef, { downloadedAt: serverTimestamp() });
+
+    const link = document.createElement('a');
+    link.href = fileData;
+    link.download = fileName;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    showToast("Dosya indiriliyor... (7 gün sonra veritabanından otomatik silinecektir)", "success");
+  } catch(err) {
+    showToast("İndirme hatası: " + err.message, "error");
+  }
+};
 
   window.deleteUploadedQuestionFile = async function(docId) {
     if (!confirm("Bu yüklenen soru dosyasını silmek istediğinize emin misiniz?")) return;
