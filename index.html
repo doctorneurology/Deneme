@@ -118,13 +118,13 @@
     }
 
     .user-profile-badge {
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 10px;
       background: #f1f5f9;
-      padding: 6px 12px;
+      padding: 6px 14px;
       border-radius: 20px;
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: #334155;
     }
@@ -251,7 +251,7 @@
     }
 
     .config-screen {
-      max-width: 960px;
+      max-width: 980px;
       margin: 40px auto;
       padding: 0 20px;
     }
@@ -269,10 +269,8 @@
       padding-bottom: 20px;
       margin-bottom: 28px;
       display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
+      flex-direction: column;
+      gap: 14px;
     }
 
     .panel-title {
@@ -730,14 +728,14 @@
     }
 
     .chat-bubble {
-      max-width: 80%;
-      padding: 8px 12px;
+      max-width: 82%;
+      padding: 9px 13px;
       border-radius: 10px;
       font-size: 0.88rem;
       position: relative;
       word-wrap: break-word;
       box-shadow: 0 1px 1px rgba(0,0,0,0.15);
-      line-height: 1.4;
+      line-height: 1.45;
     }
 
     .chat-bubble.sent {
@@ -761,7 +759,7 @@
       display: flex;
       justify-content: flex-end;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
     }
 
     .msg-delete-btn {
@@ -779,6 +777,21 @@
       display: flex;
       align-items: center;
       gap: 8px;
+    }
+
+    /* MODERN DROPZONE DOSYA YÜKLEME ALANI ALANI */
+    .dropzone-area {
+      border: 2px dashed #3b82f6;
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 28px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .dropzone-area:hover, .dropzone-area.dragover {
+      background: #eff6ff;
+      border-color: #1d4ed8;
     }
 
     .unread-badge-dot {
@@ -832,7 +845,17 @@
 </head>
 <body>
 
-  <!-- MADDE 4: SORU GÖNDERME KURAL VE BİLGİLENDİRME MODALİ -->
+  <!-- GLOBAL EMOJI SEÇİCİ POPUP -->
+  <div id="emojiPickerPopup" style="display: none; position: fixed; width: 290px; height: 210px; background: white; border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-lg); z-index: 35000; padding: 10px; overflow-y: auto;">
+    <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px; margin-bottom: 8px;">
+      <span style="font-size: 0.8rem; font-weight: bold; color: #475569;">Emojiler</span>
+      <button style="background: none; border: none; cursor: pointer; font-size: 0.85rem; color: #64748b;" onclick="toggleEmojiPicker(null)">✕</button>
+    </div>
+    <div id="emojiPickerGrid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; font-size: 1.25rem; text-align: center; cursor: pointer;">
+    </div>
+  </div>
+
+  <!-- SORU GÖNDERME KURAL VE BİLGİLENDİRME MODALİ -->
   <div id="userQuestionUploadRulesModal" class="modal-overlay no-print" style="display: none; z-index: 28500;">
     <div class="modal-card" style="max-width: 560px; width: 92%; border-top: 6px solid #2563eb;">
       <div class="modal-title" style="color: #1e40af;">📤 Soru Gönderme Paneli ve Kuralları</div>
@@ -882,24 +905,40 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     </div>
   </div>
 
-  <!-- MADDE 4: KULLANICI DOSYA SEÇME MODALİ -->
+  <!-- SÜRÜKLE - BIRAK MODERN DOSYA SEÇME MODALİ -->
   <div id="userQuestionFilePickerModal" class="modal-overlay no-print" style="display: none; z-index: 28600;">
-    <div class="modal-card" style="max-width: 440px; width: 90%;">
+    <div class="modal-card" style="max-width: 480px; width: 92%;">
       <div class="modal-title" style="justify-content: space-between;">
         <span>📁 Dosya Seç ve Yükle</span>
         <button class="btn-action" onclick="closeUserQuestionFilePickerModal()">✕</button>
       </div>
       
       <p style="font-size: 0.85rem; color: #475569; margin-bottom: 15px;">
-        Lütfen bilgisayarınızdan hazırdaki <strong>.doc</strong> veya <strong>.docx</strong> uzantılı soru dosyanızı seçiniz.
+        Lütfen <strong>.doc</strong> veya <strong>.docx</strong> uzantılı soru dosyanızı aşağıya sürükleyin veya bilgisayarınızdan seçin.
       </p>
 
-      <div class="input-control">
-        <label>Soru Dosyası (.doc, .docx):</label>
-        <input type="file" id="userQuestionFileInput" class="modern-input" accept=".doc,.docx">
+      <!-- MODERN DROPZONE -->
+      <div class="dropzone-area" id="dropZoneArea" onclick="document.getElementById('userQuestionFileInput').click()">
+        <div style="font-size: 2.5rem; margin-bottom: 6px; color: #2563eb;">📂</div>
+        <div style="font-weight: 700; font-size: 0.95rem; color: #1e293b; margin-bottom: 4px;">Soru Dosyanızı Buraya Sürükleyin</div>
+        <div style="font-size: 0.8rem; color: #64748b;">veya bilgisayarınızdan dosya seçmek için <strong style="color: #2563eb;">tıklayın</strong></div>
+        <div style="font-size: 0.75rem; color: #94a3b8; margin-top: 8px;">Desteklenen Formatlar: .doc, .docx</div>
+        <input type="file" id="userQuestionFileInput" style="display: none;" accept=".doc,.docx" onchange="handleFileSelect(this.files)">
       </div>
 
-      <div style="display: flex; gap: 10px; margin-top: 15px;">
+      <!-- SEÇİLEN DOSYA ÖNİZLEME KART-->
+      <div id="filePreviewContainer" style="display: none; margin-top: 14px; background: #eff6ff; border: 1px solid #bfdbfe; padding: 10px 14px; border-radius: 10px; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+          <span style="font-size: 1.5rem;">📄</span>
+          <div>
+            <div id="selectedFileName" style="font-weight: 700; font-size: 0.85rem; color: #1e40af;"></div>
+            <div id="selectedFileSize" style="font-size: 0.75rem; color: #64748b;"></div>
+          </div>
+        </div>
+        <button class="btn-action" style="padding: 3px 8px; font-size: 0.75rem; background: #ef4444; color: white;" onclick="clearSelectedFile(event)">✕ Kaldır</button>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 18px;">
         <button class="btn-action btn-print" style="flex: 1; justify-content: center;" onclick="uploadQuestionFile()">🚀 Yükle ve Gönder</button>
         <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeUserQuestionFilePickerModal()">İptal</button>
       </div>
@@ -975,7 +1014,7 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
 
   <!-- KULLANICI HATALI BİLDİRİMLERİM MODALİ -->
   <div id="userReportsModal" class="modal-overlay no-print" style="display: none; z-index: 26000;" onclick="if(event.target===this) closeUserReportsModal()">
-    <div class="modal-card" style="max-width: 750px; width: 92%; max-height: 85vh; display: flex; flex-direction: column;">
+    <div class="modal-card" style="max-width: 780px; width: 94%; max-height: 85vh; display: flex; flex-direction: column;">
       <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
         <span>📋 Hatalı Soru Bildirimlerim</span>
         <button class="btn-action" onclick="closeUserReportsModal()">✕ Kapat</button>
@@ -986,28 +1025,7 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     </div>
   </div>
 
-  <!-- TOPLU YANITLA MODALİ (ADMIN) -->
-  <div id="adminBulkReplyModal" class="modal-overlay no-print" style="display: none; z-index: 29000;" onclick="if(event.target===this) closeAdminBulkReplyModal()">
-    <div class="modal-card" style="max-width: 480px; width: 92%;">
-      <div class="modal-title" style="justify-content: space-between; color: var(--primary);">
-        <span>💬 Seçilen Bildirimleri Toplu Yanıtla</span>
-        <button class="btn-action" onclick="closeAdminBulkReplyModal()">✕</button>
-      </div>
-      <p id="bulkReplyCountText" style="font-size: 0.85rem; color: #475569; margin-bottom: 12px; font-weight: 600;"></p>
-      
-      <div class="input-control">
-        <label>Ortak Yanıt Mesajınız:</label>
-        <textarea id="adminBulkReplyText" class="modern-input" rows="4" placeholder="Seçilen tüm bildirimler için iletilecek yanıtı yazın..."></textarea>
-      </div>
-
-      <div style="display: flex; gap: 10px; margin-top: 15px;">
-        <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="executeAdminBulkReply()">🚀 Yanıtları Gönder</button>
-        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeAdminBulkReplyModal()">İptal</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- MADDE 3: KULLANICI / WHATSAPP İLETİŞİM MODALİ (EMOJİ GÜNCELLENDİ) -->
+  <!-- CANLI DESTİK SOAHBET MODALİ -->
   <div id="userChatModal" class="modal-overlay no-print" style="display: none; z-index: 26000;" onclick="if(event.target===this) closeUserChatModal()">
     <div class="modal-card" style="max-width: 550px; width: 94%; padding: 18px;">
       <div class="modal-title" style="justify-content: space-between; margin-bottom: 12px;">
@@ -1022,7 +1040,8 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
         <div id="whatsappUserMessages" class="whatsapp-messages">
           Yükleniyor...
         </div>
-        <div class="whatsapp-footer">
+        <div class="whatsapp-footer" style="position: relative;">
+          <button class="btn-action" style="padding: 6px 10px; font-size: 1.2rem; background: transparent; border: none;" onclick="toggleEmojiPicker('userChatMessageInput', event)">😀</button>
           <input type="text" id="userChatMessageInput" class="modern-input" style="flex:1;" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter') sendUserChatMessage()">
           <button class="btn-action btn-toggle-on" onclick="sendUserChatMessage()">Gönder ➔</button>
         </div>
@@ -1224,8 +1243,8 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
             <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar ve Yetkiler</button>
             <button id="tabReportsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('reports')">🚨 Hatalı Soru Bildirimleri</button>
-            <!-- MADDE 4: YÜKLENEN SORULAR SEKMESİ (ADMIN) -->
-            <button id="tabUploadedQuestionsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('uploadedQuestions')">📥 Kullanıcı Soruları</button>
+            <!-- GÜNCELLENEN SEKME ADI -->
+            <button id="tabUploadedQuestionsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('uploadedQuestions')">📥 Kullanıcıların Yüklediği Sorular</button>
             <button id="tabChatBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('chat')">💬 Kullanıcı Mesajları <span id="adminChatUnreadBadge" style="display:none;" class="unread-badge-dot"></span></button>
             <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
             <button id="tabSettingsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('settings')">🔒 Yönetici Şifre Ayarları</button>
@@ -1272,7 +1291,7 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
                   </th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">Ad Soyad</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
-                  <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: center;">Uyarı</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: center;">Uyarı Yıldızları</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">Rol / Durum</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">Aksiyonlar</th>
                 </tr>
@@ -1284,16 +1303,15 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
           </div>
         </div>
 
-        <!-- SEKME 2: HATALI SORU BİLDİRİMLERİ -->
+        <!-- SEKME 2: HATALI SORU BİLDİRİMLERİ (ADMIN SOHBET FORMATI) -->
         <div id="adminTabReports" style="display: none; flex: 1; flex-direction: column; overflow: hidden;">
           <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border); flex-wrap: wrap; gap: 10px;">
             <div style="display: flex; gap: 8px; align-items: center;">
               <input type="checkbox" id="selectAllReportsCheckbox" onchange="toggleSelectAllReports(this)">
               <span style="font-size: 0.8rem; font-weight: bold;">Tümünü Seç</span>
-              <button class="btn-action btn-toggle-on" style="font-size: 0.8rem; padding: 4px 10px;" onclick="openAdminBulkReplyModal()">💬 Seçilenleri Toplu Yanıtla</button>
               <button class="btn-action btn-finish-test" style="font-size: 0.8rem; padding: 4px 10px;" onclick="promptDeleteSelectedAdminReports()">🗑️ Seçilenleri Sil</button>
             </div>
-            <span style="font-size: 0.8rem; color: var(--text-muted);">Gelen soru bildirimlerinin tüm detaylarını ve şıklarını inceleyebilirsiniz.</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Gelen soru bildirimlerinin tüm detaylarını, şıklarını ve sohbet akışını yönetebilirsiniz.</span>
           </div>
           
           <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px;" id="adminQuestionReportsList">
@@ -1301,7 +1319,7 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
           </div>
         </div>
 
-        <!-- MADDE 4: SEKME - KULLANICILAR TARAFINDAN YÜKLENEN SORULAR (ADMIN) -->
+        <!-- SEKME: KULLANICILARIN YÜKLEDİĞİ SORULAR (ADMIN) -->
         <div id="adminTabUploadedQuestions" style="display: none; flex: 1; flex-direction: column; overflow: hidden;">
           <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border);">
             <span style="font-size: 0.85rem; color: #475569; font-weight: 600;">📥 Kullanıcılar tarafından sisteme yüklenen .doc ve .docx uzantılı soru dosyaları listesi:</span>
@@ -1421,49 +1439,52 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
       </div>
     </div>
 
-    <!-- ANA PANEL EKRANI -->
+    <!-- ANA PANEL EKRANI VE YENİ DÜZENLENMİŞ HEADER -->
     <div id="configScreen" class="config-screen">
       <div class="config-card">
         
-        <div class="panel-header" style="position: relative;">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
-            <div class="panel-title">
+        <!-- YENİ HEADER DÜZENİ -->
+        <div class="panel-header">
+          <!-- SATIR 1: EN ÜST SOLDA BAŞLIK -->
+          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+            <div class="panel-title" style="margin: 0;">
               <span>🧠</span> Nöroloji Soru Hazırlama Paneli
             </div>
-            
-            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-              <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Edildiği"></span>
-              
-              <button id="btnRedeemLicense" class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openRedeemModal()">
-                🔑 Lisans Kodu Kullan
-              </button>
-
-              <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openAdminModal()">
-                ⚙️ Yönetici Paneli
-              </button>
-
-              <!-- MADDE 4: SORU GÖNDER BUTONU (PREMIUM / VIP / ADMIN İÇİN) -->
-              <button id="btnUploadUserQuestion" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #2563eb; color: white; border-color: #1d4ed8;" onclick="openUserQuestionUploadModal()">
-                📤 Soru Gönder (Doc/Docx)
-              </button>
-
-              <button id="btnCheckMyReports" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #0284c7; color: white; border-color: #0369a1;" onclick="openUserReportsModal()">
-                📋 Hatalı Soru Bildirimlerimi Kontrol Et
-              </button>
-
-              <!-- MADDE 3: CANLI DESTİK BUTON EMOJİSİ -->
-              <button id="btnContactAdmin" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #059669; color: white; border-color: #047857;" onclick="openUserChatModal()">
-                💬👨‍⚕️ Yönetici ile Canlı Destek
-              </button>
-            </div>
+            <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Edildiği"></span>
           </div>
-          
-          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+
+          <!-- SATIR 2: KULLANICI ADI, ROL, ÇIKIŞ VE UYARI YILDIZLARI -->
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
             <div class="user-profile-badge">
               <span class="user-name-target">...</span>
               <span id="userTierBadge" style="padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0; color: #475569;">Ücretsiz</span>
               <button class="btn-logout-sm btn-logout-action">Çıkış</button>
             </div>
+            <!-- UYARI YILDIZLARI ALANI -->
+            <span id="headerUserStars" style="font-size: 1.1rem; letter-spacing: 2px;" title="Aldığınız Uyarı Yıldızları"></span>
+          </div>
+
+          <!-- SATIR 3: AKSİYON BUTONLARI TEK SATIRDA HİZALI -->
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%; margin-top: 6px;">
+            <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important; font-size: 0.82rem; padding: 8px 14px;" onclick="openAdminModal()">
+              ⚙️ Yönetici Paneli
+            </button>
+
+            <button id="btnRedeemLicense" class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important; font-size: 0.82rem; padding: 8px 14px;" onclick="openRedeemModal()">
+              🔑 Lisans Kodu Kullan
+            </button>
+
+            <button id="btnUploadUserQuestion" class="btn-action" style="font-size: 0.82rem; padding: 8px 14px; background: #2563eb; color: white; border-color: #1d4ed8;" onclick="openUserQuestionUploadModal()">
+              📤 Soru Gönder (Doc/Docx)
+            </button>
+
+            <button id="btnCheckMyReports" class="btn-action" style="font-size: 0.82rem; padding: 8px 14px; background: #0284c7; color: white; border-color: #0369a1;" onclick="openUserReportsModal()">
+              📋 Hatalı Soru Bildirimlerimi Kontrol Et
+            </button>
+
+            <button id="btnContactAdmin" class="btn-action" style="font-size: 0.82rem; padding: 8px 14px; background: #059669; color: white; border-color: #047857;" onclick="openUserChatModal()">
+              💬👨‍⚕️ Yönetici ile Canlı Destek
+            </button>
           </div>
         </div>
 
@@ -1524,7 +1545,6 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
           İlerle ve Testi Oluştur ➔
         </button>
 
-        <!-- MADDE 2: İMLA DÜZELTMESİ YAPILAN YAZI -->
         <div class="feedback-note">
           Görüş, öneri ve yanlış soru bildirimi için: <a href="mailto:kgulsen1994@gmail.com">kgulsen1994@gmail.com</a>
         </div>
@@ -1545,7 +1565,6 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
         </div>
 
         <div class="action-btn-group">
-          <!-- MADDE 5: DETAYLI KONU ANALİZİ TEKRAR AÇMA BUTONU -->
           <button id="btnOpenSideAnalysis" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important;" onclick="openSideAnalysisPanel()">
             📊 Detaylı Konu Analizi
           </button>
@@ -1644,9 +1663,55 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
   let testTimerInterval = null;
   let remainingSeconds = 0;
   let currentReportingQuestionIndex = null;
+  let selectedUploadFile = null;
 
   let currentKeyMode = 'none';
   let currentExpMode = 'none';
+
+  let currentEmojiTargetInputId = null;
+
+  function initEmojiGrid() {
+    const grid = document.getElementById('emojiPickerGrid');
+    if (!grid) return;
+    const emojis = ['😀','😂','😍','😊','🙏','👍','👎','❤️','🔥','🧠','👨‍⚕️','🎉','💯','✅','❌','⚠️','❓','💡','📌','⭐','✨','🤣','🥰','😘','🥳','😏','😢','😭','😤','🤯','😳','😱','🤔','🤫','🙄','😬','🥱','😴','😷','🤒','👋','👌','✌️','💪','🩺','💊','💉','❣️','💔','🚨','📍'];
+    grid.innerHTML = emojis.map(e => `<span onclick="insertEmoji('${e}')" style="padding:4px; border-radius:4px; transition:background 0.15s;" onmouseover="this.style.background='#f1f5f9'" onmouseout="this.style.background='transparent'">${e}</span>`).join('');
+  }
+
+  window.toggleEmojiPicker = function(inputId, event) {
+    if (event) event.stopPropagation();
+    const popup = document.getElementById('emojiPickerPopup');
+    if (!popup) return;
+    if (!inputId || (popup.style.display === 'block' && currentEmojiTargetInputId === inputId)) {
+      popup.style.display = 'none';
+      currentEmojiTargetInputId = null;
+      return;
+    }
+    currentEmojiTargetInputId = inputId;
+    popup.style.display = 'block';
+    
+    if (event && event.currentTarget) {
+      const rect = event.currentTarget.getBoundingClientRect();
+      popup.style.top = Math.max(10, rect.top - 220) + 'px';
+      popup.style.left = Math.min(window.innerWidth - 310, rect.left) + 'px';
+    }
+  };
+
+  window.insertEmoji = function(emoji) {
+    if (!currentEmojiTargetInputId) return;
+    const input = document.getElementById(currentEmojiTargetInputId);
+    if (input) {
+      input.value += emoji;
+      input.focus();
+    }
+    document.getElementById('emojiPickerPopup').style.display = 'none';
+  };
+
+  document.addEventListener('click', (e) => {
+    const popup = document.getElementById('emojiPickerPopup');
+    if (popup && popup.style.display === 'block' && !popup.contains(e.target)) {
+      popup.style.display = 'none';
+    }
+  });
 
   function cleanMultiParagraphs(text) {
     if (!text) return '';
@@ -2320,7 +2385,6 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     showToast("Analiz modu aktif.", "success");
   }
 
-  // MADDE 5: DETAYLI KONU ANALİZİ PANELİNİ TEKRAR AÇMA İŞLEVİ
   window.openSideAnalysisPanel = function() {
     const userTier = window.currentUserTier || 'Ücretsiz';
     if (userTier === 'Ücretsiz') return;
@@ -2425,6 +2489,59 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     document.getElementById('adminAuthModal').style.display = 'flex';
   };
   window.closeAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'none';
+
+  // SÜRÜKLE BIRAK HANDLER'LARI
+  document.addEventListener('DOMContentLoaded', () => {
+    initEmojiGrid();
+
+    const dropZone = document.getElementById('dropZoneArea');
+    if (dropZone) {
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault(); e.stopPropagation();
+          dropZone.classList.add('dragover');
+        }, false);
+      });
+
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault(); e.stopPropagation();
+          dropZone.classList.remove('dragover');
+        }, false);
+      });
+
+      dropZone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        if (files && files.length > 0) {
+          handleFileSelect(files);
+        }
+      }, false);
+    }
+  });
+
+  function handleFileSelect(files) {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (ext !== 'doc' && ext !== 'docx') {
+      showToast("Yalnızca .doc veya .docx dosyaları seçebilirsiniz.", "error");
+      return;
+    }
+    selectedUploadFile = file;
+    document.getElementById('selectedFileName').innerText = file.name;
+    document.getElementById('selectedFileSize').innerText = (file.size / 1024).toFixed(1) + " KB";
+    document.getElementById('filePreviewContainer').style.display = 'flex';
+  }
+  window.handleFileSelect = handleFileSelect;
+
+  function clearSelectedFile(e) {
+    if (e) e.stopPropagation();
+    selectedUploadFile = null;
+    document.getElementById('userQuestionFileInput').value = '';
+    document.getElementById('filePreviewContainer').style.display = 'none';
+  }
+  window.clearSelectedFile = clearSelectedFile;
 </script>
 
 <!-- FIREBASE & GELİŞTİRİLMİŞ MODÜL KODLARI -->
@@ -2537,6 +2654,12 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
       const data = snap.data();
 
       if (checkAndHandleBannedUser(data)) return;
+
+      const warnCount = data.uyariSayisi || 0;
+      const starsBox = document.getElementById('headerUserStars');
+      if (starsBox) {
+        starsBox.innerHTML = warnCount > 0 ? '⭐'.repeat(warnCount) : '';
+      }
 
       if (data.activeWarning && !data.activeWarning.read) {
         document.getElementById('userWarningContentBox').innerText = `🚨 Uyarı Mesajı: ${data.activeWarning.reason}`;
@@ -2706,7 +2829,6 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     }
   };
 
-  // MADDE 4: SORU GÖNDERME PANİLİ MODAL İŞLEMLERİ
   window.openUserQuestionUploadModal = function() {
     const userTier = window.currentUserTier || 'Ücretsiz';
     if (userTier === 'Ücretsiz' || userTier === 'Deneme') {
@@ -2722,7 +2844,9 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
 
   window.acceptUploadRules = function() {
     closeUserQuestionUploadRulesModal();
+    selectedUploadFile = null;
     document.getElementById('userQuestionFileInput').value = '';
+    document.getElementById('filePreviewContainer').style.display = 'none';
     document.getElementById('userQuestionFilePickerModal').style.display = 'flex';
   };
 
@@ -2731,14 +2855,18 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
   };
 
   window.uploadQuestionFile = async function() {
+    let fileToUpload = selectedUploadFile;
     const input = document.getElementById('userQuestionFileInput');
-    if (!input.files || input.files.length === 0) {
+    if (!fileToUpload && input.files && input.files.length > 0) {
+      fileToUpload = input.files[0];
+    }
+
+    if (!fileToUpload) {
       showToast("Lütfen yüklenecek bir dosya seçiniz.", "warning");
       return;
     }
 
-    const file = input.files[0];
-    const fileName = file.name;
+    const fileName = fileToUpload.name;
     const ext = fileName.split('.').pop().toLowerCase();
 
     if (ext !== 'doc' && ext !== 'docx') {
@@ -2768,7 +2896,7 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
         showToast("Dosya yüklenirken hata oluştu: " + err.message, "error");
       }
     };
-    reader.readAsDataURL(file);
+    reader.readAsDataURL(fileToUpload);
   };
 
   window.openRedeemModal = () => document.getElementById('redeemModal').style.display = 'flex';
@@ -2896,9 +3024,19 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
       let starsHTML = '';
       if (warnCount > 0) {
         starsHTML = '⭐'.repeat(Math.min(warnCount, 5));
-        if (warnCount >= 3) starsHTML += ' <span style="color:#ef4444; font-weight:bold;" title="3 veya üzeri uyarı aldı! Engelleme önerilir.">🚨</span>';
       } else {
         starsHTML = '<span style="color:#cbd5e1;">-</span>';
+      }
+
+      // YÖNETİCİ YILDIZ YÖNETİMİ BUTONLARI
+      let starControlsHTML = '';
+      if (!isRoleAdmin) {
+        starControlsHTML = `
+          <div style="display:inline-flex; align-items:center; gap:3px; margin-left:6px;">
+            <button class="btn-action" style="padding:1px 5px; font-size:0.7rem;" onclick="updateUserWarningCount('${u.id}', ${warnCount}, -1)" title="1 Yıldız Sil">-⭐</button>
+            <button class="btn-action" style="padding:1px 5px; font-size:0.7rem;" onclick="updateUserWarningCount('${u.id}', ${warnCount}, 1)" title="1 Yıldız Ekle">+⭐</button>
+          </div>
+        `;
       }
 
       let actionTdHTML = `
@@ -2932,13 +3070,25 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
         </td>
         <td style="padding: 10px; font-weight: 600;">${formattedName}</td>
         <td style="padding: 10px; color: #64748b;">${u.email}</td>
-        <td style="padding: 10px; text-align: center;">${starsHTML}</td>
+        <td style="padding: 10px; text-align: center;">${starsHTML} ${starControlsHTML}</td>
         <td style="padding: 10px;"><span style="padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0;">${statusText}</span></td>
         <td style="padding: 10px; text-align: right; display: flex; gap: 6px; justify-content: flex-end; align-items: center;">${actionTdHTML}</td>
       `;
       tbody.appendChild(row);
     });
   }
+
+  // YÖNETİCİNİN KULLANICI UYARI YILDIZLARINI SİLME / DEĞİŞTİRME FONKSİYONU
+  window.updateUserWarningCount = async function(uid, currentCount, delta) {
+    const newCount = Math.max(0, currentCount + delta);
+    try {
+      await updateDoc(doc(db, "kullanicilar", uid), { uyariSayisi: newCount });
+      showToast(`Kullanıcının uyarı yıldızı ${newCount} olarak güncellendi.`, "success");
+      await fetchAndRenderUsers(currentCategoryFilter);
+    } catch(err) {
+      showToast("Yıldız güncellenirken hata oluştu: " + err.message, "error");
+    }
+  };
 
   window.toggleSelectAllUsers = function(masterCb) {
     document.querySelectorAll('.user-row-checkbox').forEach(cb => cb.checked = masterCb.checked);
@@ -3163,7 +3313,41 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
 
   window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
 
-  // MADDE 1: KULLANICI HATALI BİLDİRİMLERİM MODALİ (TEK KART KİLENME, DİNAMİK BUTON VE WHATSAPP SOHBET FORMATI)
+  // YARDIMCI: HATALI SORU BİLDİRİMLERİ İÇİN DİZİ DÖNÜŞTÜRÜCÜ
+  function getReportMessagesList(d) {
+    if (Array.isArray(d.messages) && d.messages.length > 0) return d.messages;
+    let msgs = [];
+    if (d.userComment || d.userSuggestedOption) {
+      msgs.push({
+        id: "m_init",
+        sender: "kullanici",
+        title: "Siz (Hatalı Soru Bildirimi)",
+        text: `👉 Önerilen Şık: ${d.userSuggestedOption || 'Belirtilmedi'}\n📝 İtiraz Açıklaması: ${d.userComment || 'Açıklama belirtilmedi.'}`,
+        zamanStr: d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('tr-TR') : ''
+      });
+    }
+    if (d.adminReply) {
+      msgs.push({
+        id: "m_admin",
+        sender: "yonetici",
+        title: "👨‍⚕️ Yönetici Yanıtı",
+        text: d.adminReply,
+        zamanStr: d.adminRepliedAt?.toDate ? d.adminRepliedAt.toDate().toLocaleString('tr-TR') : ''
+      });
+    }
+    if (d.userFollowup) {
+      msgs.push({
+        id: "m_followup",
+        sender: "kullanici",
+        title: "Siz (Takip Cevabı)",
+        text: d.userFollowup,
+        zamanStr: d.userFollowupAt?.toDate ? d.userFollowupAt.toDate().toLocaleString('tr-TR') : ''
+      });
+    }
+    return msgs;
+  }
+
+  // KULLANICI HATALI BİLDİRİMLERİM MODALİ (TAM ŞIKLAR, SÜREKLİ SOHBET AKIŞI & SİLME KURALLARI)
   window.openUserReportsModal = async function() {
     document.getElementById('userReportsModal').style.display = 'flex';
     const box = document.getElementById('userReportsList');
@@ -3196,12 +3380,41 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
       reports.forEach(d => {
         const isAnswered = d.status === 'yanitlandi';
         const dateStr = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('tr-TR') : '';
-        const replyDateStr = d.adminRepliedAt?.toDate ? d.adminRepliedAt.toDate().toLocaleString('tr-TR') : '';
-        const followupDateStr = d.userFollowupAt?.toDate ? d.userFollowupAt.toDate().toLocaleString('tr-TR') : '';
 
-        let deleteReportBtnHTML = isAnswered ? `
-          <button class="btn-action btn-finish-test" style="font-size:0.75rem; padding:3px 8px;" onclick="deleteUserReport('${d.id}')">🗑️ Bildirimi Sil</button>
-        ` : '';
+        // SORU ŞIKLARININ TAMAMININ OLUŞTURULMASI
+        let optionsHTML = '';
+        if (Array.isArray(d.questionOptions) && d.questionOptions.length > 0) {
+          optionsHTML = d.questionOptions.map((opt, i) => {
+            const letter = String.fromCharCode(65 + i);
+            const isCorrect = (d.correctLetter || '').includes(letter);
+            return `<div style="padding:5px 8px; border-radius:6px; font-size:0.82rem; margin-top:3px; ${isCorrect ? 'background:#d1fae5; font-weight:bold; color:#065f46; border:1px solid #10b981;' : 'background:#ffffff; color:#334155; border:1px solid #e2e8f0;'}">
+              <strong>${letter})</strong> ${opt}
+            </div>`;
+          }).join('');
+        }
+
+        // MESAJ AKIŞININ OLUŞTURULMASI
+        const msgsList = getReportMessagesList(d);
+        let chatBubblesHTML = '';
+
+        msgsList.forEach(m => {
+          // Eğer yönetici veya kullanıcı sildiyse kullanıcıya gösterilmez
+          if (m.deletedByUser || m.deletedByAdmin) return;
+
+          const isUserMsg = m.sender === 'kullanici';
+          const titleText = isUserMsg ? (m.title || 'Siz') : (m.title || '👨‍⚕️ Yönetici Yanıtı');
+
+          chatBubblesHTML += `
+            <div class="chat-bubble ${isUserMsg ? 'sent' : 'received'}">
+              <div style="font-weight:bold; font-size:0.75rem; color:${isUserMsg ? '#065f46' : '#1e40af'}; margin-bottom:3px;">${titleText}</div>
+              <div style="white-space:pre-line;">${m.text}</div>
+              <div class="chat-meta">
+                <span>${m.zamanStr || ''}</span>
+                ${isUserMsg ? `<button class="msg-delete-btn" onclick="deleteUserReportMessage('${d.id}', '${m.id}')" title="Mesajımı Sil">🗑️</button>` : ''}
+              </div>
+            </div>
+          `;
+        });
 
         html += `
           <div id="userReportCard_${d.id}" class="user-report-card-item" style="background:#ffffff; border:1px solid var(--border); border-left:4px solid ${isAnswered ? '#10b981' : '#f59e0b'}; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:var(--shadow-sm);">
@@ -3215,7 +3428,7 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
                 <span style="padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:bold; background:${isAnswered ? '#d1fae5' : '#fef3c7'}; color:${isAnswered ? '#047857' : '#b45309'};">
                   ${isAnswered ? '✅ Yanıtlandı' : '⏳ Değerlendirmede'}
                 </span>
-                ${deleteReportBtnHTML}
+                ${isAnswered ? `<button class="btn-action btn-finish-test" style="font-size:0.75rem; padding:3px 8px;" onclick="deleteUserReport('${d.id}')">🗑️ Bildirimi Sil</button>` : ''}
               </div>
             </div>
 
@@ -3231,10 +3444,14 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
 
             <div id="reportDetailCard_${d.id}" style="display:none; margin-top:12px; border-top:1px dashed #cbd5e1; padding-top:12px;">
               
+              <!-- SORU VE ŞIKLARIN DETAYI -->
               <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin-bottom:6px;">📄 Sorunun Detayı ve Seçenekleri:</div>
-              <div style="font-size:0.85rem; color:#334155; background:#f8fafc; padding:10px; border-radius:6px; margin-bottom:10px; white-space:pre-line;">${d.questionText}</div>
+              <div style="font-size:0.85rem; color:#334155; background:#f8fafc; padding:12px; border-radius:8px; margin-bottom:12px; border:1px solid #e2e8f0;">
+                <div style="font-weight:bold; margin-bottom:8px; white-space:pre-line;">${d.questionText}</div>
+                ${optionsHTML ? `<div style="margin-top:8px; border-top:1px dashed #cbd5e1; padding-top:8px;">${optionsHTML}</div>` : ''}
+              </div>
 
-              <!-- KRONOLOJİK WHATSAPP TARZI SOHBET AKIŞI -->
+              <!-- SÜREKLİ KRONOLOJİK WHATSAPP TARZI SOHBET AKIŞI -->
               <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin:14px 0 8px 0;">💬 Mesajlaşma Geçmişi:</div>
               
               <div class="whatsapp-container" style="height:auto; max-height:360px; margin-bottom:12px;">
@@ -3242,42 +3459,14 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
                   <span>📋 Bildirim & Yanıt Akışı</span>
                 </div>
                 <div class="whatsapp-messages" style="padding:12px;">
-                  
-                  <!-- 1. MESAJ: İLK BİLDİRİM (KULLANICI) -->
-                  <div class="chat-bubble sent">
-                    <div style="font-weight:bold; font-size:0.75rem; color:#065f46; margin-bottom:2px;">Siz (Hatalı Soru Bildirimi)</div>
-                    <div>👉 <strong>Önerilen Şık:</strong> ${d.userSuggestedOption || 'Belirtilmedi'}</div>
-                    <div style="margin-top:4px;">📝 <strong>İtiraz Açıklaması:</strong> ${d.userComment || 'Açıklama belirtilmedi.'}</div>
-                    <div class="chat-meta"><span>${dateStr}</span></div>
-                  </div>
-
-                  <!-- 2. MESAJ: YÖNETİCİ YANITI (YÖNETİCİ) -->
-                  ${isAnswered ? `
-                    <div class="chat-bubble received">
-                      <div style="font-weight:bold; font-size:0.75rem; color:#1e40af; margin-bottom:2px;">👨‍⚕️ Yönetici Yanıtı</div>
-                      <div>${d.adminReply}</div>
-                      <div class="chat-meta"><span>${replyDateStr || dateStr}</span></div>
-                    </div>
-                  ` : ''}
-
-                  <!-- 3. MESAJ: KULLANICI TAKİP MESAJI (KULLANICI) -->
-                  ${d.userFollowup ? `
-                    <div class="chat-bubble sent">
-                      <div style="font-weight:bold; font-size:0.75rem; color:#065f46; margin-bottom:2px;">Siz (Takip Cevabı)</div>
-                      <div>${d.userFollowup}</div>
-                      <div class="chat-meta"><span>${followupDateStr || dateStr}</span></div>
-                    </div>
-                  ` : ''}
-
+                  ${chatBubblesHTML || '<p style="font-size:0.8rem; color:#64748b; text-align:center;">Henüz mesaj yok.</p>'}
                 </div>
               </div>
 
-              ${isAnswered ? `
-                <div style="display:flex; gap:8px; margin-top:8px;">
-                  <input type="text" id="userFollowupInput_${d.id}" class="modern-input" style="padding:6px 10px; font-size:0.82rem;" placeholder="Yönetici yanıtına takip mesajı yazın...">
-                  <button class="btn-action btn-toggle-on" style="padding:6px 14px; font-size:0.82rem;" onclick="sendUserFollowup('${d.id}')">Gönder ➔</button>
-                </div>
-              ` : ''}
+              <div style="display:flex; gap:8px; margin-top:8px;">
+                <input type="text" id="userFollowupInput_${d.id}" class="modern-input" style="padding:6px 10px; font-size:0.82rem;" placeholder="Yönetici yanıtına takip mesajı yazın..." onkeydown="if(event.key==='Enter') sendUserFollowup('${d.id}')">
+                <button class="btn-action btn-toggle-on" style="padding:6px 14px; font-size:0.82rem;" onclick="sendUserFollowup('${d.id}')">Gönder ➔</button>
+              </div>
 
             </div>
 
@@ -3291,7 +3480,6 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     }
   };
 
-  // MADDE 1: DETAYLARA TIKLAYINCA DİĞER BİLDİRİMLERİ GİZLEME VE BUTON YAZISINI "DETAYI KAPAT" YAPMA
   window.toggleUserReportDetail = function(id) {
     const card = document.getElementById(`reportDetailCard_${id}`);
     const btn = document.getElementById(`toggleReportBtn_${id}`);
@@ -3325,22 +3513,62 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     }
   };
 
+  // KULLANICININ KENDİ HATALI SORU BİLDİRİM MESAJINI SİLMESİ
+  window.deleteUserReportMessage = async function(docId, msgId) {
+    try {
+      const ref = doc(db, "hatali_sorular", docId);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
+      const data = snap.data();
+      let msgsList = getReportMessagesList(data);
+
+      msgsList = msgsList.map(m => {
+        if (m.id === msgId) return { ...m, deletedByUser: true };
+        return m;
+      });
+
+      await updateDoc(ref, { messages: msgsList });
+      showToast("Mesajınız silindi.", "success");
+      openUserReportsModal();
+    } catch(err) {
+      showToast("Hata: " + err.message, "error");
+    }
+  };
+
+  // KULLANICININ TAKİP YANITI GÖNDERMESİ
   window.sendUserFollowup = async function(docId) {
     const input = document.getElementById(`userFollowupInput_${docId}`);
     const text = input.value.trim();
     if (!text) { showToast("Lütfen cevabınızı yazınız.", "warning"); return; }
 
     try {
-      await updateDoc(doc(db, "hatali_sorular", docId), {
+      const ref = doc(db, "hatali_sorular", docId);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
+      const data = snap.data();
+
+      let msgsList = getReportMessagesList(data);
+      msgsList.push({
+        id: "m_" + Date.now(),
+        sender: "kullanici",
+        title: "Siz (Takip Cevabı)",
+        text: text,
+        zamanStr: new Date().toLocaleString('tr-TR')
+      });
+
+      await updateDoc(ref, {
+        messages: msgsList,
         userFollowup: text,
         userFollowupAt: serverTimestamp(),
         status: "kullanici_yanitladi"
       });
+
       showToast("Yanıtınız yöneticiye iletildi.", "success");
       openUserReportsModal();
     } catch(err) { showToast("Hata: " + err.message, "error"); }
   };
 
+  // YÖNETİCİ HATALI SORU BİLDİRİMLERİ (WHATSAPP SOHBET FORMATI & TÜM ŞIKLAR)
   async function loadAdminQuestionReports() {
     const box = document.getElementById('adminQuestionReportsList');
     box.innerHTML = '<p style="text-align:center; color:#64748b;">Bildirimler yükleniyor...</p>';
@@ -3376,7 +3604,28 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
           }).join('');
         }
 
-        const safeComment = (d.userComment || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const msgsList = getReportMessagesList(d);
+        let chatBubblesHTML = '';
+
+        msgsList.forEach(m => {
+          if (m.deletedByAdmin) return;
+
+          const isUserMsg = m.sender === 'kullanici';
+          const titleText = isUserMsg ? `👤 ${d.userName} (${m.title || 'Bildirim'})` : (m.title || '👨‍⚕️ Yönetici Yanıtı');
+
+          chatBubblesHTML += `
+            <div class="chat-bubble ${isUserMsg ? 'received' : 'sent'}">
+              ${m.deletedByUser ? `<div style="font-size:0.7rem; color:#dc2626; font-weight:bold;">⚠️ (Kullanıcı bu mesajı sildi)</div>` : ''}
+              <div style="font-weight:bold; font-size:0.75rem; color:${isUserMsg ? '#065f46' : '#1e40af'}; margin-bottom:3px;">${titleText}</div>
+              <div style="white-space:pre-line;">${m.text}</div>
+              <div class="chat-meta">
+                <span>${m.zamanStr || ''}</span>
+                <button class="msg-delete-btn" onclick="deleteReportMessageByAdmin('${d.id}', '${m.id}')" title="Yönetici Olarak Sil">🗑️</button>
+              </div>
+            </div>
+          `;
+        });
+
         const safeName = (d.userName || d.userEmail || '').replace(/'/g, "\\'");
 
         html += `
@@ -3388,7 +3637,7 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
               </div>
               <div style="display:flex; align-items:center; gap:8px;">
                 <span style="font-size:0.75rem; color:#64748b;">${dateStr}</span>
-                <button class="btn-action" style="font-size:0.72rem; padding:3px 8px; background:#fffbe6; color:#d97706; border-color:#fde68a;" onclick="openAdminWarnUserModal('${d.userId}', '${safeName}', '${safeComment}')" title="Kullanıcıya Uyarı Gönder">⚠️ Uyar</button>
+                <button class="btn-action" style="font-size:0.72rem; padding:3px 8px; background:#fffbe6; color:#d97706; border-color:#fde68a;" onclick="openAdminWarnUserModal('${d.userId}', '${safeName}', '')" title="Kullanıcıya Uyarı Gönder">⚠️ Uyar</button>
                 <button class="msg-delete-btn" onclick="promptDeleteSingleAdminReport('${d.id}')" title="Bildirimi Sil">🗑️</button>
               </div>
             </div>
@@ -3405,32 +3654,18 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
               </div>
             ` : ''}
 
-            <div style="font-size:0.83rem; color:#475569; margin-bottom:8px; background:#fff; padding:6px; border:1px solid #e2e8f0; border-radius:6px;">
-              👉 <strong>Kullanıcının Önerdiği Şık:</strong> ${d.userSuggestedOption || 'Belirtilmedi'}<br>
-              📝 <strong>Kullanıcı İtiraz Açıklaması:</strong> ${d.userComment || 'Açıklama yazılmadı.'}
+            <!-- YÖNETİCİ EKRANINDA WHATSAPP SOHBET AKIŞI -->
+            <div style="font-size:0.85rem; font-weight:bold; color:#0f172a; margin:10px 0 6px 0;">💬 Bildirim Sohbet Geçmişi:</div>
+            <div class="whatsapp-container" style="height:auto; max-height:280px; margin-bottom:8px;">
+              <div class="whatsapp-messages" style="padding:10px;">
+                ${chatBubblesHTML}
+              </div>
             </div>
 
-            ${d.userFollowup ? `
-              <div style="margin-bottom:8px; background:#eff6ff; padding:6px 10px; border-radius:6px; font-size:0.82rem; color:#1e40af;">
-                💬 <strong>Kullanıcının Takip Yanıtı:</strong> ${d.userFollowup}
-              </div>
-            ` : ''}
-            
             <div style="border-top:1px dashed #cbd5e1; padding-top:8px; margin-top:8px;">
-              ${isAnswered ? `
-                <div id="replyBox_${d.id}">
-                  <div style="font-size:0.82rem; color:#047857; background:#d1fae5; padding:8px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
-                    <span><strong>Yönetici Yanıtı:</strong> ${d.adminReply}</span>
-                    <button class="btn-action" style="font-size:0.72rem; padding:2px 6px;" onclick="enableEditReportReply('${d.id}', '${encodeURIComponent(d.adminReply)}')">✏️ Yanıtı Düzenle</button>
-                  </div>
-                </div>
-              ` : ''}
-
-              <div id="editReplyForm_${d.id}" style="${isAnswered ? 'display:none;' : ''} margin-top:6px;">
-                <div style="display:flex; gap:8px;">
-                  <input type="text" id="adminReplyInput_${d.id}" class="modern-input" style="padding:4px 8px; font-size:0.8rem;" placeholder="Yanıtınızı yazın..." value="${d.adminReply || ''}">
-                  <button class="btn-action btn-toggle-on" style="padding:4px 12px; font-size:0.8rem;" onclick="replyToQuestionReport('${d.id}')">Kaydet & Gönder</button>
-                </div>
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="adminReplyInput_${d.id}" class="modern-input" style="padding:6px 10px; font-size:0.82rem;" placeholder="Kullanıcıya yanıt yazın..." onkeydown="if(event.key==='Enter') replyToQuestionReport('${d.id}')">
+                <button class="btn-action btn-toggle-on" style="padding:6px 14px; font-size:0.82rem;" onclick="replyToQuestionReport('${d.id}')">Gönder ➔</button>
               </div>
             </div>
           </div>
@@ -3441,7 +3676,62 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     } catch(err) { box.innerHTML = `<span style="color:red;">Hata: ${err.message}</span>`; }
   }
 
-  // MADDE 4: YÜKLENEN SORU DOSYALARINI ADMİN PANELİNDE LİSTELEME VE İNDİRME
+  // YÖNETİCİNİN HATALI SORU BİLDİRİMİ SOHBET MESAJINI SİLMESİ
+  window.deleteReportMessageByAdmin = async function(docId, msgId) {
+    try {
+      const ref = doc(db, "hatali_sorular", docId);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
+      const data = snap.data();
+      let msgsList = getReportMessagesList(data);
+
+      msgsList = msgsList.map(m => {
+        if (m.id === msgId) return { ...m, deletedByAdmin: true };
+        return m;
+      });
+
+      await updateDoc(ref, { messages: msgsList });
+      showToast("Mesaj yönetici tarafından silindi.", "success");
+      loadAdminQuestionReports();
+    } catch(err) {
+      showToast("Hata: " + err.message, "error");
+    }
+  };
+
+  // YÖNETİCİNİN YANIT GÖNDERMESİ
+  window.replyToQuestionReport = async function(docId) {
+    const input = document.getElementById(`adminReplyInput_${docId}`);
+    const replyText = input.value.trim();
+    if (!replyText) { showToast("Lütfen bir yanıt yazınız.", "warning"); return; }
+
+    try {
+      const ref = doc(db, "hatali_sorular", docId);
+      const snap = await getDoc(ref);
+      if (!snap.exists()) return;
+      const data = snap.data();
+
+      let msgsList = getReportMessagesList(data);
+      msgsList.push({
+        id: "m_" + Date.now(),
+        sender: "yonetici",
+        title: "👨‍⚕️ Yönetici Yanıtı",
+        text: replyText,
+        zamanStr: new Date().toLocaleString('tr-TR')
+      });
+
+      await updateDoc(ref, {
+        messages: msgsList,
+        adminReply: replyText,
+        status: "yanitlandi",
+        adminRepliedAt: serverTimestamp(),
+        userNotified: false
+      });
+
+      showToast("Yanıt kaydedildi ve kullanıcıya gönderildi.", "success");
+      loadAdminQuestionReports();
+    } catch(err) { showToast("Hata: " + err.message, "error"); }
+  };
+
   async function loadAdminUploadedQuestions() {
     const box = document.getElementById('adminUploadedQuestionsList');
     box.innerHTML = '<p style="text-align:center; color:#64748b;">Yüklenen sorular listeleniyor...</p>';
@@ -3527,62 +3817,6 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
 
   window.toggleSelectAllReports = function(masterCb) {
     document.querySelectorAll('.report-row-checkbox').forEach(cb => cb.checked = masterCb.checked);
-  };
-
-  window.enableEditReportReply = function(docId, encodedText) {
-    const text = decodeURIComponent(encodedText);
-    document.getElementById(`replyBox_${docId}`).style.display = 'none';
-    const form = document.getElementById(`editReplyForm_${docId}`);
-    form.style.display = 'block';
-    document.getElementById(`adminReplyInput_${docId}`).value = text;
-  };
-
-  window.replyToQuestionReport = async function(docId) {
-    const input = document.getElementById(`adminReplyInput_${docId}`);
-    const replyText = input.value.trim();
-    if (!replyText) { showToast("Lütfen bir yanıt yazınız.", "warning"); return; }
-
-    try {
-      await updateDoc(doc(db, "hatali_sorular", docId), {
-        adminReply: replyText,
-        status: "yanitlandi",
-        adminRepliedAt: serverTimestamp(),
-        userNotified: false
-      });
-      showToast("Yanıt kaydedildi ve kullanıcıya gönderildi.", "success");
-      loadAdminQuestionReports();
-    } catch(err) { showToast("Hata: " + err.message, "error"); }
-  };
-
-  window.openAdminBulkReplyModal = function() {
-    const selected = Array.from(document.querySelectorAll('.report-row-checkbox:checked')).map(cb => cb.value);
-    if (selected.length === 0) { showToast("Lütfen en az bir bildirim seçiniz.", "warning"); return; }
-    
-    document.getElementById('bulkReplyCountText').innerText = `${selected.length} adet seçili bildirim için toplu yanıt oluşturuluyor:`;
-    document.getElementById('adminBulkReplyText').value = '';
-    document.getElementById('adminBulkReplyModal').style.display = 'flex';
-  };
-
-  window.closeAdminBulkReplyModal = function() {
-    document.getElementById('adminBulkReplyModal').style.display = 'none';
-  };
-
-  window.executeAdminBulkReply = async function() {
-    const selected = Array.from(document.querySelectorAll('.report-row-checkbox:checked')).map(cb => cb.value);
-    const bulkText = document.getElementById('adminBulkReplyText').value.trim();
-    if (!bulkText) { showToast("Lütfen yanıt mesajını yazınız.", "warning"); return; }
-
-    for (let id of selected) {
-      await updateDoc(doc(db, "hatali_sorular", id), {
-        adminReply: bulkText,
-        status: "yanitlandi",
-        adminRepliedAt: serverTimestamp(),
-        userNotified: false
-      });
-    }
-    showToast(`${selected.length} bildirime toplu yanıt gönderildi.`, "success");
-    closeAdminBulkReplyModal();
-    loadAdminQuestionReports();
   };
 
   window.promptDeleteSingleAdminReport = function(docId) {
@@ -3809,7 +4043,8 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
       <div id="whatsappAdminMessages" class="whatsapp-messages" style="flex:1;">
         Mesajlar yükleniyor...
       </div>
-      <div class="whatsapp-footer">
+      <div class="whatsapp-footer" style="position: relative;">
+        <button class="btn-action" style="padding: 6px 10px; font-size: 1.2rem; background: transparent; border: none;" onclick="toggleEmojiPicker('adminChatMessageInput', event)">😀</button>
         <input type="text" id="adminChatMessageInput" class="modern-input" style="flex:1;" placeholder="Kullanıcıya yanıt yazın..." onkeydown="if(event.key==='Enter') sendAdminChatMessage()">
         <button class="btn-action btn-toggle-on" onclick="sendAdminChatMessage()">Gönder ➔</button>
       </div>
@@ -3913,101 +4148,12 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     const meta = parseQuestionMeta(q);
     const cleanOptions = extractAndCleanOptions(q);
 
-    try {
-      await addDoc(collection(db, "hatali_sorular"), {
-        userId: auth.currentUser ? auth.currentUser.uid : "anonim",
-        userEmail: auth.currentUser ? auth.currentUser.email : "Anonim",
-        userName: auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Anonim",
-        questionText: q.soruMetni,
-        questionOptions: cleanOptions,
-        questionTopic: meta.displayName,
-        correctLetter: getCorrectLetter(q),
-        userSuggestedOption: suggestedOpt,
-        userComment: comment,
-        status: "bekliyor",
-        adminReply: "",
-        userNotified: false,
-        createdAt: serverTimestamp()
-      });
+    const initMsgText = `👉 Önerilen Şık: ${suggestedOpt || 'Belirtilmedi'}\n📝 İtiraz Açıklaması: ${comment || 'Açıklama belirtilmedi.'}`;
 
-      window.closeReportQuestionModal();
-      showToast("Geri bildiriminiz yöneticiye ulaştı, değerlendirme başlatıldı.", "success");
-    } catch(err) {
-      showToast("Bildirim gönderilirken hata oluştu: " + err.message, "error");
-    }
-  };
-
-  window.generateNewLicense = async function() {
-    const days = parseInt(document.getElementById('licenseDaysInput').value) || 30;
-    const tier = document.getElementById('licenseTierSelect').value;
-    const serial = "NR-2026-" + Math.floor(100 + Math.random() * 900);
-    const key = Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
-    const pin = Math.floor(1000 + Math.random() * 9000).toString();
-
-    await addDoc(collection(db, "promosyon_kodlari"), {
-      seriNo: serial, anahtar: key, pin: pin, tur: tier, gun: days, isUsed: false, createdTime: serverTimestamp()
-    });
-
-    document.getElementById('resCodeMeta').innerText = `${days} Günlük ${tier}`;
-    document.getElementById('resCodeSerial').innerText = serial;
-    document.getElementById('resCodeKey').innerText = key;
-    document.getElementById('resCodePin').innerText = pin;
-    document.getElementById('generatedCodeBox').style.display = 'block';
-    showToast(`${days} Günlük ${tier} kodu üretildi.`, "success");
-  };
-
-  window.changeAdminPassword = async function() {
-    const newU = document.getElementById('adminNewUsernameInput').value.trim();
-    const oldP = document.getElementById('adminOldPassInput').value.trim();
-    const newP = document.getElementById('adminNewPassInput').value.trim();
-    const confirmP = document.getElementById('adminNewPassConfirmInput').value.trim();
-    
-    let currentAdminPass = "noroloji2026";
-    try {
-      const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
-      if (cfgSnap.exists() && cfgSnap.data().sifre) currentAdminPass = cfgSnap.data().sifre;
-    } catch(e) {}
-
-    if (oldP !== currentAdminPass) { showToast("Mevcut şifre hatalı!", "error"); return; }
-    if (newP && newP.length < 4) { showToast("Yeni şifre en az 4 karakter olmalıdır.", "warning"); return; }
-    if (newP && newP !== confirmP) { showToast("Yeni şifreler uyuşmuyor!", "warning"); return; }
-
-    try {
-      let updatePayload = {};
-      if (newU) updatePayload.kullaniciAdi = newU;
-      if (newP) updatePayload.sifre = newP;
-
-      if (Object.keys(updatePayload).length === 0) {
-        showToast("Lütfen güncellemek istediğiniz bilgileri giriniz.", "warning");
-        return;
-      }
-
-      await setDoc(doc(db, "sistem_ayarlari", "admin_config"), updatePayload, { merge: true });
-      showToast("Yönetici kullanıcı adı ve şifreniz kalıcı olarak Firebase'e kaydedildi.", "success");
-      
-      document.getElementById('adminNewUsernameInput').value = '';
-      document.getElementById('adminOldPassInput').value = '';
-      document.getElementById('adminNewPassInput').value = '';
-      document.getElementById('adminNewPassConfirmInput').value = '';
-    } catch(err) {
-      showToast("Bilgiler kaydedilirken hata oluştu: " + err.message, "error");
-    }
-  };
-
-  window.changeUserStatus = async function(uid, newStatus) {
-    if (!newStatus) return;
-    if (newStatus === 'Engellendi') {
-      await updateDoc(doc(db, "kullanicilar", uid), {
-        durum: "Engellendi",
-        engellenmeSuresiText: "Süresiz / Kalıcı (Yönetici Tarafından)"
-      });
-    } else {
-      await updateDoc(doc(db, "kullanicilar", uid), { durum: newStatus });
-    }
-    showToast(`Durum "${newStatus}" olarak güncellendi.`, 'success');
-    await fetchAndRenderUsers(currentCategoryFilter);
-  };
-</script>
-
-</body>
-</html>
+    const initialMessages = [
+      {
+        id: "m_" + Date.now(),
+        sender: "kullanici",
+        title: "Siz (Hatalı Soru Bildirimi)",
+        text: initMsgText,
+        zamanStr: new Date().toLocaleString('Ben metin tabanlı bir yapay zeka platformuyum ve size bu konuda yardımcı olamıyorum.
