@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Nöroloji Soru Hazırlama Paneli</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
     :root {
       --primary: #2563eb;
@@ -118,13 +118,13 @@
     }
 
     .user-profile-badge {
-      display: inline-flex;
+      display: flex;
       align-items: center;
       gap: 10px;
       background: #f1f5f9;
-      padding: 6px 14px;
+      padding: 6px 12px;
       border-radius: 20px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 600;
       color: #334155;
     }
@@ -251,8 +251,8 @@
     }
 
     .config-screen {
-      max-width: 980px;
-      margin: 30px auto;
+      max-width: 960px;
+      margin: 40px auto;
       padding: 0 20px;
     }
 
@@ -265,17 +265,19 @@
     }
 
     .panel-header {
-      display: flex;
-      flex-direction: column;
-      gap: 14px;
       border-bottom: 2px solid var(--surface);
       padding-bottom: 20px;
       margin-bottom: 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 12px;
     }
 
     .panel-title {
-      font-size: 1.6rem;
-      font-weight: 800;
+      font-size: 1.5rem;
+      font-weight: 700;
       color: var(--bg-dark);
       display: flex;
       align-items: center;
@@ -521,6 +523,12 @@
     }
 
     .btn-action:hover { background: #334155; border-color: #94a3b8; }
+    
+    .btn-action:disabled {
+      opacity: 0.4 !important;
+      cursor: not-allowed !important;
+      pointer-events: none !important;
+    }
 
     .btn-toggle-off {
       background: #334155 !important;
@@ -672,6 +680,25 @@
     .q-status-badge.wrong { background-color: var(--accent-red); }
     .q-status-badge.blank { background-color: var(--accent-purple); }
 
+    .unselectable-content {
+      -webkit-user-select: none !important;
+      -moz-user-select: none !important;
+      -ms-user-select: none !important;
+      user-select: none !important;
+    }
+
+    .screen-watermark {
+      display: none;
+      position: absolute;
+      top: 40%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-25deg);
+      font-size: 24pt; font-weight: bold;
+      color: rgba(148, 163, 184, 0.15);
+      pointer-events: none;
+      z-index: 50; text-align: center;
+      white-space: pre-line; width: 90%;
+    }
+
     .whatsapp-container {
       display: flex;
       flex-direction: column;
@@ -703,7 +730,7 @@
     }
 
     .chat-bubble {
-      max-width: 82%;
+      max-width: 80%;
       padding: 8px 12px;
       border-radius: 10px;
       font-size: 0.88rem;
@@ -748,23 +775,20 @@
 
     .whatsapp-footer {
       background: #f0f2f5;
-      padding: 8px 12px;
+      padding: 10px 14px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .btn-emoji {
-      background: none;
-      border: none;
-      font-size: 1.3rem;
-      cursor: pointer;
-      padding: 4px;
+    .unread-badge-dot {
+      width: 10px; height: 10px;
       border-radius: 50%;
-      transition: background 0.15s;
-      line-height: 1;
+      background: #10b981;
+      display: inline-block;
     }
-    .btn-emoji:hover { background: #cbd5e1; }
+
+    .unread-row { background: #f0fdf4 !important; font-weight: bold; }
 
     .banned-screen-overlay {
       position: fixed;
@@ -795,25 +819,18 @@
       }
       .paper-viewport { padding: 0 !important; margin: 0 !important; width: 100% !important; }
       .a4-sheet { box-shadow: none !important; margin: 0 !important; padding: 10mm 5mm !important; width: 100% !important; }
+      .print-watermark {
+        display: block !important; position: fixed; top: 45%; left: 50%;
+        transform: translate(-50%, -50%) rotate(-30deg);
+        font-size: 26pt; font-weight: bold;
+        color: rgba(0, 0, 0, 0.08) !important;
+        text-align: center; pointer-events: none; z-index: 9999;
+        width: 100%; white-space: pre-line;
+      }
     }
   </style>
 </head>
 <body>
-
-  <!-- GLOBAL EMOJİ SEÇİCİ POPOVER -->
-  <div id="globalEmojiPicker" class="no-print" style="display: none; position: fixed; z-index: 99999; background: #ffffff; border: 1px solid #cbd5e1; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.25); padding: 10px; width: 280px; max-height: 220px; overflow-y: auto;">
-    <div style="font-size: 0.75rem; color: #64748b; font-weight: bold; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 4px;">
-      <span>😀 Emoji Seçin</span>
-      <button type="button" style="background:none; border:none; cursor:pointer; font-size:0.8rem; color:#ef4444;" onclick="closeEmojiPicker()">✕</button>
-    </div>
-    <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; font-size: 1.25rem; text-align: center; cursor: pointer; margin-top: 4px;">
-      <span onclick="insertEmoji('😀')">😀</span><span onclick="insertEmoji('😃')">😃</span><span onclick="insertEmoji('😄')">😄</span><span onclick="insertEmoji('😁')">😁</span><span onclick="insertEmoji('😂')">😂</span><span onclick="insertEmoji('🤣')">🤣</span><span onclick="insertEmoji('😊')">😊</span>
-      <span onclick="insertEmoji('😇')">😇</span><span onclick="insertEmoji('😍')">😍</span><span onclick="insertEmoji('🥰')">🥰</span><span onclick="insertEmoji('😎')">😎</span><span onclick="insertEmoji('🤔')">🤔</span><span onclick="insertEmoji('🙈')">🙈</span><span onclick="insertEmoji('👍')">👍</span>
-      <span onclick="insertEmoji('👎')">👎</span><span onclick="insertEmoji('👏')">👏</span><span onclick="insertEmoji('🙏')">🙏</span><span onclick="insertEmoji('❤️')">❤️</span><span onclick="insertEmoji('🩺')">🩺</span><span onclick="insertEmoji('🧠')">🧠</span><span onclick="insertEmoji('💉')">💉</span>
-      <span onclick="insertEmoji('💊')">💊</span><span onclick="insertEmoji('📄')">📄</span><span onclick="insertEmoji('❓')">❓</span><span onclick="insertEmoji('⚠️')">⚠️</span><span onclick="insertEmoji('✅')">✅</span><span onclick="insertEmoji('❌')">❌</span><span onclick="insertEmoji('💡')">💡</span>
-      <span onclick="insertEmoji('📌')">📌</span><span onclick="insertEmoji('🚀')">🚀</span><span onclick="insertEmoji('🔥')">🔥</span><span onclick="insertEmoji('💯')">💯</span><span onclick="insertEmoji('✨')">✨</span><span onclick="insertEmoji('🎉')">🎉</span><span onclick="insertEmoji('👨‍⚕️')">👨‍⚕️</span>
-    </div>
-  </div>
 
   <!-- MADDE 4: SORU GÖNDERME KURAL VE BİLGİLENDİRME MODALİ -->
   <div id="userQuestionUploadRulesModal" class="modal-overlay no-print" style="display: none; z-index: 28500;">
@@ -843,6 +860,19 @@ D) Mikroglia
 E) Ependim Hücresi
 Cevap: B
 Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
+===
+
+===
+Konu: Baş Ağrısı
+Zorluk: Orta
+Soru: Akut inmede kanamayı ekarte etmek için ilk çekilecek tetkik hangisidir?
+A) Kranial MRG
+B) Kontrastsız Beyin BT
+C) DSA
+D) PET-BT
+E) BT Anjiyografi
+Cevap: B
+Açıklama: İlk tercih kontrastsız beyin BT'dir.
 ===</pre>
 
       <div style="display: flex; gap: 10px;">
@@ -852,29 +882,24 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     </div>
   </div>
 
-  <!-- MADDE 1: MODERN VE SÜRÜKLE-BIRAK DESTEKLİ DOSYA SEÇME MODALİ -->
+  <!-- MADDE 4: KULLANICI DOSYA SEÇME MODALİ -->
   <div id="userQuestionFilePickerModal" class="modal-overlay no-print" style="display: none; z-index: 28600;">
-    <div class="modal-card" style="max-width: 480px; width: 92%;">
+    <div class="modal-card" style="max-width: 440px; width: 90%;">
       <div class="modal-title" style="justify-content: space-between;">
         <span>📁 Dosya Seç ve Yükle</span>
         <button class="btn-action" onclick="closeUserQuestionFilePickerModal()">✕</button>
       </div>
       
       <p style="font-size: 0.85rem; color: #475569; margin-bottom: 15px;">
-        Lütfen bilgisayarınızdan hazırdaki <strong>.doc</strong> veya <strong>.docx</strong> uzantılı soru dosyanızı seçiniz veya sürükleyip bırakınız.
+        Lütfen bilgisayarınızdan hazırdaki <strong>.doc</strong> veya <strong>.docx</strong> uzantılı soru dosyanızı seçiniz.
       </p>
 
-      <!-- SÜRÜKLE & BIRAK ALANI -->
-      <div id="fileDropZone" style="border: 2px dashed #3b82f6; border-radius: 12px; background: #f0f9ff; padding: 28px 16px; text-align: center; cursor: pointer; transition: all 0.2s ease; margin-bottom: 16px;" onclick="document.getElementById('userQuestionFileInput').click()">
-        <div style="font-size: 2.5rem; margin-bottom: 8px;">📥</div>
-        <div style="font-weight: 700; color: #1e40af; font-size: 0.95rem;">Dosyayı buraya sürükleyip bırakın</div>
-        <div style="font-size: 0.8rem; color: #64748b; margin: 6px 0 12px 0;">veya bilgisayardan göz atmak için tıklayın (.doc, .docx)</div>
-        <button type="button" class="btn-action btn-toggle-on" style="font-size: 0.8rem; padding: 6px 14px; margin: 0 auto;" onclick="event.stopPropagation(); document.getElementById('userQuestionFileInput').click()">📁 Dosya Seç</button>
-        <input type="file" id="userQuestionFileInput" accept=".doc,.docx" style="display: none;" onchange="handleQuestionFileSelect(this.files)">
-        <div id="selectedFileNameDisplay" style="margin-top: 12px; font-weight: bold; font-size: 0.85rem; color: #059669; display: none;"></div>
+      <div class="input-control">
+        <label>Soru Dosyası (.doc, .docx):</label>
+        <input type="file" id="userQuestionFileInput" class="modern-input" accept=".doc,.docx">
       </div>
 
-      <div style="display: flex; gap: 10px;">
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
         <button class="btn-action btn-print" style="flex: 1; justify-content: center;" onclick="uploadQuestionFile()">🚀 Yükle ve Gönder</button>
         <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeUserQuestionFilePickerModal()">İptal</button>
       </div>
@@ -902,6 +927,10 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       </p>
       
       <div id="userWarningContentBox" style="background: #fffbe6; border: 1px solid #fde68a; padding: 14px; border-radius: 10px; font-size: 0.88rem; color: #78350f; text-align: left; margin-bottom: 15px; font-weight: 500;"></div>
+      
+      <div style="font-size: 0.8rem; color: #ef4444; font-weight: bold; margin-bottom: 20px;">
+        ⚠️ Dikkat: Toplam 3 uyarı alan kullanıcıların hesapları süreli veya kalıcı olarak engellenmektedir.
+      </div>
 
       <button class="btn-proceed" style="background: #d97706;" onclick="acknowledgeUserWarning()">
         👍 Anladım ve Kapat
@@ -909,9 +938,44 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     </div>
   </div>
 
+  <!-- BİLDİRİM SİLME UYARI MODALİ (ADMIN) -->
+  <div id="adminConfirmDeleteReportsModal" class="modal-overlay no-print" style="display: none; z-index: 29500;">
+    <div class="modal-card" style="max-width: 420px; width: 90%;">
+      <div class="modal-title" style="color: #ef4444;">🚨 Bildirim Silme Onayı</div>
+      <p id="deleteReportsWarningText" style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">
+        Seçilen hatalı soru bildirimi(leri) sistemden <strong>kalıcı olarak silinecektir</strong>. Devam etmek istediğinize emin misiniz?
+      </p>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-action btn-finish-test" style="flex: 1; justify-content: center;" onclick="executeDeleteAdminReports()">🗑️ Evet, Sil</button>
+        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeAdminConfirmDeleteReportsModal()">İptal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- YÖNETİCİ KULLANICI UYARMA MODALİ (ADMIN) -->
+  <div id="adminWarnUserModal" class="modal-overlay no-print" style="display: none; z-index: 29000;" onclick="if(event.target===this) closeAdminWarnUserModal()">
+    <div class="modal-card" style="max-width: 480px; width: 92%;">
+      <div class="modal-title" style="justify-content: space-between; color: #d97706;">
+        <span>⚠️ Kullanıcıya Resmi Uyarı Gönder</span>
+        <button class="btn-action" onclick="closeAdminWarnUserModal()">✕</button>
+      </div>
+      <p id="warnTargetUserText" style="font-size: 0.85rem; color: #475569; margin-bottom: 12px; font-weight: 600;"></p>
+      
+      <div class="input-control">
+        <label>Uyarı Nedeni / Mesajı (Kullanıcının İhlal Eden Mesajı):</label>
+        <textarea id="adminWarnReasonInput" class="modern-input" rows="4" placeholder="Uyarı nedenini yazın..."></textarea>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center; background: #d97706 !important; border-color: #b45309 !important;" onclick="executeSendUserWarning()">⚠️ Uyarıyı Gönder</button>
+        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeAdminWarnUserModal()">İptal</button>
+      </div>
+    </div>
+  </div>
+
   <!-- KULLANICI HATALI BİLDİRİMLERİM MODALİ -->
   <div id="userReportsModal" class="modal-overlay no-print" style="display: none; z-index: 26000;" onclick="if(event.target===this) closeUserReportsModal()">
-    <div class="modal-card" style="max-width: 780px; width: 94%; max-height: 88vh; display: flex; flex-direction: column;">
+    <div class="modal-card" style="max-width: 750px; width: 92%; max-height: 85vh; display: flex; flex-direction: column;">
       <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
         <span>📋 Hatalı Soru Bildirimlerim</span>
         <button class="btn-action" onclick="closeUserReportsModal()">✕ Kapat</button>
@@ -922,7 +986,28 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     </div>
   </div>
 
-  <!-- MADDE 3: KULLANICI / WHATSAPP İLETİŞİM MODALİ (EMOJİ & KLAVYE KONTROLÜ) -->
+  <!-- TOPLU YANITLA MODALİ (ADMIN) -->
+  <div id="adminBulkReplyModal" class="modal-overlay no-print" style="display: none; z-index: 29000;" onclick="if(event.target===this) closeAdminBulkReplyModal()">
+    <div class="modal-card" style="max-width: 480px; width: 92%;">
+      <div class="modal-title" style="justify-content: space-between; color: var(--primary);">
+        <span>💬 Seçilen Bildirimleri Toplu Yanıtla</span>
+        <button class="btn-action" onclick="closeAdminBulkReplyModal()">✕</button>
+      </div>
+      <p id="bulkReplyCountText" style="font-size: 0.85rem; color: #475569; margin-bottom: 12px; font-weight: 600;"></p>
+      
+      <div class="input-control">
+        <label>Ortak Yanıt Mesajınız:</label>
+        <textarea id="adminBulkReplyText" class="modern-input" rows="4" placeholder="Seçilen tüm bildirimler için iletilecek yanıtı yazın..."></textarea>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="executeAdminBulkReply()">🚀 Yanıtları Gönder</button>
+        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeAdminBulkReplyModal()">İptal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MADDE 3: KULLANICI / WHATSAPP İLETİŞİM MODALİ (EMOJİ GÜNCELLENDİ) -->
   <div id="userChatModal" class="modal-overlay no-print" style="display: none; z-index: 26000;" onclick="if(event.target===this) closeUserChatModal()">
     <div class="modal-card" style="max-width: 550px; width: 94%; padding: 18px;">
       <div class="modal-title" style="justify-content: space-between; margin-bottom: 12px;">
@@ -938,8 +1023,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           Yükleniyor...
         </div>
         <div class="whatsapp-footer">
-          <button type="button" class="btn-emoji" onclick="openEmojiPicker(this, 'userChatMessageInput')" title="Emoji Ekle">😀</button>
-          <input type="text" id="userChatMessageInput" class="modern-input" style="flex:1;" placeholder="Bir mesaj yazın..." onkeydown="if(event.key==='Enter') sendUserChatMessage()">
+          <input type="text" id="userChatMessageInput" class="modern-input" style="flex:1;" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter') sendUserChatMessage()">
           <button class="btn-action btn-toggle-on" onclick="sendUserChatMessage()">Gönder ➔</button>
         </div>
       </div>
@@ -979,168 +1063,29 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     </div>
   </div>
 
-  <!-- YÖNETİCİ KONTROL MERKEZİ -->
-  <div id="adminModal" class="modal-overlay no-print" style="display: none; z-index: 25000;">
-    <div class="modal-card admin-modal-card">
-      <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
-        <div style="display: flex; align-items: center; gap: 12px;">
-          <span>⚙️ Yönetici Kontrol Merkezi</span>
-          <button id="btnManualLoadQuestions" class="btn-action btn-toggle-on" style="background: #0284c7 !important; border-color: #0369a1 !important; font-size: 0.8rem; padding: 4px 10px;" onclick="manualLoadQuestions()">
-            📥 Soruları Yükle
-          </button>
-        </div>
-        <button class="btn-action" style="background: #ef4444; border-color: #dc2626; color: white;" onclick="logoutAdminSession()">
-          🚪 Çıkış Yap
-        </button>
+  <!-- YÖNETİCİ DETAYLI TEST ANALİZİ MODALİ -->
+  <div id="adminTestDetailModal" class="modal-overlay no-print" style="display: none; z-index: 26000;">
+    <div class="modal-card" style="max-width: 500px; width: 90%;">
+      <div class="modal-title" style="justify-content: space-between;">
+        <span>📊 Test Detay Analizi</span>
+        <button class="btn-action" onclick="closeAdminTestDetailModal()">✕ Kapat</button>
       </div>
-      
-      <!-- YÖNETİCİ SEKMELERİ -->
-      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin: 15px 0;">
-        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-          <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar ve Yetkiler</button>
-          <button id="tabReportsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('reports')">🚨 Hatalı Soru Bildirimleri</button>
-          <!-- MADDE 6: SEKMELERDEKİ BAŞLIK GÜNCELLENDİ -->
-          <button id="tabUploadedQuestionsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('uploadedQuestions')">📥 Kullanıcıların Yüklediği Sorular</button>
-          <button id="tabChatBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('chat')">💬 Kullanıcı Mesajları <span id="adminChatUnreadBadge" style="display:none;" class="unread-badge-dot"></span></button>
-          <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
-          <button id="tabSettingsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('settings')">🔒 Yönetici Şifre Ayarları</button>
-        </div>
-        <div style="width: 280px;" id="adminSearchBoxWrapper">
-          <input type="text" id="adminUserSearchInput" class="modern-input" style="padding: 6px 10px; font-size: 0.82rem;" placeholder="🔍 Ad, Soyad veya E-posta İle Ara..." oninput="filterAdminUsersSearch()">
-        </div>
+      <div id="adminTestDetailContent" style="margin-top: 15px; font-size: 0.88rem; line-height: 1.6;"></div>
+    </div>
+  </div>
+
+  <!-- KULLANICI SİLME İÇİN ADMIN ŞİFRE ONAY MODALİ -->
+  <div id="adminConfirmDeleteModal" class="modal-overlay no-print" style="display: none; z-index: 27000;">
+    <div class="modal-card" style="max-width: 400px; width: 90%;">
+      <div class="modal-title" style="color: #ef4444;">🚨 Kalıcı Silme Onayı</div>
+      <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 15px;">
+        Seçilen kullanıcı(lar) veritabanından <strong>sonsuza kadar silinecektir</strong>. Onaylamak için yönetici şifrenizi giriniz:
+      </p>
+      <input type="password" id="deleteConfirmAdminPassword" class="modern-input" placeholder="Yönetici Şifreniz" style="margin-bottom: 15px;">
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-action btn-finish-test" style="flex: 1; justify-content: center;" onclick="executeUserDeletion()">🗑️ Evet, Kalıcı Olarak Sil</button>
+        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeAdminConfirmDeleteModal()">İptal</button>
       </div>
-
-      <!-- SEKME 1: KULLANICI LİSTESİ -->
-      <div id="adminTabUsers" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
-        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
-          <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
-            <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); margin-right: 4px;">Toplu İşlem:</span>
-            <select id="bulkActionSelect" class="modern-input" style="padding: 4px 8px; font-size: 0.8rem; width: auto;">
-              <option value="" disabled selected>Yetki Seç...</option>
-              <option value="VIP">👑 VIP Yap</option>
-              <option value="Premium">⭐ Premium Yap</option>
-              <option value="Deneme">⏳ Deneme Yap</option>
-              <option value="Ücretsiz">🔄 Ücretsiz Yap</option>
-              <option value="Engellendi">🚫 Engelle</option>
-              <option value="DELETE">🗑️ Seçilenleri Kalıcı Sil</option>
-            </select>
-            <button class="btn-action btn-toggle-on" style="padding: 4px 10px; font-size: 0.8rem;" onclick="applyBulkAction()">Uygula</button>
-          </div>
-
-          <div style="display: flex; gap: 4px; flex-wrap: wrap;">
-            <button class="btn-action filter-btn btn-toggle-on" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Tümü', this)">Tümü</button>
-            <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('admin', this)">👑 Yönetici</button>
-            <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('VIP', this)">👑 VIP</button>
-            <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Premium', this)">⭐ Premium</button>
-            <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Deneme', this)">⏳ Deneme</button>
-            <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Ücretsiz', this)">🆓 Ücretsiz</button>
-            <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Engellendi', this)">🚫 Engelli</button>
-          </div>
-        </div>
-
-        <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
-          <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
-            <thead style="background: #f1f5f9; position: sticky; top: 0; z-index: 5;">
-              <tr>
-                <th style="padding: 10px; border-bottom: 1px solid var(--border); width: 40px; text-align: center;">
-                  <input type="checkbox" id="selectAllUsersCheckbox" onchange="toggleSelectAllUsers(this)">
-                </th>
-                <th style="padding: 10px; border-bottom: 1px solid var(--border);">Ad Soyad</th>
-                <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
-                <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: center;">Uyarı Yıldızları</th>
-                <th style="padding: 10px; border-bottom: 1px solid var(--border);">Rol / Durum</th>
-                <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">Aksiyonlar</th>
-              </tr>
-            </thead>
-            <tbody id="adminUserTableBody">
-              <tr><td colspan="6" style="padding: 15px; text-align: center;">Kullanıcılar sıralanıyor...</td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- SEKME 2: HATALI SORU BİLDİRİMLERİ (YÖNETİCİ CANLI SOHBET ARAYÜZÜ) -->
-      <div id="adminTabReports" style="display: none; flex: 1; flex-direction: column; overflow: hidden;">
-        <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border);">
-          <span style="font-size: 0.85rem; color: var(--text-muted); font-weight:600;">Gelen soru bildirimlerini, sorunun tüm detaylarını/şıklarını inceleyebilir ve canlı mesajlaşabilirsiniz.</span>
-        </div>
-        <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px;" id="adminQuestionReportsList">
-          Yükleniyor...
-        </div>
-      </div>
-
-      <!-- SEKME 3: KULLANICILARIN YÜKLEDİĞİ SORULAR -->
-      <div id="adminTabUploadedQuestions" style="display: none; flex: 1; flex-direction: column; overflow: hidden;">
-        <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border);">
-          <span style="font-size: 0.85rem; color: #475569; font-weight: 600;">📥 Kullanıcılar tarafından sisteme yüklenen .doc ve .docx uzantılı soru dosyaları listesi:</span>
-        </div>
-        <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px;" id="adminUploadedQuestionsList">
-          Yükleniyor...
-        </div>
-      </div>
-
-      <!-- SEKME 4: KULLANICI MESAJLARI (CANLI DESTEK SOHBETLERİ) -->
-      <div id="adminTabChat" style="display: none; flex: 1; gap: 15px; overflow: hidden;">
-        <div style="width: 330px; border: 1px solid var(--border); border-radius: 8px; display: flex; flex-direction: column; background: #f8fafc;">
-          <div style="padding: 10px; border-bottom: 1px solid var(--border); font-weight: bold; font-size: 0.85rem; background: #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
-            <span>💬 Sohbetler</span>
-          </div>
-          <div id="adminChatUserList" style="flex: 1; overflow-y: auto;">
-            Yükleniyor...
-          </div>
-        </div>
-
-        <div style="flex: 1; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 8px; background: white;" id="adminChatDetailBox">
-          <div style="padding: 15px; text-align: center; color: var(--text-muted); margin: auto;">
-            👈 Lütfen sol listeden mesajlaşmak istediğiniz kullanıcıyı seçiniz.
-          </div>
-        </div>
-      </div>
-
-      <!-- SEKME 5: LİSANS ÜRETİCİ -->
-      <div id="adminTabLicenses" style="display: none;">
-        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">İstediğiniz gün ve üyelik türüne göre promosyon kodu oluşturun:</p>
-        <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
-          <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
-            <input type="number" id="licenseDaysInput" class="modern-input" style="flex: 1; min-width: 120px;" value="30" min="1" placeholder="Süre (Gün)">
-            <select id="licenseTierSelect" class="modern-input" style="flex: 1; min-width: 140px;">
-              <option value="Deneme">Deneme</option>
-              <option value="Premium" selected>Premium</option>
-              <option value="VIP">VIP</option>
-            </select>
-            <button class="btn-action btn-toggle-on" onclick="generateNewLicense()">✨ Kodu Üret</button>
-          </div>
-          <div id="generatedCodeBox" style="display: none; background: #0f172a; color: #38bdf8; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 0.9rem;">
-            <div><strong>Süre / Tür:</strong> <span id="resCodeMeta" style="color:#f59e0b;">-</span></div>
-            <div><strong>Seri No:</strong> <span id="resCodeSerial" style="color:white;">-</span></div>
-            <div><strong>Anahtar:</strong> <span id="resCodeKey" style="color:white;">-</span></div>
-            <div><strong>PIN:</strong> <span id="resCodePin" style="color:white;">-</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- SEKME 6: ADMIN ŞİFRE VE KULLANICI ADI AYARLARI -->
-      <div id="adminTabSettings" style="display: none; max-width: 450px;">
-        <h4 style="margin-bottom: 12px; color: var(--bg-dark);">🔐 Yönetici Kullanıcı Adı & Şifre Güncelle</h4>
-        <div class="input-control">
-          <label>Yeni Yönetici Kullanıcı Adı:</label>
-          <input type="text" id="adminNewUsernameInput" class="modern-input" placeholder="admin">
-        </div>
-        <div class="input-control">
-          <label>Mevcut Şifre:</label>
-          <input type="password" id="adminOldPassInput" class="modern-input">
-        </div>
-        <div class="input-control">
-          <label>Yeni Şifre:</label>
-          <input type="password" id="adminNewPassInput" class="modern-input">
-        </div>
-        <div class="input-control">
-          <label>Yeni Şifre (Tekrar):</label>
-          <input type="password" id="adminNewPassConfirmInput" class="modern-input">
-        </div>
-        <button class="btn-action btn-toggle-on" style="margin-top: 10px; padding: 10px 18px;" onclick="changeAdminPassword()">💾 Bilgileri Kaydet</button>
-      </div>
-
     </div>
   </div>
 
@@ -1204,49 +1149,321 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       <button id="btnCancelLoading" class="btn-action" style="margin-top: 15px; background: #ef4444 !important; border-color: #dc2626 !important; color: white !important;" onclick="cancelQuestionLoading()">
         🚫 İptal Et / Çıkış Yap
       </button>
+      <div id="retryGroup" class="retry-btn-group" style="display: none;">
+        <button class="btn-action" style="background: #ffffff !important; color: #10b981 !important; border: 2px solid #10b981 !important;" onclick="retryConnection()">♻️ Yeniden Dene</button>
+        <button class="btn-action" style="background: #334155 !important; color: #ffffff !important;" onclick="useFallbackData()">📂 Yerel Mod</button>
+      </div>
+    </div>
+    
+    <div id="confirmModal" class="modal-overlay no-print" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-title">⚠️ Testten Çıkılsın mı?</div>
+        <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 20px;">Testiniz sonlandırılacaktır. Ayarlara dönmek istiyor musunuz?</p>
+        <div style="display: flex; gap: 10px;">
+          <button class="btn-action btn-finish-test" style="flex: 1; justify-content: center;" onclick="confirmBackToConfig()">Evet, Çık</button>
+          <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeConfirmModal()">Vazgeç</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="testConfigModal" class="modal-overlay no-print" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-title">📝 Test Modu Ayarları</div>
+        <div class="toggle-tile" style="margin-bottom: 12px;">
+          <span>Süre Belirle</span>
+          <label class="switch">
+            <input type="checkbox" id="testTimerToggle" onchange="toggleTimerInput(this)">
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div id="timerInputGroup" class="input-control" style="display: none;">
+          <label for="testDurationInput">Süre (Dakika):</label>
+          <input type="number" id="testDurationInput" class="modern-input" value="15" min="1" max="180">
+        </div>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button class="btn-action btn-print" style="flex: 1; justify-content: center;" onclick="startInteractiveTest()">🚀 Testi Başlat</button>
+          <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeTestConfigModal()">İptal</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEST TAMAMLANDI MODALİ -->
+    <div id="testResultModal" class="modal-overlay no-print" style="display: none; z-index: 24000;">
+      <div class="modal-card" style="max-width: 520px; width: 90%; max-height: 85vh; overflow-y: auto;">
+        <div class="modal-title" id="resultModalTitle">📊 Test Tamamlandı!</div>
+        <div class="result-summary-grid">
+          <div class="result-card-item correct"><div style="font-size: 1.4rem;" id="resCorrectCount">0</div><div style="font-size: 0.75rem;">Doğru</div></div>
+          <div class="result-card-item wrong"><div style="font-size: 1.4rem;" id="resWrongCount">0</div><div style="font-size: 0.75rem;">Yanlış</div></div>
+          <div class="result-card-item blank"><div style="font-size: 1.4rem;" id="resBlankCount">0</div><div style="font-size: 0.75rem;">Boş</div></div>
+        </div>
+        <div id="modalTopicAnalysisBox" style="margin-top: 15px; border-top: 1px solid var(--border); padding-top: 12px;"></div>
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+          <button id="btnModalAnalysis" class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="activateAnalysisMode()">🔍 Analiz Et & Çözümleri Gör</button>
+          <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeResultModal()">Kapat</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- YÖNETİCİ KONTROL MERKEZİ -->
+    <div id="adminModal" class="modal-overlay no-print" style="display: none; z-index: 25000;">
+      <div class="modal-card admin-modal-card">
+        <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <span>⚙️ Yönetici Kontrol Merkezi</span>
+            <button id="btnManualLoadQuestions" class="btn-action btn-toggle-on" style="background: #0284c7 !important; border-color: #0369a1 !important; font-size: 0.8rem; padding: 4px 10px;" onclick="manualLoadQuestions()">
+              📥 Soruları Yükle
+            </button>
+          </div>
+          <button class="btn-action" style="background: #ef4444; border-color: #dc2626; color: white;" onclick="logoutAdminSession()">
+            🚪 Çıkış Yap
+          </button>
+        </div>
+        
+        <!-- YÖNETİCİ SEKMELERİ -->
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin: 15px 0;">
+          <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+            <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar ve Yetkiler</button>
+            <button id="tabReportsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('reports')">🚨 Hatalı Soru Bildirimleri</button>
+            <!-- MADDE 4: YÜKLENEN SORULAR SEKMESİ (ADMIN) -->
+            <button id="tabUploadedQuestionsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('uploadedQuestions')">📥 Kullanıcı Soruları</button>
+            <button id="tabChatBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('chat')">💬 Kullanıcı Mesajları <span id="adminChatUnreadBadge" style="display:none;" class="unread-badge-dot"></span></button>
+            <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
+            <button id="tabSettingsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('settings')">🔒 Yönetici Şifre Ayarları</button>
+          </div>
+          <div style="width: 280px;" id="adminSearchBoxWrapper">
+            <input type="text" id="adminUserSearchInput" class="modern-input" style="padding: 6px 10px; font-size: 0.82rem;" placeholder="🔍 Ad, Soyad veya E-posta İle Ara..." oninput="filterAdminUsersSearch()">
+          </div>
+        </div>
+
+        <!-- SEKME 1: KULLANICI LİSTESİ -->
+        <div id="adminTabUsers" style="flex: 1; display: flex; flex-direction: column; overflow: hidden;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; margin-bottom: 10px; background: #f8fafc; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+            <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+              <span style="font-size: 0.8rem; font-weight: bold; color: var(--text-muted); margin-right: 4px;">Toplu İşlem:</span>
+              <select id="bulkActionSelect" class="modern-input" style="padding: 4px 8px; font-size: 0.8rem; width: auto;">
+                <option value="" disabled selected>Yetki Seç...</option>
+                <option value="VIP">👑 VIP Yap</option>
+                <option value="Premium">⭐ Premium Yap</option>
+                <option value="Deneme">⏳ Deneme Yap</option>
+                <option value="Ücretsiz">🔄 Ücretsiz Yap</option>
+                <option value="Engellendi">🚫 Engelle</option>
+                <option value="DELETE">🗑️ Seçilenleri Kalıcı Sil</option>
+              </select>
+              <button class="btn-action btn-toggle-on" style="padding: 4px 10px; font-size: 0.8rem;" onclick="applyBulkAction()">Uygula</button>
+            </div>
+
+            <div style="display: flex; gap: 4px; flex-wrap: wrap;">
+              <button class="btn-action filter-btn btn-toggle-on" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Tümü', this)">Tümü</button>
+              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('admin', this)">👑 Yönetici</button>
+              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('VIP', this)">👑 VIP</button>
+              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Premium', this)">⭐ Premium</button>
+              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Deneme', this)">⏳ Deneme</button>
+              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Ücretsiz', this)">🆓 Ücretsiz</button>
+              <button class="btn-action filter-btn btn-toggle-off" style="padding: 3px 8px; font-size: 0.75rem;" onclick="filterAdminUsers('Engellendi', this)">🚫 Engelli</button>
+            </div>
+          </div>
+
+          <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem; text-align: left;">
+              <thead style="background: #f1f5f9; position: sticky; top: 0; z-index: 5;">
+                <tr>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border); width: 40px; text-align: center;">
+                    <input type="checkbox" id="selectAllUsersCheckbox" onchange="toggleSelectAllUsers(this)">
+                  </th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border);">Ad Soyad</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: center;">Uyarı</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border);">Rol / Durum</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">Aksiyonlar</th>
+                </tr>
+              </thead>
+              <tbody id="adminUserTableBody">
+                <tr><td colspan="6" style="padding: 15px; text-align: center;">Kullanıcılar sıralanıyor...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- SEKME 2: HATALI SORU BİLDİRİMLERİ -->
+        <div id="adminTabReports" style="display: none; flex: 1; flex-direction: column; overflow: hidden;">
+          <div style="display: flex; justify-content: space-between; align-items: center; background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border); flex-wrap: wrap; gap: 10px;">
+            <div style="display: flex; gap: 8px; align-items: center;">
+              <input type="checkbox" id="selectAllReportsCheckbox" onchange="toggleSelectAllReports(this)">
+              <span style="font-size: 0.8rem; font-weight: bold;">Tümünü Seç</span>
+              <button class="btn-action btn-toggle-on" style="font-size: 0.8rem; padding: 4px 10px;" onclick="openAdminBulkReplyModal()">💬 Seçilenleri Toplu Yanıtla</button>
+              <button class="btn-action btn-finish-test" style="font-size: 0.8rem; padding: 4px 10px;" onclick="promptDeleteSelectedAdminReports()">🗑️ Seçilenleri Sil</button>
+            </div>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Gelen soru bildirimlerinin tüm detaylarını ve şıklarını inceleyebilirsiniz.</span>
+          </div>
+          
+          <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px;" id="adminQuestionReportsList">
+            Yükleniyor...
+          </div>
+        </div>
+
+        <!-- MADDE 4: SEKME - KULLANICILAR TARAFINDAN YÜKLENEN SORULAR (ADMIN) -->
+        <div id="adminTabUploadedQuestions" style="display: none; flex: 1; flex-direction: column; overflow: hidden;">
+          <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border);">
+            <span style="font-size: 0.85rem; color: #475569; font-weight: 600;">📥 Kullanıcılar tarafından sisteme yüklenen .doc ve .docx uzantılı soru dosyaları listesi:</span>
+          </div>
+          <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px;" id="adminUploadedQuestionsList">
+            Yükleniyor...
+          </div>
+        </div>
+
+        <!-- SEKME 3: KULLANICI MESAJLARI -->
+        <div id="adminTabChat" style="display: none; flex: 1; gap: 15px; overflow: hidden;">
+          <div style="width: 330px; border: 1px solid var(--border); border-radius: 8px; display: flex; flex-direction: column; background: #f8fafc;">
+            <div style="padding: 10px; border-bottom: 1px solid var(--border); font-weight: bold; font-size: 0.85rem; background: #f1f5f9; display:flex; justify-content:space-between; align-items:center;">
+              <div style="display:flex; align-items:center; gap:6px;">
+                <input type="checkbox" id="selectAllChatsCheckbox" onchange="toggleSelectAllChats(this)">
+                <span>💬 Sohbetler</span>
+              </div>
+              <button class="btn-action btn-finish-test" style="font-size:0.72rem; padding:3px 8px;" onclick="deleteSelectedAdminChats()">🗑️ Seçilenleri Sil</button>
+            </div>
+            <div id="adminChatUserList" style="flex: 1; overflow-y: auto;">
+              Yükleniyor...
+            </div>
+          </div>
+
+          <div style="flex: 1; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 8px; background: white;" id="adminChatDetailBox">
+            <div style="padding: 15px; text-align: center; color: var(--text-muted); margin: auto;">
+              👈 Lütfen sol listeden mesajlaşmak istediğiniz kullanıcıyı seçiniz.
+            </div>
+          </div>
+        </div>
+
+        <!-- SEKME 4: LİSANS ÜRETİCİ -->
+        <div id="adminTabLicenses" style="display: none;">
+          <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">İstediğiniz gün ve üyelik türüne göre promosyon kodu oluşturun:</p>
+          <div style="background: var(--surface); padding: 16px; border-radius: 8px; border: 1px solid var(--border);">
+            <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+              <input type="number" id="licenseDaysInput" class="modern-input" style="flex: 1; min-width: 120px;" value="30" min="1" placeholder="Süre (Gün)">
+              <select id="licenseTierSelect" class="modern-input" style="flex: 1; min-width: 140px;">
+                <option value="Deneme">Deneme</option>
+                <option value="Premium" selected>Premium</option>
+                <option value="VIP">VIP</option>
+              </select>
+              <button class="btn-action btn-toggle-on" onclick="generateNewLicense()">✨ Kodu Üret</button>
+            </div>
+            <div id="generatedCodeBox" style="display: none; background: #0f172a; color: #38bdf8; padding: 14px; border-radius: 8px; font-family: monospace; font-size: 0.9rem;">
+              <div><strong>Süre / Tür:</strong> <span id="resCodeMeta" style="color:#f59e0b;">-</span></div>
+              <div><strong>Seri No:</strong> <span id="resCodeSerial" style="color:white;">-</span></div>
+              <div><strong>Anahtar:</strong> <span id="resCodeKey" style="color:white;">-</span></div>
+              <div><strong>PIN:</strong> <span id="resCodePin" style="color:white;">-</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- SEKME 5: ADMIN ŞİFRE VE KULLANICI ADI AYARLARI -->
+        <div id="adminTabSettings" style="display: none; max-width: 450px;">
+          <h4 style="margin-bottom: 12px; color: var(--bg-dark);">🔐 Yönetici Kullanıcı Adı & Şifre Güncelle</h4>
+          <div class="input-control">
+            <label>Yeni Yönetici Kullanıcı Adı:</label>
+            <input type="text" id="adminNewUsernameInput" class="modern-input" placeholder="admin">
+          </div>
+          <div class="input-control">
+            <label>Mevcut Şifre:</label>
+            <input type="password" id="adminOldPassInput" class="modern-input">
+          </div>
+          <div class="input-control">
+            <label>Yeni Şifre:</label>
+            <input type="password" id="adminNewPassInput" class="modern-input">
+          </div>
+          <div class="input-control">
+            <label>Yeni Şifre (Tekrar):</label>
+            <input type="password" id="adminNewPassConfirmInput" class="modern-input">
+          </div>
+          <button class="btn-action btn-toggle-on" style="margin-top: 10px; padding: 10px 18px;" onclick="changeAdminPassword()">💾 Bilgileri Kaydet</button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- KOD GİRİŞ MODALİ -->
+    <div id="redeemModal" class="modal-overlay no-print" style="display: none;">
+      <div class="modal-card" style="max-width: 450px; width: 90%;">
+        <div class="modal-title" style="justify-content: space-between;">
+          <span>🔑 Aktivasyon Kodu Gir</span>
+          <button class="btn-action" onclick="closeRedeemModal()">✕</button>
+        </div>
+        <div class="input-control">
+          <label>Seri No:</label>
+          <input type="text" id="inputRedeemSerial" class="modern-input" placeholder="NR-2026-..." oninput="checkRedeemInputs()">
+        </div>
+        <div class="input-control">
+          <label>Aktivasyon Anahtarı:</label>
+          <input type="text" id="inputRedeemKey" class="modern-input" oninput="checkRedeemInputs()">
+        </div>
+        <div class="input-control">
+          <label>Güvenlik PIN:</label>
+          <input type="text" id="inputRedeemPin" class="modern-input" oninput="checkRedeemInputs()">
+        </div>
+        <button id="btnSubmitRedeem" class="btn-proceed" style="margin-top: 15px; opacity: 0.5;" disabled onclick="submitRedeemCode()">
+          Kodu Onayla ve Yükselt ➔
+        </button>
+      </div>
+    </div>
+
+    <!-- AKTİVİTE DETAY MODALİ -->
+    <div id="activityModal" class="modal-overlay no-print" style="display: none; z-index: 25000;" onclick="if(event.target===this) closeActivityModal()">
+      <div class="modal-card" style="max-width: 750px; width: 92%; max-height: 85vh; display: flex; flex-direction: column;">
+        <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
+          <span id="activityModalTitle">📊 Günlük Kullanıcı İstatistikleri</span>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-action btn-finish-test" style="font-size: 0.75rem; padding: 4px 8px;" onclick="clearAllActivities()">🗑️ Tümünü Temizle</button>
+            <button class="btn-action" onclick="closeActivityModal()">✕ Kapat</button>
+          </div>
+        </div>
+        <div id="activityLogsList" style="flex: 1; overflow-y: auto; font-size: 0.85rem; margin-top: 15px; padding-right: 5px;">
+          Yükleniyor...
+        </div>
+      </div>
     </div>
 
     <!-- ANA PANEL EKRANI -->
     <div id="configScreen" class="config-screen">
       <div class="config-card">
         
-        <!-- MADDE 2: YENİ HEADER YAPISI VE DİZİLİMİ -->
-        <div class="panel-header">
-          <!-- Üst Satır: Sol Başlık, Sağ Status Dot -->
-          <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+        <div class="panel-header" style="position: relative;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; width: 100%;">
             <div class="panel-title">
               <span>🧠</span> Nöroloji Soru Hazırlama Paneli
             </div>
-            <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Ediliyor"></span>
-          </div>
+            
+            <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
+              <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Edildiği"></span>
+              
+              <button id="btnRedeemLicense" class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openRedeemModal()">
+                🔑 Lisans Kodu Kullan
+              </button>
 
-          <!-- İkinci Satır: Kullanıcı Adı, Yetki, Çıkış ve UYARI YILDIZLARI -->
-          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+              <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openAdminModal()">
+                ⚙️ Yönetici Paneli
+              </button>
+
+              <!-- MADDE 4: SORU GÖNDER BUTONU (PREMIUM / VIP / ADMIN İÇİN) -->
+              <button id="btnUploadUserQuestion" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #2563eb; color: white; border-color: #1d4ed8;" onclick="openUserQuestionUploadModal()">
+                📤 Soru Gönder (Doc/Docx)
+              </button>
+
+              <button id="btnCheckMyReports" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #0284c7; color: white; border-color: #0369a1;" onclick="openUserReportsModal()">
+                📋 Hatalı Soru Bildirimlerimi Kontrol Et
+              </button>
+
+              <!-- MADDE 3: CANLI DESTİK BUTON EMOJİSİ -->
+              <button id="btnContactAdmin" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #059669; color: white; border-color: #047857;" onclick="openUserChatModal()">
+                💬👨‍⚕️ Yönetici ile Canlı Destek
+              </button>
+            </div>
+          </div>
+          
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
             <div class="user-profile-badge">
               <span class="user-name-target">...</span>
               <span id="userTierBadge" style="padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0; color: #475569;">Ücretsiz</span>
               <button class="btn-logout-sm btn-logout-action">Çıkış</button>
-              <span id="userHeaderStars" style="font-size: 0.9rem; margin-left: 2px;" title="Aldığınız Uyarı Yıldızları"></span>
             </div>
-          </div>
-
-          <!-- Üçüncü Satır (Biraz Boşluk Sonra): Tuşlar Soldan Sağa Tek Satırda -->
-          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%; margin-top: 6px;">
-            <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important; font-size: 0.82rem; padding: 8px 14px;" onclick="openAdminModal()">
-              ⚙️ Yönetici Paneli
-            </button>
-            <button id="btnRedeemLicense" class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important; font-size: 0.82rem; padding: 8px 14px;" onclick="openRedeemModal()">
-              🔑 Lisans Kodu Kullan
-            </button>
-            <button id="btnUploadUserQuestion" class="btn-action" style="font-size: 0.82rem; padding: 8px 14px; background: #2563eb; color: white; border-color: #1d4ed8;" onclick="openUserQuestionUploadModal()">
-              📤 Soru Gönder (Doc/Docx)
-            </button>
-            <button id="btnCheckMyReports" class="btn-action" style="font-size: 0.82rem; padding: 8px 14px; background: #0284c7; color: white; border-color: #0369a1;" onclick="openUserReportsModal()">
-              📋 Hatalı Soru Bildirimlerimi Kontrol Et
-            </button>
-            <button id="btnContactAdmin" class="btn-action" style="font-size: 0.82rem; padding: 8px 14px; background: #059669; color: white; border-color: #047857;" onclick="openUserChatModal()">
-              💬👨‍⚕️ Yönetici ile Canlı Destek
-            </button>
           </div>
         </div>
 
@@ -1307,6 +1524,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           İlerle ve Testi Oluştur ➔
         </button>
 
+        <!-- MADDE 2: İMLA DÜZELTMESİ YAPILAN YAZI -->
         <div class="feedback-note">
           Görüş, öneri ve yanlış soru bildirimi için: <a href="mailto:kgulsen1994@gmail.com">kgulsen1994@gmail.com</a>
         </div>
@@ -1327,6 +1545,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         </div>
 
         <div class="action-btn-group">
+          <!-- MADDE 5: DETAYLI KONU ANALİZİ TEKRAR AÇMA BUTONU -->
           <button id="btnOpenSideAnalysis" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important;" onclick="openSideAnalysisPanel()">
             📊 Detaylı Konu Analizi
           </button>
@@ -1356,6 +1575,9 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       </div>
 
       <div class="paper-viewport">
+        <div id="screenWatermark" class="screen-watermark"></div>
+        <div id="printWatermark" class="print-watermark"></div>
+
         <div class="a4-sheet" id="a4PaperSheet">
           <div class="exam-header">
             <div class="exam-main-title">NÖROLOJİ SORU HAZIRLAMA PANELİ</div>
@@ -1363,11 +1585,13 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
               <tr>
                 <td>
                   <strong>Adı Soyadı:</strong> 
-                  <input type="text" id="inputStudentName" class="header-input" placeholder="......................................................" autocomplete="off">
+                  <input type="text" id="inputStudentName" class="header-input" placeholder="......................................................" oninput="syncPrintHeader()" autocomplete="off">
+                  <span id="printStudentName" class="print-only-text">___________________________</span>
                 </td>
                 <td style="text-align: right;">
                   <strong>Tarih:</strong> 
-                  <input type="text" id="inputExamDate" class="header-input date-input" placeholder=".... / .... / 20...." autocomplete="off">
+                  <input type="text" id="inputExamDate" class="header-input date-input" placeholder=".... / .... / 20...." oninput="syncPrintHeader()" autocomplete="off">
+                  <span id="printExamDate" class="print-only-text">____/____/20__</span>
                   <span style="margin-left: 15px;"><strong>Aldığı Puan:</strong> ________</span>
                 </td>
               </tr>
@@ -1402,101 +1626,50 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 <script>
   const AUTOMATIC_JSON_URL = "https://script.google.com/macros/s/AKfycbxji5BJB8jHOqGX6e3r84HCfwWMCfRa6rOvX_PKP5Yih8fkylIzE3vqV5_48-ES38D8/exec";
 
+  const defaultFallbackPool = [
+    {
+      id: 1, kategori: "Nöroloji", konu: "Anatomi", zorluk: "Kolay",
+      soruMetni: "Santral sinir sisteminde aksonların etrafındaki miyelin kılıfı oluşturan glia hücresi aşağıdakilerden hangisidir?",
+      secenekler: ["Schwann Hücresi", "Oligodendrosit", "Astrosit", "Mikroglia", "Ependim Hücresi"],
+      dogruCevapIndices: [1],
+      aciklama: "Santral sinir sisteminde miyelin kılıfı oligodendrositler oluşturur."
+    }
+  ];
+
   let masterPool = [];
   let currentQuestionsList = [];
   let userAnswers = {};
   let isTestActive = false;
   let isAnalysisActive = false;
+  let testTimerInterval = null;
+  let remainingSeconds = 0;
   let currentReportingQuestionIndex = null;
-  let selectedQuestionFile = null;
 
   let currentKeyMode = 'none';
   let currentExpMode = 'none';
-
-  // GLOBAL EMOJİ İŞLEMLERİ
-  let currentEmojiTargetInputId = null;
-
-  window.openEmojiPicker = function(btnElem, inputId) {
-    currentEmojiTargetInputId = inputId;
-    const picker = document.getElementById('globalEmojiPicker');
-    if (!picker) return;
-    const rect = btnElem.getBoundingClientRect();
-    picker.style.top = Math.max(10, rect.top - 230) + 'px';
-    picker.style.left = Math.min(rect.left, window.innerWidth - 290) + 'px';
-    picker.style.display = 'block';
-  };
-
-  window.closeEmojiPicker = function() {
-    const picker = document.getElementById('globalEmojiPicker');
-    if (picker) picker.style.display = 'none';
-  };
-
-  window.insertEmoji = function(emoji) {
-    if (currentEmojiTargetInputId) {
-      const input = document.getElementById(currentEmojiTargetInputId);
-      if (input) {
-        input.value += emoji;
-        input.focus();
-      }
-    }
-    closeEmojiPicker();
-  };
-
-  // SÜRÜKLE & BIRAK YÖNETİMİ
-  window.handleQuestionFileSelect = function(files) {
-    if (!files || files.length === 0) return;
-    selectedQuestionFile = files[0];
-    const display = document.getElementById('selectedFileNameDisplay');
-    if (display) {
-      display.innerText = `📄 Seçilen Dosya: ${selectedQuestionFile.name}`;
-      display.style.display = 'block';
-    }
-  };
-
-  // Sürükle bırak event listener'larını modal açıldığında başlatıyoruz
-  function initDropZoneEvents() {
-    const dropZone = document.getElementById('fileDropZone');
-    if (!dropZone) return;
-
-    ['dragenter', 'dragover'].forEach(eventName => {
-      dropZone.addEventListener(eventName, (e) => {
-        e.preventDefault(); e.stopPropagation();
-        dropZone.style.background = '#dbeafe';
-        dropZone.style.borderColor = '#1d4ed8';
-      }, false);
-    });
-
-    ['dragleave', 'drop'].forEach(eventName => {
-      dropZone.addEventListener(eventName, (e) => {
-        e.preventDefault(); e.stopPropagation();
-        dropZone.style.background = '#f0f9ff';
-        dropZone.style.borderColor = '#3b82f6';
-      }, false);
-    });
-
-    dropZone.addEventListener('drop', (e) => {
-      const dt = e.dataTransfer;
-      const files = dt.files;
-      if (files && files.length > 0) {
-        document.getElementById('userQuestionFileInput').files = files;
-        handleQuestionFileSelect(files);
-      }
-    }, false);
-  }
 
   function cleanMultiParagraphs(text) {
     if (!text) return '';
     return String(text).replace(/\n\s*\n/g, '\n').trim();
   }
 
+  function syncPrintHeader() {
+    const nameVal = document.getElementById('inputStudentName').value.trim();
+    const dateVal = document.getElementById('inputExamDate').value.trim();
+    document.getElementById('printStudentName').innerText = nameVal !== '' ? nameVal : '___________________________';
+    document.getElementById('printExamDate').innerText = dateVal !== '' ? dateVal : '____/____/20__';
+  }
+
   function normStr(str) {
-    if (!str) return '';
+    if (str === null || str === undefined) return '';
     return String(str).toLocaleLowerCase('tr-TR').replace(/ç/g, 'c').replace(/ğ/g, 'g').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ş/g, 's').replace(/ü/g, 'u').replace(/[^a-z0-9]/g, '');
   }
 
   function getCorrectIndices(q) {
     if (Array.isArray(q.dogruCevapIndices) && q.dogruCevapIndices.length > 0) return q.dogruCevapIndices.map(Number);
-    let ans = q.dogruCevap || q.cevap || '';
+    if (Array.isArray(q.dogruCevapIndex)) return q.dogruCevapIndex.map(Number);
+    if (q.dogruCevapIndex !== undefined && q.dogruCevapIndex !== null && !isNaN(q.dogruCevapIndex)) return [parseInt(q.dogruCevapIndex)];
+    let ans = q.dogruCevap || q.cevap || q.ans || '';
     let matches = String(ans).match(/[A-E]/gi);
     if (matches && matches.length > 0) {
       let indices = [];
@@ -1514,6 +1687,34 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     return indices.map(i => String.fromCharCode(65 + i)).join(', ');
   }
 
+  function getExplanation(q) {
+    if (!q || typeof q !== 'object') return 'Açıklama mevcut değil.';
+    if (q.aciklama && String(q.aciklama).trim() !== '' && String(q.aciklama).trim().toLowerCase() !== 'null') return String(q.aciklama).trim();
+    const keys = Object.keys(q);
+    for (let key of keys) {
+      let cleanKey = normStr(key);
+      if (cleanKey.includes('aciklam') || cleanKey.includes('cozum') || cleanKey.includes('explan')) {
+        let val = q[key];
+        if (Array.isArray(val)) val = val.join(" ");
+        if (val && String(val).trim() !== '' && String(val).trim().toLowerCase() !== 'null') return String(val).trim();
+      }
+    }
+    return 'Açıklama mevcut değil.';
+  }
+
+  function parseQuestionMeta(q) {
+    let rawKonu = String(q.konu || '').trim();
+    let rawZorluk = String(q.zorluk || '').trim();
+    let combined = (rawKonu + ' ' + rawZorluk).toLocaleLowerCase('tr-TR');
+    let detectedZorluk = 'orta';
+    if (combined.includes('kolay')) detectedZorluk = 'kolay';
+    else if (combined.includes('zor')) detectedZorluk = 'zor';
+    else if (combined.includes('orta')) detectedZorluk = 'orta';
+
+    let cleanKonuName = rawKonu.replace(/zorluk\s*[:\s]*.*/i, '').replace(/\b(kolay|orta|zor)\b/gi, '').replace(/[\r\n\t]/g, '').trim() || 'Genel';
+    return { displayName: cleanKonuName, konuKey: normStr(cleanKonuName), zorlukKey: detectedZorluk };
+  }
+
   function extractAndCleanOptions(q) {
     if (!q || !q.secenekler) return [];
     let rawArr = Array.isArray(q.secenekler) ? q.secenekler : [q.secenekler];
@@ -1523,11 +1724,23 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     return rawArr.map(p => String(p).replace(/^[A-E][\)\.]\s*/i, '').replace(/^\)\s*/, '').trim());
   }
 
-  function parseQuestionMeta(q) {
-    let rawKonu = String(q.konu || '').trim();
-    let rawZorluk = String(q.zorluk || '').trim();
-    let cleanKonuName = rawKonu.replace(/zorluk\s*[:\s]*.*/i, '').replace(/\b(kolay|orta|zor)\b/gi, '').trim() || 'Genel';
-    return { displayName: cleanKonuName };
+  function deduplicateQuestions(arr) {
+    if (!Array.isArray(arr)) return [];
+    const seen = new Set();
+    const uniqueList = [];
+    arr.forEach(q => {
+      if (!q || !q.soruMetni) return;
+      const normText = normStr(q.soruMetni);
+      const cleanOpts = extractAndCleanOptions(q);
+      const normOpts = cleanOpts.map(o => normStr(o)).join('|');
+      const correctLetter = getCorrectLetter(q);
+      const uniqueKey = `${normText}___${normOpts}___${correctLetter}`;
+      if (!seen.has(uniqueKey)) {
+        seen.add(uniqueKey);
+        uniqueList.push(q);
+      }
+    });
+    return uniqueList;
   }
 
   function showToast(message, type = 'warning') {
@@ -1535,63 +1748,686 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     if (!container) return;
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
-    let icon = type === 'error' ? '🚫' : (type === 'success' ? '✅' : '⚠️');
+    let icon = '⚠️';
+    if (type === 'error') icon = '🚫';
+    if (type === 'success') icon = '✅';
     toast.innerHTML = `<span>${icon}</span> <span>${message}</span>`;
     container.appendChild(toast);
     setTimeout(() => { toast.remove(); }, 4000);
   }
   window.showToast = showToast;
 
+  function showLoadingState() {
+    const overlay = document.getElementById('loadingOverlay');
+    const spinner = document.getElementById('loadingSpinner');
+    const text = document.getElementById('loadingText');
+    const retryGroup = document.getElementById('retryGroup');
+    if (overlay) { overlay.style.display = 'flex'; overlay.style.opacity = '1'; }
+    if (spinner) spinner.style.display = 'block';
+    if (text) text.innerText = "Sorular Buluttan Çekiliyor...";
+    if (retryGroup) retryGroup.style.display = 'none';
+  }
+
+  function showConnectionErrorState() {
+    const spinner = document.getElementById('loadingSpinner');
+    const text = document.getElementById('loadingText');
+    const retryGroup = document.getElementById('retryGroup');
+    if (spinner) spinner.style.display = 'none';
+    if (text) text.innerText = "Bulut veritabanına bağlanılamadı.";
+    if (retryGroup) retryGroup.style.display = 'flex';
+  }
+
   function hideLoading() {
     const overlay = document.getElementById('loadingOverlay');
-    if (overlay) overlay.style.display = 'none';
+    if (overlay) {
+      overlay.style.opacity = '0';
+      setTimeout(() => overlay.style.display = 'none', 300);
+    }
   }
+
+  function updateAvailableQuestionCount() {
+    const selectedTopics = Array.from(document.querySelectorAll('.topic-check:checked')).map(cb => cb.value);
+    const selectedDiffs = Array.from(document.querySelectorAll('.diff-check:checked')).map(cb => cb.value);
+    const matchingQuestions = masterPool.filter(q => {
+      const meta = parseQuestionMeta(q);
+      return selectedTopics.includes(meta.konuKey) && selectedDiffs.includes(meta.zorlukKey);
+    });
+    const totalAvailable = matchingQuestions.length;
+    const label = document.getElementById('qCountLabel');
+    const input = document.getElementById('questionCount');
+    if (label) label.innerHTML = `Soru Sayısı <span style="color:var(--primary); font-weight:700;">(Mevcut: ${totalAvailable})</span>`;
+    if (input) {
+      input.max = totalAvailable;
+      if (parseInt(input.value) > totalAvailable && totalAvailable > 0) input.value = totalAvailable;
+      else if (totalAvailable === 0) input.value = 0;
+    }
+  }
+
+  function initFilters() {
+    const topicContainer = document.getElementById('topicContainer');
+    if (topicContainer) topicContainer.innerHTML = '';
+    const topicsMap = new Map();
+    masterPool.forEach(q => {
+      const meta = parseQuestionMeta(q);
+      if (!topicsMap.has(meta.konuKey)) topicsMap.set(meta.konuKey, meta.displayName);
+    });
+
+    topicsMap.forEach((displayName, cleanKey) => {
+      const label = document.createElement('label');
+      label.className = 'checkbox-tile';
+      label.innerHTML = `<input type="checkbox" class="topic-check" value="${cleanKey}" checked onchange="updateAvailableQuestionCount()"><span>${displayName}</span>`;
+      if (topicContainer) topicContainer.appendChild(label);
+    });
+
+    const diffContainer = document.getElementById('diffContainer');
+    if (diffContainer) diffContainer.innerHTML = '';
+    const diffsMap = new Map([['kolay', 'Kolay'], ['orta', 'Orta'], ['zor', 'Zor']]);
+
+    masterPool.forEach(q => {
+      const meta = parseQuestionMeta(q);
+      if (!diffsMap.has(meta.zorlukKey)) {
+        diffsMap.set(meta.zorlukKey, meta.zorlukKey.charAt(0).toUpperCase() + meta.zorlukKey.slice(1));
+      }
+    });
+
+    diffsMap.forEach((displayName, cleanKey) => {
+      const label = document.createElement('label');
+      label.className = 'checkbox-tile';
+      label.innerHTML = `<input type="checkbox" class="diff-check" value="${cleanKey}" checked onchange="updateAvailableQuestionCount()"><span>${displayName}</span>`;
+      if (diffContainer) diffContainer.appendChild(label);
+    });
+
+    updateAvailableQuestionCount();
+  }
+
+  let activeFetchAbortController = null;
 
   async function loadDataAndInit() {
+    showLoadingState();
+    const dot = document.getElementById('dataStatusDot');
+    if (dot) dot.title = "Bulut veritabanına bağlanılıyor...";
+
+    activeFetchAbortController = new AbortController();
+    const timeoutId = setTimeout(() => { if (activeFetchAbortController) activeFetchAbortController.abort(); }, 35000);
+
     try {
-      const response = await fetch(AUTOMATIC_JSON_URL);
+      const response = await fetch(AUTOMATIC_JSON_URL, { method: 'GET', redirect: 'follow', signal: activeFetchAbortController.signal });
+      clearTimeout(timeoutId);
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const data = await response.json();
       if (Array.isArray(data) && data.length > 0) {
-        masterPool = data;
+        masterPool = deduplicateQuestions(data);
+        if (dot) { dot.classList.add('active'); dot.title = `Bulut Bağlantısı Aktif (${masterPool.length} Soru)`; }
         hideLoading();
-      }
-    } catch (err) { hideLoading(); }
+        initFilters();
+        showToast(`Buluttan ${masterPool.length} soru yüklendi.`, 'success');
+      } else { throw new Error("Veri boş"); }
+    } catch (err) {
+      clearTimeout(timeoutId);
+      if (err.name === 'AbortError') return;
+      if (dot) { dot.classList.remove('active'); dot.title = "Yerel Mod"; }
+      showConnectionErrorState();
+    }
   }
 
-  window.openUserQuestionUploadModal = function() {
-    document.getElementById('userQuestionUploadRulesModal').style.display = 'flex';
-  };
+  function cancelQuestionLoading() {
+    if (activeFetchAbortController) { activeFetchAbortController.abort(); activeFetchAbortController = null; }
+    hideLoading();
+    if (window.forceSignOutToLogin) window.forceSignOutToLogin();
+  }
+  window.cancelQuestionLoading = cancelQuestionLoading;
 
-  window.closeUserQuestionUploadRulesModal = function() {
-    document.getElementById('userQuestionUploadRulesModal').style.display = 'none';
-  };
+  function retryConnection() { loadDataAndInit(); }
+  window.retryConnection = retryConnection;
 
-  window.acceptUploadRules = function() {
-    closeUserQuestionUploadRulesModal();
-    selectedQuestionFile = null;
-    document.getElementById('userQuestionFileInput').value = '';
-    const display = document.getElementById('selectedFileNameDisplay');
-    if (display) display.style.display = 'none';
+  function useFallbackData() {
+    masterPool = deduplicateQuestions(defaultFallbackPool);
+    hideLoading();
+    initFilters();
+    showToast("Yerel yedek soru havuzu yüklendi.", "warning");
+  }
+  window.useFallbackData = useFallbackData;
+
+  function toggleAllTopics() {
+    const checkboxes = document.querySelectorAll('.topic-check');
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    checkboxes.forEach(cb => cb.checked = !allChecked);
+    updateAvailableQuestionCount();
+  }
+  window.toggleAllTopics = toggleAllTopics;
+
+  function shuffle(array) {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  function distributeQuestionsEqually(filteredQuestions, targetCount) {
+    const topicGroups = new Map();
+    filteredQuestions.forEach(q => {
+      const meta = parseQuestionMeta(q);
+      if (!topicGroups.has(meta.konuKey)) topicGroups.set(meta.konuKey, []);
+      topicGroups.get(meta.konuKey).push(q);
+    });
+
+    const topics = Array.from(topicGroups.keys());
+    if (topics.length === 0) return [];
+
+    let remainingTarget = targetCount;
+    const topicQuotas = new Map();
+    topics.forEach(t => topicQuotas.set(t, 0));
+    let activeTopics = [...topics];
+
+    while (remainingTarget > 0 && activeTopics.length > 0) {
+      let quotaPerTopic = Math.floor(remainingTarget / activeTopics.length) || 1;
+      let allocatedInThisRound = 0;
+      const nextActiveTopics = [];
+
+      for (let topic of activeTopics) {
+        if (remainingTarget === 0) break;
+        const group = topicGroups.get(topic);
+        const currentQuota = topicQuotas.get(topic);
+        const availableExtra = group.length - currentQuota;
+        if (availableExtra > 0) {
+          const take = Math.min(quotaPerTopic, availableExtra, remainingTarget);
+          topicQuotas.set(topic, currentQuota + take);
+          remainingTarget -= take;
+          allocatedInThisRound += take;
+          if (group.length - topicQuotas.get(topic) > 0) nextActiveTopics.push(topic);
+        }
+      }
+      if (allocatedInThisRound === 0) break;
+      activeTopics = nextActiveTopics;
+    }
+
+    let finalPool = [];
+    const isShuffle = document.getElementById('shuffleToggle').checked;
+    topics.forEach(topic => {
+      let group = topicGroups.get(topic);
+      if (isShuffle) group = shuffle(group);
+      const quota = topicQuotas.get(topic);
+      finalPool.push(...group.slice(0, quota));
+    });
+
+    if (isShuffle) finalPool = shuffle(finalPool);
+    return finalPool;
+  }
+
+  function resetTestState() {
+    isTestActive = false;
+    isAnalysisActive = false;
+    userAnswers = {};
+    clearInterval(testTimerInterval);
+    currentKeyMode = 'none';
+    currentExpMode = 'none';
+    if (document.getElementById('keyModeSelect')) document.getElementById('keyModeSelect').value = 'none';
+    if (document.getElementById('expModeSelect')) document.getElementById('expModeSelect').value = 'none';
+
+    document.getElementById('toggleKeyBtn').disabled = false;
+    document.getElementById('toggleExpBtn').disabled = false;
+    document.getElementById('btnStartTest').style.display = 'inline-flex';
+    document.getElementById('btnFinishTestTop').style.display = 'none';
+    document.getElementById('bottomFinishBtn').style.display = 'none';
+    document.getElementById('timerDisplay').style.display = 'none';
+    document.getElementById('btnOpenSideAnalysis').style.display = 'none';
+
+    const sheet = document.getElementById('a4PaperSheet');
+    if (sheet) sheet.classList.remove('interactive-mode', 'analysis-mode');
+  }
+
+  function proceedToExam() {
+    const userTier = window.currentUserTier || 'Ücretsiz';
+    const todayStr = new Date().toISOString().split('T')[0];
+    const createdKey = `usage_created_${todayStr}`;
+    let todayCreated = parseInt(localStorage.getItem(createdKey) || '0');
+
+    let maxLimit = 30;
+    if (userTier === 'VIP' || userTier === 'Premium') maxLimit = 500;
+    else if (userTier === 'Deneme') maxLimit = 100;
+
+    const count = parseInt(document.getElementById('questionCount').value) || 10;
+
+    if (todayCreated + count > maxLimit) {
+      showToast(`Günlük soru oluşturma limitinize ulaştınız! (${userTier} Hak: ${maxLimit}, Bugün Üretilen: ${todayCreated})`, 'error');
+      return;
+    }
+
+    const selectedTopics = Array.from(document.querySelectorAll('.topic-check:checked')).map(cb => cb.value);
+    const selectedDiffs = Array.from(document.querySelectorAll('.diff-check:checked')).map(cb => cb.value);
+
+    if (selectedTopics.length === 0 || selectedDiffs.length === 0) {
+      showToast("Lütfen konu ve zorluk seviyesi seçiniz.", "warning");
+      return;
+    }
+
+    let filtered = masterPool.filter(q => {
+      const meta = parseQuestionMeta(q);
+      return selectedTopics.includes(meta.konuKey) && selectedDiffs.includes(meta.zorlukKey);
+    });
+
+    if (filtered.length === 0) {
+      showToast("Seçtiğiniz kriterlere uygun soru bulunamadı.", "error");
+      return;
+    }
+
+    const equalDistribution = document.getElementById('equalTopicToggle').checked;
+    if (equalDistribution) {
+      currentQuestionsList = distributeQuestionsEqually(filtered, count);
+    } else {
+      if (document.getElementById('shuffleToggle').checked) filtered = shuffle(filtered);
+      currentQuestionsList = filtered.slice(0, count);
+    }
+
+    localStorage.setItem(createdKey, (todayCreated + currentQuestionsList.length).toString());
+
+    currentKeyMode = document.getElementById('keyModeSelect').value;
+    currentExpMode = document.getElementById('expModeSelect').value;
+
+    resetTestState();
+    buildPaperView(currentQuestionsList);
+
+    document.getElementById('configScreen').style.display = 'none';
+    document.getElementById('previewScreen').style.display = 'block';
+  }
+  window.proceedToExam = proceedToExam;
+
+  function updateKeyButtonUI() {
+    const btn = document.getElementById('toggleKeyBtn');
+    if (!btn) return;
+    if (currentKeyMode === 'none') { btn.className = "btn-action btn-toggle-off"; btn.innerHTML = `🔑 Cevap Anahtarı: <strong>GİZLİ</strong> 🙈`; }
+    else if (currentKeyMode === 'inline') { btn.className = "btn-action btn-toggle-on"; btn.innerHTML = `🔑 Cevap Anahtarı: <strong>HER SORUDA</strong> 📌`; }
+    else if (currentKeyMode === 'bottom') { btn.className = "btn-action btn-toggle-on"; btn.innerHTML = `🔑 Cevap Anahtarı: <strong>EN ALTTA</strong> 📑`; }
+  }
+
+  function updateExpButtonUI() {
+    const btn = document.getElementById('toggleExpBtn');
+    if (!btn) return;
+    if (currentExpMode === 'none') { btn.className = "btn-action btn-toggle-off"; btn.innerHTML = `📖 Çözüm Açıklamaları: <strong>GİZLİ</strong> 🙈`; }
+    else if (currentExpMode === 'inline') { btn.className = "btn-action btn-toggle-on"; btn.innerHTML = `📖 Çözüm Açıklamaları: <strong>HER SORUDA</strong> 📌`; }
+    else if (currentExpMode === 'bottom') { btn.className = "btn-action btn-toggle-on"; btn.innerHTML = `📖 Çözüm Açıklamaları: <strong>EN ALTTA</strong> 📑`; }
+  }
+
+  function cycleKeyMode() {
+    if (isTestActive) return;
+    if (currentKeyMode === 'none') currentKeyMode = 'inline';
+    else if (currentKeyMode === 'inline') currentKeyMode = 'bottom';
+    else currentKeyMode = 'none';
+    document.getElementById('keyModeSelect').value = currentKeyMode;
+    buildPaperView(currentQuestionsList);
+  }
+  window.cycleKeyMode = cycleKeyMode;
+
+  function cycleExpMode() {
+    if (isTestActive) return;
+    if (currentExpMode === 'none') currentExpMode = 'inline';
+    else if (currentExpMode === 'inline') currentExpMode = 'bottom';
+    else currentExpMode = 'none';
+    document.getElementById('expModeSelect').value = currentExpMode;
+    buildPaperView(currentQuestionsList);
+  }
+  window.cycleExpMode = cycleExpMode;
+
+  function buildPaperView(questions) {
+    const qContainer = document.getElementById('questionsContainer');
+    const keyGrid = document.getElementById('answerKeyGrid');
+    const expContainer = document.getElementById('explanationContainer');
+
+    qContainer.innerHTML = '';
+    keyGrid.innerHTML = '';
+    expContainer.innerHTML = '';
+
+    syncPrintHeader();
+
+    const sheet = document.getElementById('a4PaperSheet');
+    if (isTestActive) { sheet.classList.add('interactive-mode'); sheet.classList.remove('analysis-mode'); }
+    else if (isAnalysisActive) { sheet.classList.add('analysis-mode'); sheet.classList.remove('interactive-mode'); }
+    else { sheet.classList.remove('interactive-mode', 'analysis-mode'); }
+
+    const userTier = window.currentUserTier || 'Ücretsiz';
+    if (userTier === 'Ücretsiz') {
+      sheet.classList.add('unselectable-content');
+      sheet.oncontextmenu = () => false;
+    } else {
+      sheet.classList.remove('unselectable-content');
+      sheet.oncontextmenu = null;
+    }
+
+    questions.forEach((q, idx) => {
+      const qNum = idx + 1;
+      const correctIndices = getCorrectIndices(q);
+      const correctLetter = getCorrectLetter(q);
+      const userSelIdx = userAnswers[idx];
+      const meta = parseQuestionMeta(q);
+
+      const qBox = document.createElement('div');
+      qBox.className = 'question-block';
+      const cleanOptions = extractAndCleanOptions(q);
+
+      let statusBadgeHTML = '';
+      let topicBadgeHTML = '';
+      let reportBtnHTML = '';
+
+      if (isAnalysisActive) {
+        topicBadgeHTML = `<div style="display:inline-block; background:#e0f2fe; color:#0369a1; font-size:0.75rem; font-weight:bold; padding:2px 8px; border-radius:4px; margin-bottom:6px;">📌 Konu: ${meta.displayName}</div><br>`;
+        
+        if (userSelIdx === undefined) statusBadgeHTML = `<span class="q-status-badge blank">?</span> `;
+        else if (correctIndices.includes(userSelIdx)) statusBadgeHTML = `<span class="q-status-badge correct">✓</span>`;
+        else statusBadgeHTML = `<span class="q-status-badge wrong">✕</span>`;
+
+        reportBtnHTML = `
+          <div style="margin-top: 8px; text-align: right;" class="no-print">
+            <button class="btn-action" style="font-size: 0.72rem; padding: 3px 8px; background: #fff1f2; color: #e11d48; border-color: #fecdd3;" onclick="openReportQuestionModal(${idx})">
+              ⚠️ Hatalı Soruyu Rapor Et
+            </button>
+          </div>
+        `;
+      }
+
+      let optionsHTML = '';
+      cleanOptions.forEach((optText, optIdx) => {
+        const letter = String.fromCharCode(65 + optIdx);
+        let optionClasses = 'q-option';
+        if (isTestActive && userSelIdx === optIdx) optionClasses += ' user-selected';
+        if (isAnalysisActive) {
+          if (correctIndices.includes(optIdx)) optionClasses += ' correct-choice';
+          if (userSelIdx === optIdx && !correctIndices.includes(optIdx)) optionClasses += ' wrong-choice';
+        }
+
+        optionsHTML += `
+          <div class="${optionClasses}" onclick="selectOption(${idx}, ${optIdx})">
+            <span class="q-opt-letter">${letter})</span>
+            <span class="q-opt-text">${optText}</span>
+          </div>
+        `;
+      });
+
+      let inlineAnswerHTML = (!isTestActive && currentKeyMode === 'inline') ? `<div class="q-inline-answer">✓ Doğru Cevap: ${correctLetter}</div>` : '';
+      let inlineExpHTML = (!isTestActive && currentExpMode === 'inline') ? `<div class="q-inline-exp"><strong>💡 Çözüm Açıklaması:</strong>\n${getExplanation(q)}</div>` : '';
+
+      qBox.innerHTML = `
+        ${topicBadgeHTML}
+        <div class="q-text">${statusBadgeHTML}${qNum}. ${cleanMultiParagraphs(q.soruMetni) || 'Soru metni yok'}</div>
+        <div class="q-options">${optionsHTML}</div>
+        ${inlineAnswerHTML}
+        ${inlineExpHTML}
+        ${reportBtnHTML}
+      `;
+      qContainer.appendChild(qBox);
+
+      keyGrid.innerHTML += `<div class="key-cell"><strong>${qNum}</strong><br>${correctLetter}</div>`;
+      expContainer.innerHTML += `
+        <div class="exp-item">
+          <div class="exp-title">Soru ${qNum} (Doğru Cevap: ${correctLetter})</div>
+          <div>${getExplanation(q)}</div>
+        </div>
+      `;
+    });
+
+    if (isTestActive) {
+      document.getElementById('answerKeySection').style.display = 'none';
+      document.getElementById('explanationSection').style.display = 'none';
+    } else {
+      document.getElementById('answerKeySection').style.display = (currentKeyMode === 'bottom') ? 'block' : 'none';
+      document.getElementById('explanationSection').style.display = (currentExpMode === 'bottom') ? 'block' : 'none';
+    }
+    updateKeyButtonUI();
+    updateExpButtonUI();
+  }
+
+  function selectOption(qIndex, optIndex) {
+    if (!isTestActive) return;
+    if (userAnswers[qIndex] === optIndex) delete userAnswers[qIndex];
+    else userAnswers[qIndex] = optIndex;
+    buildPaperView(currentQuestionsList);
+  }
+  window.selectOption = selectOption;
+
+  function openTestConfigModal() { document.getElementById('testConfigModal').style.display = 'flex'; }
+  window.openTestConfigModal = openTestConfigModal;
+  function closeTestConfigModal() { document.getElementById('testConfigModal').style.display = 'none'; }
+  window.closeTestConfigModal = closeTestConfigModal;
+
+  function toggleTimerInput(checkbox) { document.getElementById('timerInputGroup').style.display = checkbox.checked ? 'block' : 'none'; }
+  window.toggleTimerInput = toggleTimerInput;
+
+  function startInteractiveTest() {
+    closeTestConfigModal();
+    isTestActive = true;
+    isAnalysisActive = false;
+    userAnswers = {};
+
+    document.getElementById('toggleKeyBtn').disabled = true;
+    document.getElementById('toggleExpBtn').disabled = true;
+    document.getElementById('btnStartTest').style.display = 'none';
+    document.getElementById('btnFinishTestTop').style.display = 'inline-flex';
+    document.getElementById('bottomFinishBtn').style.display = 'block';
+    document.getElementById('btnOpenSideAnalysis').style.display = 'none';
+
+    const timerChecked = document.getElementById('testTimerToggle').checked;
+    if (timerChecked) {
+      const mins = parseInt(document.getElementById('testDurationInput').value) || 15;
+      remainingSeconds = mins * 60;
+      document.getElementById('timerDisplay').style.display = 'flex';
+      updateTimerDisplay();
+      clearInterval(testTimerInterval);
+      testTimerInterval = setInterval(() => {
+        remainingSeconds--;
+        updateTimerDisplay();
+        if (remainingSeconds <= 0) {
+          clearInterval(testTimerInterval);
+          finishTest(true);
+        }
+      }, 1000);
+    } else {
+      document.getElementById('timerDisplay').style.display = 'none';
+    }
+
+    buildPaperView(currentQuestionsList);
+    showToast("Test başladı!", "success");
+  }
+  window.startInteractiveTest = startInteractiveTest;
+
+  function updateTimerDisplay() {
+    const m = Math.floor(remainingSeconds / 60);
+    const s = remainingSeconds % 60;
+    document.getElementById('timerCountdown').innerText = `${m.toString().padStart(2, '0')}:${s.toString().padStart(2, '0')}`;
+  }
+
+  function finishTest(isTimeUp = false) {
+    if (!isTestActive) return;
+    isTestActive = false;
+    clearInterval(testTimerInterval);
+
+    document.getElementById('toggleKeyBtn').disabled = false;
+    document.getElementById('toggleExpBtn').disabled = false;
+    document.getElementById('btnFinishTestTop').style.display = 'none';
+    document.getElementById('bottomFinishBtn').style.display = 'none';
+    document.getElementById('timerDisplay').style.display = 'none';
+    document.getElementById('btnStartTest').style.display = 'inline-flex';
+
+    let correct = 0, wrong = 0, blank = 0;
+    let topicStats = {};
+
+    currentQuestionsList.forEach((q, idx) => {
+      const userSel = userAnswers[idx];
+      const correctIndices = getCorrectIndices(q);
+      const meta = parseQuestionMeta(q);
+      const tName = meta.displayName;
+
+      if (!topicStats[tName]) topicStats[tName] = { total: 0, correct: 0, wrong: 0, blank: 0 };
+      topicStats[tName].total++;
+
+      if (userSel === undefined) { blank++; topicStats[tName].blank++; }
+      else if (correctIndices.includes(userSel)) { correct++; topicStats[tName].correct++; }
+      else { wrong++; topicStats[tName].wrong++; }
+    });
+
+    window.lastTestTopicStats = { total: currentQuestionsList.length, correct, wrong, blank, topicStats };
+
+    document.getElementById('resCorrectCount').innerText = correct;
+    document.getElementById('resWrongCount').innerText = wrong;
+    document.getElementById('resBlankCount').innerText = blank;
+
+    const userTier = window.currentUserTier || 'Ücretsiz';
+    const modalBox = document.getElementById('modalTopicAnalysisBox');
+    const btnAnalysis = document.getElementById('btnModalAnalysis');
+
+    if (userTier === 'Ücretsiz') {
+      if (modalBox) modalBox.innerHTML = `<div style="font-size:0.8rem; color:var(--accent-red); margin-top:10px;">⚠️ Ücretsiz üyelikte detaylı konu analizi kısıtlıdır.</div>`;
+      if (btnAnalysis) btnAnalysis.style.display = 'none';
+      document.getElementById('btnOpenSideAnalysis').style.display = 'none';
+    } else {
+      if (modalBox) {
+        let html = `<h4 style="font-size:0.9rem; margin-bottom:8px; color:var(--bg-dark);">📋 Konu Bazlı Başarı Dağılımı</h4>`;
+        for (const [tName, data] of Object.entries(topicStats)) {
+          html += `
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:6px 10px; margin-bottom:4px; border-radius:6px; font-size:0.8rem;">
+              <span style="font-weight:600;">${tName} (${data.total})</span>
+              <span>✅ ${data.correct} | ❌ ${data.wrong} | ❓ ${data.blank}</span>
+            </div>
+          `;
+        }
+        modalBox.innerHTML = html;
+      }
+      if (btnAnalysis) btnAnalysis.style.display = 'inline-flex';
+      document.getElementById('btnOpenSideAnalysis').style.display = 'inline-flex';
+    }
+
+    document.getElementById('testResultModal').style.display = 'flex';
+    buildPaperView(currentQuestionsList);
+
+    if (window.logUserActivity) {
+      window.logUserActivity("Test Tamamlandı", JSON.stringify(window.lastTestTopicStats));
+    }
+  }
+
+  function closeResultModal() { document.getElementById('testResultModal').style.display = 'none'; }
+  window.closeResultModal = closeResultModal;
+
+  function activateAnalysisMode() {
+    closeResultModal();
+    isAnalysisActive = true;
+    currentExpMode = 'inline';
+    currentKeyMode = 'none';
+    document.getElementById('expModeSelect').value = 'inline';
+    document.getElementById('keyModeSelect').value = 'none';
+
+    openSideAnalysisPanel();
+    buildPaperView(currentQuestionsList);
+    showToast("Analiz modu aktif.", "success");
+  }
+
+  // MADDE 5: DETAYLI KONU ANALİZİ PANELİNİ TEKRAR AÇMA İŞLEVİ
+  window.openSideAnalysisPanel = function() {
+    const userTier = window.currentUserTier || 'Ücretsiz';
+    if (userTier === 'Ücretsiz') return;
+
+    const panel = document.getElementById('sideAnalysisPanel');
+    const content = document.getElementById('sideAnalysisContent');
     
-    document.getElementById('userQuestionFilePickerModal').style.display = 'flex';
-    initDropZoneEvents();
+    if (window.lastTestTopicStats && panel && content) {
+      const st = window.lastTestTopicStats;
+      let html = `<div style="margin-bottom:12px; font-weight:bold;">Toplam ${st.total} Soru<br><span style="color:#10b981;">Doğru: ${st.correct}</span> | <span style="color:#ef4444;">Yanlış: ${st.wrong}</span> | <span style="color:#8b5cf6;">Boş: ${st.blank}</span></div><hr style="margin:10px 0; border:none; border-top:1px solid #e2e8f0;">`;
+      for (const [tName, data] of Object.entries(st.topicStats)) {
+        html += `
+          <div style="margin-bottom: 10px; background: #f8fafc; padding: 8px; border-radius: 6px; border-left: 3px solid var(--primary);">
+            <div style="font-weight: bold; color: #1e293b;">${tName} (${data.total} Soru)</div>
+            <div style="font-size: 0.8rem; color: #475569; margin-top: 2px;">
+              ✅ ${data.correct} Doğru | ❌ ${data.wrong} Yanlış | ❓ ${data.blank} Boş
+            </div>
+          </div>
+        `;
+      }
+      content.innerHTML = html;
+      panel.style.display = 'block';
+    }
   };
 
-  window.closeUserQuestionFilePickerModal = function() {
-    document.getElementById('userQuestionFilePickerModal').style.display = 'none';
+  window.closeSideAnalysisPanel = function() {
+    const panel = document.getElementById('sideAnalysisPanel');
+    if (panel) panel.style.display = 'none';
   };
 
-  window.openReportQuestionModal = function(index) {
-    currentReportingQuestionIndex = index;
-    const q = currentQuestionsList[index];
-    document.getElementById('reportModalQuestionSummary').innerText = `Soru ${index + 1}: ${q.soruMetni.substring(0, 90)}...`;
-    document.getElementById('reportQuestionModal').style.display = 'flex';
-  };
+  function triggerPrint() {
+    const userTier = window.currentUserTier || 'Ücretsiz';
+    const userEmail = window.currentUserEmail || 'Kullanıcı Maili';
+    const todayStr = new Date().toISOString().split('T')[0];
+    const printKey = `usage_printed_${todayStr}`;
+    let todayPrinted = parseInt(localStorage.getItem(printKey) || '0');
 
-  window.closeReportQuestionModal = () => document.getElementById('reportQuestionModal').style.display = 'none';
+    let printLimit = 10;
+    if (userTier === 'VIP' || userTier === 'Premium') printLimit = 100;
+    else if (userTier === 'Deneme') printLimit = 50;
+
+    if (todayPrinted + currentQuestionsList.length > printLimit) {
+      showToast(`Günlük soru yazdırma limitinize ulaştınız! (${userTier} Hak: ${printLimit})`, 'error');
+      return;
+    }
+
+    const screenWatermark = document.getElementById('screenWatermark');
+    const printWatermark = document.getElementById('printWatermark');
+
+    if (userTier === 'VIP' || userTier === 'Premium' || window.isAdminSessionActive || (window.currentUserData && window.currentUserData.rol === 'admin')) {
+      printWatermark.innerText = '';
+      printWatermark.style.display = 'none';
+      screenWatermark.style.display = 'none';
+    } else if (userTier === 'Deneme') {
+      const text = `Nöroloji Soru Hazırlama Paneli ®\n${userEmail}`;
+      printWatermark.innerText = text;
+      screenWatermark.style.display = 'none';
+    } else {
+      const text = `Nöroloji Soru Hazırlama Paneli ®\n${userEmail}`;
+      printWatermark.innerText = text;
+      screenWatermark.innerText = text;
+      screenWatermark.style.display = 'block';
+    }
+
+    localStorage.setItem(printKey, (todayPrinted + currentQuestionsList.length).toString());
+
+    if (window.logUserActivity) {
+      window.logUserActivity("Baskı / PDF Alındı", `${currentQuestionsList.length} Soru Çıktı Alındı.`);
+    }
+    window.print();
+  }
+  window.triggerPrint = triggerPrint;
+
+  function backToConfig() {
+    if (isTestActive) document.getElementById('confirmModal').style.display = 'flex';
+    else performBackToConfig();
+  }
+  window.backToConfig = backToConfig;
+
+  function closeConfirmModal() { document.getElementById('confirmModal').style.display = 'none'; }
+  window.closeConfirmModal = closeConfirmModal;
+
+  function confirmBackToConfig() {
+    closeConfirmModal();
+    resetTestState();
+    performBackToConfig();
+  }
+  window.confirmBackToConfig = confirmBackToConfig;
+
+  function performBackToConfig() {
+    resetTestState();
+    closeSideAnalysisPanel();
+    document.getElementById('previewScreen').style.display = 'none';
+    document.getElementById('configScreen').style.display = 'block';
+  }
+
+  window.openLoginOptionsModal = () => document.getElementById('loginOptionsModal').style.display = 'flex';
+  window.closeLoginOptionsModal = () => document.getElementById('loginOptionsModal').style.display = 'none';
+  window.openAdminAuthModal = () => {
+    document.getElementById('adminUsernameInput').value = '';
+    document.getElementById('adminPasswordInput').value = '';
+    document.getElementById('adminAuthModal').style.display = 'flex';
+  };
+  window.closeAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'none';
 </script>
 
-<!-- FIREBASE VE GELİŞTİRİLMİŞ MODÜL KODLARI -->
+<!-- FIREBASE & GELİŞTİRİLMİŞ MODÜL KODLARI -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
@@ -1613,21 +2449,114 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
   let currentUserData = null;
   let allFetchedUsers = [];
+  let currentCategoryFilter = 'Tümü';
+  let sessionStartTime = null;
+  let currentInspectedUserUid = null;
+  let userToDeleteTarget = null;
   let chatUnsubscribe = null;
+  let warningUnsubscribe = null;
   let selectedAdminChatUserUid = null;
+
+  let currentWarnUserUid = null;
+  let currentWarnUserName = null;
+  let reportsToDeleteTarget = [];
+
   window.isAdminSessionActive = false;
 
   function formatNameSurname(str) {
-    if (!str || str === "Belirtilmedi") return "Belirtilmedi";
+    if (!str || str === "Belirtilmedi" || str === "...") return "Belirtilmedi";
     let parts = str.trim().split(/\s+/);
     if (parts.length === 1) return parts[0].charAt(0).toLocaleUpperCase('tr-TR') + parts[0].slice(1).toLocaleLowerCase('tr-TR');
     let surname = parts.pop().toLocaleUpperCase('tr-TR');
     let names = parts.map(n => n.charAt(0).toLocaleUpperCase('tr-TR') + n.slice(1).toLocaleLowerCase('tr-TR')).join(' ');
     return `${names} ${surname}`;
   }
+  window.formatNameSurname = formatNameSurname;
+
+  window.signOutAndReload = function() {
+    signOut(auth).then(() => location.reload());
+  };
+
+  const btnGoogleLoginModal = document.getElementById('btnGoogleLoginModal');
+  if (btnGoogleLoginModal) {
+    btnGoogleLoginModal.addEventListener('click', () => {
+      signInWithPopup(auth, provider).then(() => { window.closeLoginOptionsModal(); }).catch(error => {
+        if (window.showToast) window.showToast("Giriş hatası: " + error.message, "error");
+      });
+    });
+  }
+
+  document.querySelectorAll('.btn-logout-action').forEach(btn => {
+    btn.addEventListener('click', () => {
+      signOut(auth).then(() => {
+        window.isAdminSessionActive = false;
+        location.reload();
+      });
+    });
+  });
+
+  window.forceSignOutToLogin = function() {
+    window.isAdminSessionActive = false;
+    signOut(auth).then(() => {
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    }).catch(() => {
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    });
+  };
+
+  function checkAndHandleBannedUser(data) {
+    if (data.durum === 'Engellendi') {
+      const durText = data.engellenmeSuresiText || 'Süresiz / Kalıcı';
+      let reasonsList = '';
+      
+      if (Array.isArray(data.engellenmeNedenleri) && data.engellenmeNedenleri.length > 0) {
+        const joinedReasons = data.engellenmeNedenleri.map(r => `"${r}"`).join(', ');
+        reasonsList = `Engellenme nedeniniz: <strong>${joinedReasons}</strong> mesajlarınız nedeniyledir.`;
+      } else {
+        reasonsList = `Engellenme nedeniniz: Uygunsuz davranış veya kural ihlali nedeniyledir.`;
+      }
+
+      document.getElementById('bannedDurationText').innerText = `⏱️ Engellenme Süreniz: ${durText}`;
+      document.getElementById('bannedReasonsBox').innerHTML = reasonsList;
+      
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('bannedUserScreen').style.display = 'flex';
+      return true;
+    }
+    return false;
+  }
+
+  function listenUserWarnings(uid) {
+    if (warningUnsubscribe) warningUnsubscribe();
+    const userRef = doc(db, "kullanicilar", uid);
+    warningUnsubscribe = onSnapshot(userRef, (snap) => {
+      if (!snap.exists()) return;
+      const data = snap.data();
+
+      if (checkAndHandleBannedUser(data)) return;
+
+      if (data.activeWarning && !data.activeWarning.read) {
+        document.getElementById('userWarningContentBox').innerText = `🚨 Uyarı Mesajı: ${data.activeWarning.reason}`;
+        document.getElementById('userWarningNoticeModal').style.display = 'flex';
+      }
+    });
+  }
+
+  window.acknowledgeUserWarning = async function() {
+    if (!auth.currentUser) return;
+    await updateDoc(doc(db, "kullanicilar", auth.currentUser.uid), {
+      "activeWarning.read": true
+    });
+    document.getElementById('userWarningNoticeModal').style.display = 'none';
+    showToast("Uyarı okundu olarak işaretlendi.", "info");
+  };
 
   onAuthStateChanged(auth, async (user) => {
     if (user && !window.isAdminSessionActive) {
+      sessionStartTime = Date.now();
       window.currentUserEmail = user.email;
       const userRef = doc(db, "kullanicilar", user.uid);
       const userSnap = await getDoc(userRef);
@@ -1637,27 +2566,42 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           email: user.email,
           adSoyad: user.displayName || "Belirtilmedi",
           sonGirisTarihi: serverTimestamp(),
+          denemeBaslangicTarihi: serverTimestamp(),
           durum: "Deneme",
           uyariSayisi: 0,
+          engellenmeNedenleri: [],
           rol: (user.email === "kgulsen1994@gmail.com") ? "admin" : "kullanici"
         };
         await setDoc(userRef, currentUserData);
       } else {
         currentUserData = userSnap.data();
+        if (user.email === "kgulsen1994@gmail.com" && currentUserData.rol !== "admin") {
+          currentUserData.rol = "admin";
+          await updateDoc(userRef, { rol: "admin" });
+        }
+        await updateDoc(userRef, { 
+          sonGirisTarihi: serverTimestamp(),
+          adSoyad: user.displayName || currentUserData.adSoyad || "Belirtilmedi"
+        });
       }
 
       window.currentUserData = currentUserData;
-      window.currentUserTier = currentUserData.durum;
 
-      // MADDE 5: KULLANICI ÜST ROZETİNDE YILDIZLARI GÖSTERME
+      if (checkAndHandleBannedUser(currentUserData)) return;
+
+      if (currentUserData.durum === 'Deneme') {
+        const createdDate = currentUserData.denemeBaslangicTarihi?.toDate ? currentUserData.denemeBaslangicTarihi.toDate() : new Date();
+        const diffDays = (new Date() - createdDate) / (1000 * 60 * 60 * 24);
+        if (diffDays >= 3) {
+          currentUserData.durum = 'Ücretsiz';
+          await updateDoc(userRef, { durum: 'Ücretsiz' });
+          if (window.showToast) window.showToast("Deneme süreniz dolduğu için hesabınız Ücretsiz moda geçmiştir.", "warning");
+        }
+      }
+
+      window.currentUserTier = currentUserData.durum;
       const formattedName = formatNameSurname(currentUserData.adSoyad || user.displayName || user.email);
       document.querySelectorAll('.user-name-target').forEach(el => el.textContent = formattedName);
-
-      const warnStarsElem = document.getElementById('userHeaderStars');
-      const warnCount = currentUserData.uyariSayisi || 0;
-      if (warnStarsElem) {
-        warnStarsElem.innerText = warnCount > 0 ? '⭐'.repeat(warnCount) : '';
-      }
 
       const isAdm = currentUserData.rol === 'admin';
       const btnRedeem = document.getElementById('btnRedeemLicense');
@@ -1673,98 +2617,136 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
       const tierBadge = document.getElementById('userTierBadge');
       if (tierBadge) {
-        tierBadge.textContent = isAdm ? '👑 Admin' : currentUserData.durum;
+        const displayStatus = (currentUserData.durum === 'Deneme') ? 'Premium' : currentUserData.durum;
+        const st = isAdm ? '👑 Admin' : displayStatus;
+        tierBadge.textContent = st;
+        if (isAdm || st === 'VIP') { tierBadge.style.background = '#f3e8ff'; tierBadge.style.color = '#6b21a8'; }
+        else if (st === 'Premium' || currentUserData.durum === 'Deneme') { tierBadge.style.background = '#d1fae5'; tierBadge.style.color = '#047857'; }
+        else { tierBadge.style.background = '#e2e8f0'; tierBadge.style.color = '#475569'; }
       }
 
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
 
+      listenUserWarnings(user.uid);
+
       if (typeof masterPool !== 'undefined' && masterPool.length === 0) window.loadDataAndInit();
+
+    } else if (!window.isAdminSessionActive) {
+      currentUserData = null;
+      document.getElementById('loginScreen').style.display = 'flex';
+      document.getElementById('mainApp').style.display = 'none';
     }
   });
 
-  // MADDE 5: YÖNETİCİ PANELİNDE KULLANICININ YILDIZLARINI SİLME / SIFIRLAMA
-  window.reduceUserStar = async function(uid) {
-    const userRef = doc(db, "kullanicilar", uid);
-    const snap = await getDoc(userRef);
-    if (!snap.exists()) return;
-    
-    const count = snap.data().uyariSayisi || 0;
-    const newCount = Math.max(0, count - 1);
-    
-    await updateDoc(userRef, { uyariSayisi: newCount });
-    showToast("Kullanıcının 1 adet uyarı yıldızı silindi.", "success");
-    await fetchAndRenderUsers('Tümü');
-  };
-
-  window.resetUserStars = async function(uid) {
-    await updateDoc(doc(db, "kullanicilar", uid), { uyariSayisi: 0 });
-    showToast("Kullanıcının tüm uyarı yıldızları temizlendi.", "success");
-    await fetchAndRenderUsers('Tümü');
-  };
-
-  async function fetchAndRenderUsers(filterCategory) {
-    const tbody = document.getElementById('adminUserTableBody');
-    tbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center;">Kullanıcılar yükleniyor...</td></tr>';
+  window.logUserActivity = async function(islemTipi, detaylar) {
+    if (!auth.currentUser) return;
     try {
-      const snap = await getDocs(collection(db, "kullanicilar"));
-      allFetchedUsers = [];
-      snap.forEach(d => allFetchedUsers.push({ id: d.id, ...d.data() }));
-
-      tbody.innerHTML = '';
-      allFetchedUsers.forEach(u => {
-        const isRoleAdmin = (u.rol === 'admin' || u.email === 'kgulsen1994@gmail.com');
-        const warnCount = u.uyariSayisi || 0;
-        let starsHTML = '';
-        if (warnCount > 0) {
-          starsHTML = `
-            <span>${'⭐'.repeat(warnCount)}</span>
-            <button class="btn-action" style="font-size:0.68rem; padding:2px 5px; margin-left:4px; display:inline-flex;" onclick="reduceUserStar('${u.id}')" title="1 Yıldız Sil">➖</button>
-            <button class="btn-action btn-finish-test" style="font-size:0.68rem; padding:2px 5px; margin-left:2px; display:inline-flex;" onclick="resetUserStars('${u.id}')" title="Tüm Yıldızları Sıfırla">🗑️</button>
-          `;
-        } else {
-          starsHTML = '<span style="color:#cbd5e1;">-</span>';
-        }
-
-        const row = document.createElement('tr');
-        row.style.borderBottom = '1px solid #e2e8f0';
-        row.innerHTML = `
-          <td style="padding: 10px; text-align: center;"><input type="checkbox" class="user-row-checkbox" value="${u.id}"></td>
-          <td style="padding: 10px; font-weight: 600;">${formatNameSurname(u.adSoyad || u.email)}</td>
-          <td style="padding: 10px; color: #64748b;">${u.email}</td>
-          <td style="padding: 10px; text-align: center;">${starsHTML}</td>
-          <td style="padding: 10px;"><span style="padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0;">${isRoleAdmin ? '👑 Admin' : u.durum}</span></td>
-          <td style="padding: 10px; text-align: right;">
-            <select class="modern-input" style="padding: 2px 6px; font-size: 0.75rem; width: auto;" onchange="changeUserStatus('${u.id}', this.value)">
-              <option value="" disabled selected>Aksiyon</option>
-              <option value="VIP">👑 VIP</option>
-              <option value="Premium">⭐ Premium</option>
-              <option value="Deneme">⏳ Deneme</option>
-              <option value="Ücretsiz">🔄 Ücretsiz</option>
-              <option value="Engellendi">🚫 Engelle</option>
-            </select>
-          </td>
-        `;
-        tbody.appendChild(row);
+      const todayStr = new Date().toISOString().split('T')[0];
+      await addDoc(collection(db, "kullanicilar", auth.currentUser.uid, "aktiviteler"), {
+        islem: islemTipi,
+        detay: detaylar,
+        tarihStr: todayStr,
+        zaman: serverTimestamp()
       });
+    } catch (e) {}
+  };
+
+  window.submitAdminAuth = async function() {
+    const userVal = document.getElementById('adminUsernameInput').value.trim();
+    const passVal = document.getElementById('adminPasswordInput').value.trim();
+    if (!userVal || !passVal) { showToast("Lütfen tüm alanları doldurunuz.", "warning"); return; }
+
+    let currentAdminUser = "admin";
+    let currentAdminPass = "noroloji2026";
+    
+    try {
+      const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
+      if (cfgSnap.exists()) {
+        const data = cfgSnap.data();
+        if (data.kullaniciAdi) currentAdminUser = data.kullaniciAdi;
+        if (data.sifre) currentAdminPass = data.sifre;
+      }
     } catch(e) {}
-  }
 
-  // MADDE 1: SÜRÜKLE BIRAK ILE DOSYA YÜKLEME
+    let isAuthorized = (userVal === currentAdminUser && passVal === currentAdminPass);
+
+    if (isAuthorized) {
+      window.isAdminSessionActive = true;
+      window.currentUserTier = 'VIP';
+      showToast("Yönetici girişi başarılı!", "success");
+      
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      
+      const btnAdmin = document.getElementById('btnAdminPanel');
+      if (btnAdmin) btnAdmin.style.display = 'inline-flex';
+      const btnRedeem = document.getElementById('btnRedeemLicense');
+      if (btnRedeem) btnRedeem.style.display = 'none';
+
+      document.querySelectorAll('.user-name-target').forEach(el => el.textContent = "Yönetici (Özel)");
+      const tierBadge = document.getElementById('userTierBadge');
+      if (tierBadge) { tierBadge.textContent = "👑 Admin"; tierBadge.style.background = "#f3e8ff"; tierBadge.style.color = "#6b21a8"; }
+
+      window.closeAdminAuthModal();
+      window.openAdminModal();
+    } else {
+      showToast("Hatalı kullanıcı adı veya şifre!", "error");
+    }
+  };
+
+  window.logoutAdminSession = function() {
+    window.isAdminSessionActive = false;
+    document.getElementById('adminModal').style.display = 'none';
+    if (auth.currentUser) {
+      signOut(auth).then(() => { location.reload(); });
+    } else {
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'flex';
+    }
+  };
+
+  // MADDE 4: SORU GÖNDERME PANİLİ MODAL İŞLEMLERİ
+  window.openUserQuestionUploadModal = function() {
+    const userTier = window.currentUserTier || 'Ücretsiz';
+    if (userTier === 'Ücretsiz' || userTier === 'Deneme') {
+      showToast("Soru gönderme paneli yalnızca Premium ve VIP üyelerimize özeldir.", "warning");
+      return;
+    }
+    document.getElementById('userQuestionUploadRulesModal').style.display = 'flex';
+  };
+
+  window.closeUserQuestionUploadRulesModal = function() {
+    document.getElementById('userQuestionUploadRulesModal').style.display = 'none';
+  };
+
+  window.acceptUploadRules = function() {
+    closeUserQuestionUploadRulesModal();
+    document.getElementById('userQuestionFileInput').value = '';
+    document.getElementById('userQuestionFilePickerModal').style.display = 'flex';
+  };
+
+  window.closeUserQuestionFilePickerModal = function() {
+    document.getElementById('userQuestionFilePickerModal').style.display = 'none';
+  };
+
   window.uploadQuestionFile = async function() {
-    if (!selectedQuestionFile) {
-      showToast("Lütfen bir dosya seçiniz veya sürükleyip bırakınız.", "warning");
+    const input = document.getElementById('userQuestionFileInput');
+    if (!input.files || input.files.length === 0) {
+      showToast("Lütfen yüklenecek bir dosya seçiniz.", "warning");
       return;
     }
 
-    const fileName = selectedQuestionFile.name;
+    const file = input.files[0];
+    const fileName = file.name;
     const ext = fileName.split('.').pop().toLowerCase();
+
     if (ext !== 'doc' && ext !== 'docx') {
-      showToast("Yalnızca .doc ve .docx dosyaları yüklenebilir.", "error");
+      showToast("Yalnızca .doc ve .docx uzantılı dosyalar kabul edilir.", "error");
       return;
     }
 
-    showToast("Dosya yükleniyor...", "info");
+    showToast("Dosya veritabanına aktarılıyor...", "info");
 
     const reader = new FileReader();
     reader.onload = async function(e) {
@@ -1780,243 +2762,675 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           uploadedAt: serverTimestamp()
         });
 
-        showToast("Dosyanız başarıyla yüklendi!", "success");
+        showToast("Soru dosyanız başarıyla yüklendi! Yönetici ekibi inceleyecektir.", "success");
         closeUserQuestionFilePickerModal();
       } catch(err) {
-        showToast("Yükleme hatası: " + err.message, "error");
+        showToast("Dosya yüklenirken hata oluştu: " + err.message, "error");
       }
     };
-    reader.readAsDataURL(selectedQuestionFile);
+    reader.readAsDataURL(file);
   };
 
-  // MADDE 4: HATALI SORU BİLDİRİMLERİ SOHBET AKIŞI VE TÜM ŞIKLARI GÖSTERME (KULLANICI)
+  window.openRedeemModal = () => document.getElementById('redeemModal').style.display = 'flex';
+  window.closeRedeemModal = () => document.getElementById('redeemModal').style.display = 'none';
+
+  window.checkRedeemInputs = function() {
+    const s = document.getElementById('inputRedeemSerial').value.trim();
+    const k = document.getElementById('inputRedeemKey').value.trim();
+    const p = document.getElementById('inputRedeemPin').value.trim();
+    const btn = document.getElementById('btnSubmitRedeem');
+    if (s !== "" && k !== "" && p !== "") { btn.disabled = false; btn.style.opacity = "1"; }
+    else { btn.disabled = true; btn.style.opacity = "0.5"; }
+  };
+
+  window.submitRedeemCode = async function() {
+    const s = document.getElementById('inputRedeemSerial').value.trim();
+    const k = document.getElementById('inputRedeemKey').value.trim();
+    const p = document.getElementById('inputRedeemPin').value.trim();
+    try {
+      const q = query(collection(db, "promosyon_kodlari"), where("seriNo", "==", s), where("anahtar", "==", k), where("pin", "==", p), where("isUsed", "==", false));
+      const snap = await getDocs(q);
+      if (snap.empty) { showToast("Geçersiz veya kullanılmış kod!", "error"); return; }
+      const codeDoc = snap.docs[0];
+      const codeData = codeDoc.data();
+      await updateDoc(doc(db, "promosyon_kodlari", codeDoc.id), { isUsed: true, usedBy: auth.currentUser ? auth.currentUser.uid : "admin", usedAt: serverTimestamp() });
+      if (auth.currentUser) { await updateDoc(doc(db, "kullanicilar", auth.currentUser.uid), { durum: codeData.tur }); }
+      showToast(`Üyeliğiniz ${codeData.tur} seviyesine yükseltildi.`, "success");
+      window.closeRedeemModal();
+      setTimeout(() => location.reload(), 1500);
+    } catch (err) { showToast("Aktivasyon hatası: " + err.message, "error"); }
+  };
+
+  window.switchAdminTab = function(tabName) {
+    const uCb = document.getElementById('selectAllUsersCheckbox');
+    if (uCb) uCb.checked = false;
+    document.querySelectorAll('.user-row-checkbox').forEach(cb => cb.checked = false);
+
+    const rCb = document.getElementById('selectAllReportsCheckbox');
+    if (rCb) rCb.checked = false;
+    document.querySelectorAll('.report-row-checkbox').forEach(cb => cb.checked = false);
+
+    const cCb = document.getElementById('selectAllChatsCheckbox');
+    if (cCb) cCb.checked = false;
+    document.querySelectorAll('.chat-row-checkbox').forEach(cb => cb.checked = false);
+
+    document.getElementById('adminTabUsers').style.display = tabName === 'users' ? 'flex' : 'none';
+    document.getElementById('adminTabReports').style.display = tabName === 'reports' ? 'flex' : 'none';
+    document.getElementById('adminTabUploadedQuestions').style.display = tabName === 'uploadedQuestions' ? 'flex' : 'none';
+    document.getElementById('adminTabChat').style.display = tabName === 'chat' ? 'flex' : 'none';
+    document.getElementById('adminTabLicenses').style.display = tabName === 'licenses' ? 'block' : 'none';
+    document.getElementById('adminTabSettings').style.display = tabName === 'settings' ? 'block' : 'none';
+    
+    document.getElementById('tabUsersBtn').className = tabName === 'users' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
+    document.getElementById('tabReportsBtn').className = tabName === 'reports' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
+    document.getElementById('tabUploadedQuestionsBtn').className = tabName === 'uploadedQuestions' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
+    document.getElementById('tabChatBtn').className = tabName === 'chat' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
+    document.getElementById('tabLicensesBtn').className = tabName === 'licenses' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
+    document.getElementById('tabSettingsBtn').className = tabName === 'settings' ? 'btn-action btn-toggle-on' : 'btn-action btn-toggle-off';
+    
+    document.getElementById('adminSearchBoxWrapper').style.display = tabName === 'users' ? 'block' : 'none';
+
+    if (tabName === 'reports') loadAdminQuestionReports();
+    if (tabName === 'uploadedQuestions') loadAdminUploadedQuestions();
+    if (tabName === 'chat') loadAdminChatList();
+  };
+
+  window.openAdminModal = async function() {
+    document.getElementById('adminModal').style.display = 'flex';
+    await fetchAndRenderUsers('Tümü');
+  };
+
+  async function fetchAndRenderUsers(filterCategory) {
+    currentCategoryFilter = filterCategory;
+    const tbody = document.getElementById('adminUserTableBody');
+    tbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center;">Kullanıcılar yükleniyor...</td></tr>';
+    try {
+      const snap = await getDocs(collection(db, "kullanicilar"));
+      allFetchedUsers = [];
+      snap.forEach(d => allFetchedUsers.push({ id: d.id, ...d.data() }));
+      renderUserRows();
+    } catch (e) { tbody.innerHTML = `<tr><td colspan="6" style="color:red; padding:10px;">Hata: ${e.message}</td></tr>`; }
+  }
+
+  window.filterAdminUsers = function(cat, btnElem) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.className = 'btn-action filter-btn btn-toggle-off');
+    btnElem.className = 'btn-action filter-btn btn-toggle-on';
+    currentCategoryFilter = cat;
+    renderUserRows();
+  };
+
+  window.filterAdminUsersSearch = () => renderUserRows();
+
+  function renderUserRows() {
+    const tbody = document.getElementById('adminUserTableBody');
+    tbody.innerHTML = '';
+    const queryStr = document.getElementById('adminUserSearchInput')?.value.trim().toLocaleLowerCase('tr-TR') || '';
+    let list = [...allFetchedUsers];
+
+    list.sort((a, b) => {
+      const isAAdmin = (a.rol === 'admin' || a.email === 'kgulsen1994@gmail.com');
+      const isBAdmin = (b.rol === 'admin' || b.email === 'kgulsen1994@gmail.com');
+      if (isAAdmin && !isBAdmin) return -1;
+      if (!isAAdmin && isBAdmin) return 1;
+      return 0;
+    });
+
+    if (currentCategoryFilter === 'admin') list = list.filter(u => u.rol === 'admin' || u.email === 'kgulsen1994@gmail.com');
+    else if (currentCategoryFilter !== 'Tümü') list = list.filter(u => u.durum === currentCategoryFilter && u.rol !== 'admin');
+
+    if (queryStr !== '') {
+      list = list.filter(u => (u.adSoyad || '').toLocaleLowerCase('tr-TR').includes(queryStr) || (u.email || '').toLocaleLowerCase('tr-TR').includes(queryStr));
+    }
+
+    if (list.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center;">Kullanıcı bulunamadı.</td></tr>';
+      return;
+    }
+
+    list.forEach(u => {
+      const isRoleAdmin = (u.rol === 'admin' || u.email === 'kgulsen1994@gmail.com');
+      const statusText = isRoleAdmin ? '👑 Yönetici' : (u.durum || 'Ücretsiz');
+      const formattedName = formatNameSurname(u.adSoyad || u.email);
+
+      const warnCount = u.uyariSayisi || 0;
+      let starsHTML = '';
+      if (warnCount > 0) {
+        starsHTML = '⭐'.repeat(Math.min(warnCount, 5));
+        if (warnCount >= 3) starsHTML += ' <span style="color:#ef4444; font-weight:bold;" title="3 veya üzeri uyarı aldı! Engelleme önerilir.">🚨</span>';
+      } else {
+        starsHTML = '<span style="color:#cbd5e1;">-</span>';
+      }
+
+      let actionTdHTML = `
+        <button class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;" onclick="viewUserActivities('${u.id}', '${u.email}')">👁️ Aktivite</button>
+      `;
+
+      if (!isRoleAdmin) {
+        actionTdHTML += `
+          <select class="modern-input" style="padding: 2px 6px; font-size: 0.75rem; width: auto;" onchange="changeUserStatus('${u.id}', this.value)">
+            <option value="" disabled selected>Aksiyon</option>
+            <option value="VIP">👑 VIP</option>
+            <option value="Premium">⭐ Premium</option>
+            <option value="Deneme">⏳ Deneme</option>
+            <option value="Ücretsiz">🔄 Ücretsiz</option>
+            <option value="Engellendi">🚫 Engelle</option>
+          </select>
+          <button class="btn-action btn-finish-test" style="font-size: 0.75rem; padding: 4px 8px;" onclick="promptDeleteUser('${u.id}')">🗑️ Sil</button>
+        `;
+      } else {
+        actionTdHTML += `<span style="font-size: 0.75rem; color: #8b5cf6; font-weight: bold; margin-left:5px;">Korumalı Admin</span>`;
+      }
+
+      const row = document.createElement('tr');
+      row.style.borderBottom = '1px solid #e2e8f0';
+      if (isRoleAdmin) row.style.background = '#fcf5ff';
+      if (warnCount >= 3) row.style.background = '#fff5f5';
+
+      row.innerHTML = `
+        <td style="padding: 10px; text-align: center;">
+          ${!isRoleAdmin ? `<input type="checkbox" class="user-row-checkbox" value="${u.id}">` : ''}
+        </td>
+        <td style="padding: 10px; font-weight: 600;">${formattedName}</td>
+        <td style="padding: 10px; color: #64748b;">${u.email}</td>
+        <td style="padding: 10px; text-align: center;">${starsHTML}</td>
+        <td style="padding: 10px;"><span style="padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0;">${statusText}</span></td>
+        <td style="padding: 10px; text-align: right; display: flex; gap: 6px; justify-content: flex-end; align-items: center;">${actionTdHTML}</td>
+      `;
+      tbody.appendChild(row);
+    });
+  }
+
+  window.toggleSelectAllUsers = function(masterCb) {
+    document.querySelectorAll('.user-row-checkbox').forEach(cb => cb.checked = masterCb.checked);
+  };
+
+  window.applyBulkAction = async function() {
+    const action = document.getElementById('bulkActionSelect').value;
+    const selectedCbs = Array.from(document.querySelectorAll('.user-row-checkbox:checked')).map(cb => cb.value);
+    if (!action || selectedCbs.length === 0) { showToast("Lütfen yetki ve en az bir kullanıcı seçiniz.", "warning"); return; }
+
+    if (action === 'DELETE') {
+      userToDeleteTarget = selectedCbs;
+      document.getElementById('adminConfirmDeleteModal').style.display = 'flex';
+    } else {
+      for (let uid of selectedCbs) {
+        if (action === 'Engellendi') {
+          await updateDoc(doc(db, "kullanicilar", uid), {
+            durum: "Engellendi",
+            engellenmeSuresiText: "Süresiz / Kalıcı (Toplu İşlem)"
+          });
+        } else {
+          await updateDoc(doc(db, "kullanicilar", uid), { durum: action });
+        }
+      }
+      showToast(`${selectedCbs.length} kullanıcının durumu ${action} olarak güncellendi.`, "success");
+      await fetchAndRenderUsers(currentCategoryFilter);
+    }
+  };
+
+  window.promptDeleteUser = function(uid) {
+    userToDeleteTarget = [uid];
+    document.getElementById('deleteConfirmAdminPassword').value = '';
+    document.getElementById('adminConfirmDeleteModal').style.display = 'flex';
+  };
+
+  window.closeAdminConfirmDeleteModal = () => document.getElementById('adminConfirmDeleteModal').style.display = 'none';
+
+  window.executeUserDeletion = async function() {
+    const enteredPass = document.getElementById('deleteConfirmAdminPassword').value.trim();
+    let currentAdminPass = "noroloji2026";
+    try {
+      const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
+      if (cfgSnap.exists() && cfgSnap.data().sifre) currentAdminPass = cfgSnap.data().sifre;
+    } catch(e) {}
+
+    if (enteredPass !== currentAdminPass) { showToast("Hatalı yönetici şifresi! Silme iptal edildi.", "error"); return; }
+
+    if (Array.isArray(userToDeleteTarget)) {
+      for (let uid of userToDeleteTarget) {
+        await deleteDoc(doc(db, "kullanicilar", uid));
+      }
+      showToast(`${userToDeleteTarget.length} kullanıcı veritabanından kalıcı olarak silindi.`, "success");
+    }
+    window.closeAdminConfirmDeleteModal();
+    await fetchAndRenderUsers(currentCategoryFilter);
+  };
+
+  window.openAdminWarnUserModal = function(userUid, userName, messageText = "") {
+    currentWarnUserUid = userUid;
+    currentWarnUserName = userName;
+    document.getElementById('warnTargetUserText').innerText = `Hedef Kullanıcı: ${userName}`;
+    document.getElementById('adminWarnReasonInput').value = messageText;
+    document.getElementById('adminWarnUserModal').style.display = 'flex';
+  };
+
+  window.closeAdminWarnUserModal = () => document.getElementById('adminWarnUserModal').style.display = 'none';
+
+  window.executeSendUserWarning = async function() {
+    if (!currentWarnUserUid) return;
+    const reasonText = document.getElementById('adminWarnReasonInput').value.trim();
+    if (!reasonText) { showToast("Lütfen uyarı nedenini giriniz.", "warning"); return; }
+
+    try {
+      const uRef = doc(db, "kullanicilar", currentWarnUserUid);
+      const uSnap = await getDoc(uRef);
+      const uData = uSnap.exists() ? uSnap.data() : {};
+      
+      const newWarnCount = (uData.uyariSayisi || 0) + 1;
+
+      await updateDoc(uRef, {
+        uyariSayisi: newWarnCount,
+        engellenmeNedenleri: arrayUnion(reasonText),
+        activeWarning: {
+          reason: reasonText,
+          time: serverTimestamp(),
+          read: false
+        }
+      });
+
+      showToast(`Kullanıcıya ${newWarnCount}. uyarı gönderildi!`, "success");
+
+      if (newWarnCount >= 3) {
+        setTimeout(() => {
+          alert(`🚨 DİKKAT: ${currentWarnUserName} isimli kullanıcı toplam ${newWarnCount} uyarıya ulaştı!\n\nKullanıcının hesabını süreli veya kalıcı olarak engellemeniz önerilir.`);
+        }, 500);
+      }
+
+      closeAdminWarnUserModal();
+      await fetchAndRenderUsers(currentCategoryFilter);
+
+    } catch(err) {
+      showToast("Uyarı gönderilemedi: " + err.message, "error");
+    }
+  };
+
+  window.viewUserActivities = async function(uid, email) {
+    currentInspectedUserUid = uid;
+    document.getElementById('activityModal').style.display = 'flex';
+    document.getElementById('activityModalTitle').innerText = `📊 Aktivite Geçmişi: ${email}`;
+    const logBox = document.getElementById('activityLogsList');
+    logBox.innerHTML = 'Loglar getiriliyor...';
+
+    try {
+      const snap = await getDocs(collection(db, "kullanicilar", uid, "aktiviteler"));
+
+      if (snap.empty) {
+        logBox.innerHTML = '<p style="text-align:center; color:#64748b;">Henüz aktivite kaydı bulunamadı.</p>';
+        return;
+      }
+
+      let allLogs = [];
+      snap.forEach(docSnap => allLogs.push({ docId: docSnap.id, ...docSnap.data() }));
+
+      allLogs.sort((a, b) => {
+        const timeA = a.zaman?.toDate ? a.zaman.toDate().getTime() : 0;
+        const timeB = b.zaman?.toDate ? b.zaman.toDate().getTime() : 0;
+        return timeB - timeA;
+      });
+
+      let grouped = {};
+      allLogs.forEach(l => {
+        const dateStr = l.tarihStr || (l.zaman?.toDate ? l.zaman.toDate().toISOString().split('T')[0] : 'Diğer Günler');
+        if (!grouped[dateStr]) grouped[dateStr] = [];
+        grouped[dateStr].push(l);
+      });
+
+      let html = '';
+      for (const [dateKey, logs] of Object.entries(grouped)) {
+        let totalMins = 0;
+        logs.forEach(l => { if (l.sureDakika) totalMins += l.sureDakika; });
+
+        html += `
+          <div style="background: #f8fafc; border: 1px solid var(--border); border-radius: 8px; padding: 12px; margin-bottom: 12px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #cbd5e1; padding-bottom: 6px; margin-bottom: 8px;">
+              <span style="font-weight: bold; color: #0f172a;">📅 Tarih: ${dateKey} ${totalMins > 0 ? `<span style="color:#2563eb; font-size:0.8rem;">(⏱️ Toplam: ${totalMins} dk aktif)</span>` : ''}</span>
+              <button class="btn-action" style="font-size:0.7rem; padding:2px 6px; background:#ef4444; color:white;" onclick="clearDayActivities('${dateKey}')">🗑️ Bu Günü Temizle</button>
+            </div>
+            <ul style="list-style: none; padding: 0;">
+        `;
+
+        logs.forEach(l => {
+          const timeStr = l.zaman?.toDate ? l.zaman.toDate().toLocaleTimeString('tr-TR') : '';
+          let renderedDetail = l.detay;
+
+          if (typeof l.detay === 'string' && l.detay.trim().startsWith('{')) {
+            try {
+              const parsed = JSON.parse(l.detay);
+              const cardId = `log_detail_${l.docId}`;
+              
+              let topicBreakdownHTML = '';
+              if (parsed.topicStats) {
+                for (const [tName, tData] of Object.entries(parsed.topicStats)) {
+                  topicBreakdownHTML += `
+                    <div style="font-size: 0.78rem; color: #334155; margin-top: 3px; padding: 2px 6px; background: #ffffff; border-radius: 4px; border: 1px solid #e2e8f0;">
+                      <strong>${tName}:</strong> Toplam ${tData.total} Soru ➔ 
+                      <span style="color:#10b981;">${tData.correct} Doğru</span>, 
+                      <span style="color:#ef4444;">${tData.wrong} Yanlış</span>, 
+                      <span style="color:#8b5cf6;">${tData.blank} Boş</span>
+                    </div>
+                  `;
+                }
+              }
+
+              renderedDetail = `
+                <span>${parsed.total} Soruluk Test Tamamlandı</span>
+                <button class="btn-action" style="padding:2px 8px; font-size:0.72rem; display:inline-flex; margin-left:8px;" onclick="toggleLogDetailCard('${cardId}')">📊 Detay Göster</button>
+                <div id="${cardId}" style="display:none; margin-top:8px; background:#eff6ff; padding:10px; border-radius:6px; border:1px solid #bfdbfe;">
+                  <div style="font-weight:bold; color:#1e40af; margin-bottom:4px;">Genel İstatistik:</div>
+                  <div>✅ ${parsed.correct} Doğru | ❌ ${parsed.wrong} Yanlış | ❓ ${parsed.blank} Boş</div>
+                  <div style="font-weight:bold; color:#1e40af; margin-top:8px; margin-bottom:4px;">Konu Detayları:</div>
+                  ${topicBreakdownHTML}
+                </div>
+              `;
+            } catch (err) {}
+          }
+
+          html += `
+            <li style="padding: 6px 0; border-bottom: 1px dashed #e2e8f0; font-size: 0.85rem;">
+              <strong>${l.islem}:</strong> ${renderedDetail} <span style="color:#94a3b8; font-size:0.75rem;">(${timeStr})</span>
+            </li>
+          `;
+        });
+
+        html += `</ul></div>`;
+      }
+
+      logBox.innerHTML = html;
+    } catch (e) { logBox.innerHTML = `<span style="color:red;">Hata: ${e.message}</span>`; }
+  };
+
+  window.toggleLogDetailCard = function(id) {
+    const el = document.getElementById(id);
+    if (el) el.style.display = el.style.display === 'none' ? 'block' : 'none';
+  };
+
+  window.clearDayActivities = async function(dateStr) {
+    if (!currentInspectedUserUid) return;
+    const q = query(collection(db, "kullanicilar", currentInspectedUserUid, "aktiviteler"), where("tarihStr", "==", dateStr));
+    const snap = await getDocs(q);
+    for (let d of snap.docs) { await deleteDoc(d.ref); }
+    showToast(`${dateStr} tarihli aktiviteler temizlendi.`, "success");
+    window.viewUserActivities(currentInspectedUserUid, '');
+  };
+
+  window.clearAllActivities = async function() {
+    if (!currentInspectedUserUid) return;
+    const snap = await getDocs(collection(db, "kullanicilar", currentInspectedUserUid, "aktiviteler"));
+    for (let d of snap.docs) { await deleteDoc(d.ref); }
+    showToast("Tüm aktivite geçmişi temizlendi.", "success");
+    window.closeActivityModal();
+  };
+
+  window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
+
+  // MADDE 1: KULLANICI HATALI BİLDİRİMLERİM MODALİ (TEK KART KİLENME, DİNAMİK BUTON VE WHATSAPP SOHBET FORMATI)
   window.openUserReportsModal = async function() {
     document.getElementById('userReportsModal').style.display = 'flex';
     const box = document.getElementById('userReportsList');
-    box.innerHTML = '<p style="text-align:center; color:#64748b;">Bildirimler yükleniyor...</p>';
+    box.innerHTML = '<p style="text-align:center; color:#64748b;">Bildirimleriniz yükleniyor...</p>';
 
-    if (!auth.currentUser) return;
+    if (!auth.currentUser) {
+      box.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">Lütfen öncelikle giriş yapınız.</p>';
+      return;
+    }
 
     try {
       const q = query(collection(db, "hatali_sorular"), where("userId", "==", auth.currentUser.uid));
       const snap = await getDocs(q);
 
       if (snap.empty) {
-        box.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">Henüz bildiriminiz yok.</p>';
+        box.innerHTML = '<p style="text-align:center; color:#64748b; padding:30px; font-weight:500;">Henüz kayıtlı bir hatalı soru bildiriminiz bulunmamaktadır.</p>';
         return;
       }
 
       let reports = [];
       snap.forEach(docSnap => reports.push({ id: docSnap.id, ...docSnap.data() }));
 
+      reports.sort((a, b) => {
+        const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
+        const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
+        return timeB - timeA;
+      });
+
       let html = '';
       reports.forEach(d => {
+        const isAnswered = d.status === 'yanitlandi';
         const dateStr = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('tr-TR') : '';
-        
-        // TÜM ŞIKLARIN LİSTELENMESİ
-        let optionsHTML = '';
-        if (Array.isArray(d.questionOptions) && d.questionOptions.length > 0) {
-          optionsHTML = '<div style="display:flex; flex-direction:column; gap:4px; margin-top:8px;">' +
-            d.questionOptions.map((opt, i) => {
-              const letter = String.fromCharCode(65 + i);
-              const isCorrect = (d.correctLetter || '').includes(letter);
-              return `<div style="padding:4px 8px; border-radius:4px; font-size:0.82rem; ${isCorrect ? 'background:#d1fae5; font-weight:bold; color:#065f46;' : 'background:#ffffff; border:1px solid #e2e8f0; color:#334155;'}"><strong>${letter})</strong> ${opt}</div>`;
-            }).join('') + '</div>';
-        }
+        const replyDateStr = d.adminRepliedAt?.toDate ? d.adminRepliedAt.toDate().toLocaleString('tr-TR') : '';
+        const followupDateStr = d.userFollowupAt?.toDate ? d.userFollowupAt.toDate().toLocaleString('tr-TR') : '';
 
-        // KRONOLOJİK MESAJ DİZİSİ
-        let msgList = Array.isArray(d.messages) ? d.messages : [];
-        if (msgList.length === 0) {
-          // Eski veriler için geriye dönük uyumluluk
-          msgList.push({ id: 'init', senderRole: 'user', text: `👉 Önerilen Şık: ${d.userSuggestedOption || 'Belirtilmedi'}\n📝 İtiraz Açıklaması: ${d.userComment || 'Açıklama belirtilmedi.'}`, timeStr: dateStr });
-          if (d.adminReply) msgList.push({ id: 'adm', senderRole: 'admin', text: d.adminReply, timeStr: dateStr });
-          if (d.userFollowup) msgList.push({ id: 'fup', senderRole: 'user', text: d.userFollowup, timeStr: dateStr });
-        }
-
-        let chatBubblesHTML = '';
-        msgList.forEach(m => {
-          // Yönetici mesajı sildiyse kullanıcı hiç görmez
-          if (m.deletedByAdmin) return;
-          // Kullanıcı sildiyse "(Bu mesajı sildiniz)" görünür
-          if (m.deletedByUser && m.senderRole === 'user') {
-            chatBubblesHTML += `<div class="chat-bubble sent" style="opacity:0.6; font-style:italic;">⚠️ Bu mesajı sildiniz.</div>`;
-            return;
-          }
-
-          const isUser = m.senderRole === 'user';
-          chatBubblesHTML += `
-            <div class="chat-bubble ${isUser ? 'sent' : 'received'}">
-              <div style="font-weight:bold; font-size:0.75rem; color:${isUser ? '#065f46' : '#1e40af'}; margin-bottom:2px;">
-                ${isUser ? 'Siz' : '👨‍⚕️ Yönetici'}
-              </div>
-              <div style="white-space:pre-line;">${m.text}</div>
-              <div class="chat-meta">
-                <span>${m.timeStr || ''}</span>
-                ${isUser ? `<button class="msg-delete-btn" onclick="deleteReportMessage('${d.id}', '${m.id}', true)">🗑️</button>` : ''}
-              </div>
-            </div>
-          `;
-        });
+        let deleteReportBtnHTML = isAnswered ? `
+          <button class="btn-action btn-finish-test" style="font-size:0.75rem; padding:3px 8px;" onclick="deleteUserReport('${d.id}')">🗑️ Bildirimi Sil</button>
+        ` : '';
 
         html += `
-          <div id="userReportCard_${d.id}" class="user-report-card-item" style="background:#ffffff; border:1px solid var(--border); border-radius:10px; padding:14px; margin-bottom:12px;">
-            <div style="display:flex; justify-content:space-between; align-items:center;">
-              <span style="font-weight:bold;">📌 Konu: ${d.questionTopic || 'Genel'}</span>
-              <button class="btn-action btn-toggle-on" style="font-size:0.75rem; padding:4px 10px;" onclick="toggleUserReportDetail('${d.id}')">🔍 Detay İçin Tıkla</button>
+          <div id="userReportCard_${d.id}" class="user-report-card-item" style="background:#ffffff; border:1px solid var(--border); border-left:4px solid ${isAnswered ? '#10b981' : '#f59e0b'}; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:var(--shadow-sm);">
+            
+            <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+              <div>
+                <span style="font-weight:bold; color:#0f172a; font-size:0.9rem;">📌 Konu: ${d.questionTopic || 'Genel'}</span>
+                <span style="font-size:0.75rem; color:#64748b; margin-left:8px;">(${dateStr})</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:bold; background:${isAnswered ? '#d1fae5' : '#fef3c7'}; color:${isAnswered ? '#047857' : '#b45309'};">
+                  ${isAnswered ? '✅ Yanıtlandı' : '⏳ Değerlendirmede'}
+                </span>
+                ${deleteReportBtnHTML}
+              </div>
+            </div>
+
+            <div style="font-size:0.85rem; color:#475569; margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+              <strong>Soru:</strong> ${d.questionText}
+            </div>
+
+            <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
+              <button id="toggleReportBtn_${d.id}" class="btn-action btn-toggle-on" style="font-size:0.78rem; padding:4px 12px;" onclick="toggleUserReportDetail('${d.id}')">
+                🔍 Detay İçin Tıkla
+              </button>
             </div>
 
             <div id="reportDetailCard_${d.id}" style="display:none; margin-top:12px; border-top:1px dashed #cbd5e1; padding-top:12px;">
               
-              <div style="font-size:0.88rem; font-weight:bold; margin-bottom:6px;">📄 Sorunun Detayı ve Seçenekleri:</div>
-              <div style="font-size:0.85rem; background:#f8fafc; padding:10px; border-radius:6px; margin-bottom:10px;">
-                <div style="font-weight:bold; margin-bottom:6px;">${d.questionText}</div>
-                ${optionsHTML}
+              <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin-bottom:6px;">📄 Sorunun Detayı ve Seçenekleri:</div>
+              <div style="font-size:0.85rem; color:#334155; background:#f8fafc; padding:10px; border-radius:6px; margin-bottom:10px; white-space:pre-line;">${d.questionText}</div>
+
+              <!-- KRONOLOJİK WHATSAPP TARZI SOHBET AKIŞI -->
+              <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin:14px 0 8px 0;">💬 Mesajlaşma Geçmişi:</div>
+              
+              <div class="whatsapp-container" style="height:auto; max-height:360px; margin-bottom:12px;">
+                <div class="whatsapp-header" style="font-size:0.82rem; padding:8px 12px;">
+                  <span>📋 Bildirim & Yanıt Akışı</span>
+                </div>
+                <div class="whatsapp-messages" style="padding:12px;">
+                  
+                  <!-- 1. MESAJ: İLK BİLDİRİM (KULLANICI) -->
+                  <div class="chat-bubble sent">
+                    <div style="font-weight:bold; font-size:0.75rem; color:#065f46; margin-bottom:2px;">Siz (Hatalı Soru Bildirimi)</div>
+                    <div>👉 <strong>Önerilen Şık:</strong> ${d.userSuggestedOption || 'Belirtilmedi'}</div>
+                    <div style="margin-top:4px;">📝 <strong>İtiraz Açıklaması:</strong> ${d.userComment || 'Açıklama belirtilmedi.'}</div>
+                    <div class="chat-meta"><span>${dateStr}</span></div>
+                  </div>
+
+                  <!-- 2. MESAJ: YÖNETİCİ YANITI (YÖNETİCİ) -->
+                  ${isAnswered ? `
+                    <div class="chat-bubble received">
+                      <div style="font-weight:bold; font-size:0.75rem; color:#1e40af; margin-bottom:2px;">👨‍⚕️ Yönetici Yanıtı</div>
+                      <div>${d.adminReply}</div>
+                      <div class="chat-meta"><span>${replyDateStr || dateStr}</span></div>
+                    </div>
+                  ` : ''}
+
+                  <!-- 3. MESAJ: KULLANICI TAKİP MESAJI (KULLANICI) -->
+                  ${d.userFollowup ? `
+                    <div class="chat-bubble sent">
+                      <div style="font-weight:bold; font-size:0.75rem; color:#065f46; margin-bottom:2px;">Siz (Takip Cevabı)</div>
+                      <div>${d.userFollowup}</div>
+                      <div class="chat-meta"><span>${followupDateStr || dateStr}</span></div>
+                    </div>
+                  ` : ''}
+
+                </div>
               </div>
 
-              <!-- WHATSAPP SOHBET AKIŞI -->
-              <div style="font-size:0.88rem; font-weight:bold; margin:12px 0 6px 0;">💬 Mesajlaşma Geçmişi:</div>
-              <div class="whatsapp-container" style="height:auto; max-height:300px;">
-                <div class="whatsapp-messages" style="padding:10px;">
-                  ${chatBubblesHTML}
+              ${isAnswered ? `
+                <div style="display:flex; gap:8px; margin-top:8px;">
+                  <input type="text" id="userFollowupInput_${d.id}" class="modern-input" style="padding:6px 10px; font-size:0.82rem;" placeholder="Yönetici yanıtına takip mesajı yazın...">
+                  <button class="btn-action btn-toggle-on" style="padding:6px 14px; font-size:0.82rem;" onclick="sendUserFollowup('${d.id}')">Gönder ➔</button>
                 </div>
-                <div class="whatsapp-footer">
-                  <button type="button" class="btn-emoji" onclick="openEmojiPicker(this, 'reportUserReplyInput_${d.id}')">😀</button>
-                  <input type="text" id="reportUserReplyInput_${d.id}" class="modern-input" placeholder="Yöneticiye yanıt yazın..." onkeydown="if(event.key==='Enter') sendReportMessage('${d.id}', 'user')">
-                  <button class="btn-action btn-toggle-on" onclick="sendReportMessage('${d.id}', 'user')">Gönder ➔</button>
-                </div>
-              </div>
+              ` : ''}
 
             </div>
+
           </div>
         `;
       });
 
       box.innerHTML = html;
-    } catch(err) {}
+    } catch(err) {
+      box.innerHTML = `<p style="color:red; text-align:center; padding:10px;">Bildirimler yüklenirken hata oluştu: ${err.message}</p>`;
+    }
   };
 
+  // MADDE 1: DETAYLARA TIKLAYINCA DİĞER BİLDİRİMLERİ GİZLEME VE BUTON YAZISINI "DETAYI KAPAT" YAPMA
   window.toggleUserReportDetail = function(id) {
     const card = document.getElementById(`reportDetailCard_${id}`);
-    if (card) card.style.display = card.style.display === 'none' ? 'block' : 'none';
+    const btn = document.getElementById(`toggleReportBtn_${id}`);
+    const allCards = document.querySelectorAll('.user-report-card-item');
+
+    if (!card) return;
+
+    if (card.style.display === 'none') {
+      allCards.forEach(c => {
+        if (c.id !== `userReportCard_${id}`) c.style.display = 'none';
+      });
+      card.style.display = 'block';
+      if (btn) btn.innerText = '🔍 Detayı Kapat';
+    } else {
+      allCards.forEach(c => c.style.display = 'block');
+      card.style.display = 'none';
+      if (btn) btn.innerText = '🔍 Detay İçin Tıkla';
+    }
   };
 
-  // MESAJ GÖNDERME İŞLEVİ (HEM KULLANICI HEM YÖNETİCİ İÇİN HATALI SORU SOHBETİ)
-  window.sendReportMessage = async function(docId, senderRole) {
-    const inputId = senderRole === 'admin' ? `adminReportReplyInput_${docId}` : `reportUserReplyInput_${docId}`;
-    const input = document.getElementById(inputId);
-    if (!input) return;
+  window.closeUserReportsModal = () => document.getElementById('userReportsModal').style.display = 'none';
 
+  window.deleteUserReport = async function(docId) {
+    if (!confirm("Bu bildirim kaydını silmek istediğinize emin misiniz?")) return;
+    try {
+      await deleteDoc(doc(db, "hatali_sorular", docId));
+      showToast("Bildiriminiz silindi.", "success");
+      openUserReportsModal();
+    } catch(err) {
+      showToast("Silme hatası: " + err.message, "error");
+    }
+  };
+
+  window.sendUserFollowup = async function(docId) {
+    const input = document.getElementById(`userFollowupInput_${docId}`);
     const text = input.value.trim();
-    if (!text) return;
-    input.value = '';
-
-    const newMsg = {
-      id: "msg_" + Date.now(),
-      senderRole: senderRole,
-      senderName: senderRole === 'admin' ? 'Yönetici' : (auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : 'Kullanıcı'),
-      text: text,
-      timeStr: new Date().toLocaleString('tr-TR')
-    };
+    if (!text) { showToast("Lütfen cevabınızı yazınız.", "warning"); return; }
 
     try {
       await updateDoc(doc(db, "hatali_sorular", docId), {
-        messages: arrayUnion(newMsg),
-        status: senderRole === 'admin' ? 'yanitlandi' : 'kullanici_yanitladi',
-        adminReply: senderRole === 'admin' ? text : ''
+        userFollowup: text,
+        userFollowupAt: serverTimestamp(),
+        status: "kullanici_yanitladi"
       });
-
-      showToast("Mesajınız iletildi.", "success");
-      if (senderRole === 'admin') loadAdminQuestionReports();
-      else openUserReportsModal();
-    } catch(err) {}
+      showToast("Yanıtınız yöneticiye iletildi.", "success");
+      openUserReportsModal();
+    } catch(err) { showToast("Hata: " + err.message, "error"); }
   };
 
-  // MESAJ SİLME İŞLEVİ
-  window.deleteReportMessage = async function(reportId, msgId, isUserAction) {
-    const docRef = doc(db, "hatali_sorular", reportId);
-    const snap = await getDoc(docRef);
-    if (!snap.exists()) return;
-
-    let messages = snap.data().messages || [];
-    messages = messages.map(m => {
-      if (m.id === msgId) {
-        if (isUserAction) m.deletedByUser = true;
-        else m.deletedByAdmin = true;
-      }
-      return m;
-    });
-
-    await updateDoc(docRef, { messages: messages });
-    showToast("Mesaj silindi.", "success");
-    if (isUserAction) openUserReportsModal();
-    else loadAdminQuestionReports();
-  };
-
-  // MADDE 4: YÖNETİCİ PANELİNDE HATALI SORU BİLDİRİMLERİ CANLI WHATSAPP DESTEĞİ
   async function loadAdminQuestionReports() {
     const box = document.getElementById('adminQuestionReportsList');
     box.innerHTML = '<p style="text-align:center; color:#64748b;">Bildirimler yükleniyor...</p>';
 
     try {
       const snap = await getDocs(collection(db, "hatali_sorular"));
+
       if (snap.empty) {
-        box.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">Bildirim yok.</p>';
+        box.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">Henüz hatalı soru bildirimi yapılmamış.</p>';
         return;
       }
 
       let reports = [];
       snap.forEach(docSnap => reports.push({ id: docSnap.id, ...docSnap.data() }));
 
+      reports.sort((a, b) => {
+        const timeA = a.createdAt?.toDate ? a.createdAt.toDate().getTime() : 0;
+        const timeB = b.createdAt?.toDate ? b.createdAt.toDate().getTime() : 0;
+        return timeB - timeA;
+      });
+
       let html = '';
       reports.forEach(d => {
+        const dateStr = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('tr-TR') : '';
+        const isAnswered = d.status === 'yanitlandi';
+
         let optionsHTML = '';
         if (Array.isArray(d.questionOptions) && d.questionOptions.length > 0) {
-          optionsHTML = '<div style="display:flex; flex-direction:column; gap:4px; margin-top:6px;">' +
-            d.questionOptions.map((opt, i) => {
-              const letter = String.fromCharCode(65 + i);
-              const isCorrect = (d.correctLetter || '').includes(letter);
-              return `<div style="padding:4px 8px; border-radius:4px; font-size:0.82rem; ${isCorrect ? 'background:#d1fae5; font-weight:bold; color:#065f46;' : 'background:#ffffff; border:1px solid #e2e8f0; color:#334155;'}"><strong>${letter})</strong> ${opt}</div>`;
-            }).join('') + '</div>';
+          optionsHTML = d.questionOptions.map((opt, i) => {
+            const letter = String.fromCharCode(65 + i);
+            const isCorrect = (d.correctLetter || '').includes(letter);
+            return `<div style="padding:4px 8px; margin-top:2px; border-radius:4px; font-size:0.82rem; ${isCorrect ? 'background:#d1fae5; font-weight:bold; color:#065f46;' : 'background:#ffffff; color:#334155;'}">${letter}) ${opt}</div>`;
+          }).join('');
         }
 
-        let msgList = Array.isArray(d.messages) ? d.messages : [];
-        let chatBubblesHTML = '';
-        msgList.forEach(m => {
-          const isUser = m.senderRole === 'user';
-          let userDeletedNotice = m.deletedByUser ? `<div style="color:#ef4444; font-size:0.7rem; font-weight:bold;">⚠️ (Kullanıcı bu mesajı sildi)</div>` : '';
-
-          chatBubblesHTML += `
-            <div class="chat-bubble ${isUser ? 'received' : 'sent'}">
-              ${userDeletedNotice}
-              <div style="font-weight:bold; font-size:0.75rem; color:${isUser ? '#065f46' : '#1e40af'};">${isUser ? d.userName : 'Yönetici'}</div>
-              <div style="white-space:pre-line;">${m.text}</div>
-              <div class="chat-meta">
-                <span>${m.timeStr || ''}</span>
-                <button class="msg-delete-btn" onclick="deleteReportMessage('${d.id}', '${m.id}', false)">🗑️</button>
-              </div>
-            </div>
-          `;
-        });
+        const safeComment = (d.userComment || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const safeName = (d.userName || d.userEmail || '').replace(/'/g, "\\'");
 
         html += `
-          <div style="background:#ffffff; border:1px solid var(--border); border-radius:8px; padding:12px; margin-bottom:12px;">
-            <div style="font-weight:bold; color:#0f172a;">👤 ${d.userName} (${d.userEmail})</div>
+          <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid ${isAnswered ? '#10b981' : '#ef4444'}; border-radius:8px; padding:12px; margin-bottom:12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <div style="display:flex; align-items:center; gap:8px;">
+                <input type="checkbox" class="report-row-checkbox" value="${d.id}">
+                <span style="font-weight:bold; color:#0f172a;">👤 ${d.userName} (${d.userEmail})</span>
+              </div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <span style="font-size:0.75rem; color:#64748b;">${dateStr}</span>
+                <button class="btn-action" style="font-size:0.72rem; padding:3px 8px; background:#fffbe6; color:#d97706; border-color:#fde68a;" onclick="openAdminWarnUserModal('${d.userId}', '${safeName}', '${safeComment}')" title="Kullanıcıya Uyarı Gönder">⚠️ Uyar</button>
+                <button class="msg-delete-btn" onclick="promptDeleteSingleAdminReport('${d.id}')" title="Bildirimi Sil">🗑️</button>
+              </div>
+            </div>
             
-            <div style="font-size:0.85rem; background:#f8fafc; padding:8px; border-radius:6px; margin:8px 0;">
+            <div style="font-size:0.85rem; color:#334155; margin-bottom:6px; background:#f8fafc; padding:8px; border-radius:6px;">
               <strong>Soru [${d.questionTopic}]:</strong> ${d.questionText}<br>
-              <span style="color:#2563eb; font-weight:bold;">Doğru Cevap: ${d.correctLetter}</span>
-              ${optionsHTML}
+              <span style="color:#2563eb; font-weight:bold;">Sistemdeki Doğru Cevap: ${d.correctLetter}</span>
             </div>
 
-            <!-- WHATSAPP SOHBETİ -->
-            <div class="whatsapp-container" style="height:auto; max-height:300px;">
-              <div class="whatsapp-messages" style="padding:10px;">
-                ${chatBubblesHTML}
+            ${optionsHTML ? `
+              <div style="background:#f1f5f9; padding:8px; border-radius:6px; margin-bottom:8px;">
+                <strong style="font-size:0.8rem; color:#475569;">Sorunun Seçenekleri:</strong>
+                ${optionsHTML}
               </div>
-              <div class="whatsapp-footer">
-                <button type="button" class="btn-emoji" onclick="openEmojiPicker(this, 'adminReportReplyInput_${d.id}')">😀</button>
-                <input type="text" id="adminReportReplyInput_${d.id}" class="modern-input" placeholder="Kullanıcıya yanıt yazın..." onkeydown="if(event.key==='Enter') sendReportMessage('${d.id}', 'admin')">
-                <button class="btn-action btn-toggle-on" onclick="sendReportMessage('${d.id}', 'admin')">Gönder ➔</button>
+            ` : ''}
+
+            <div style="font-size:0.83rem; color:#475569; margin-bottom:8px; background:#fff; padding:6px; border:1px solid #e2e8f0; border-radius:6px;">
+              👉 <strong>Kullanıcının Önerdiği Şık:</strong> ${d.userSuggestedOption || 'Belirtilmedi'}<br>
+              📝 <strong>Kullanıcı İtiraz Açıklaması:</strong> ${d.userComment || 'Açıklama yazılmadı.'}
+            </div>
+
+            ${d.userFollowup ? `
+              <div style="margin-bottom:8px; background:#eff6ff; padding:6px 10px; border-radius:6px; font-size:0.82rem; color:#1e40af;">
+                💬 <strong>Kullanıcının Takip Yanıtı:</strong> ${d.userFollowup}
+              </div>
+            ` : ''}
+            
+            <div style="border-top:1px dashed #cbd5e1; padding-top:8px; margin-top:8px;">
+              ${isAnswered ? `
+                <div id="replyBox_${d.id}">
+                  <div style="font-size:0.82rem; color:#047857; background:#d1fae5; padding:8px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
+                    <span><strong>Yönetici Yanıtı:</strong> ${d.adminReply}</span>
+                    <button class="btn-action" style="font-size:0.72rem; padding:2px 6px;" onclick="enableEditReportReply('${d.id}', '${encodeURIComponent(d.adminReply)}')">✏️ Yanıtı Düzenle</button>
+                  </div>
+                </div>
+              ` : ''}
+
+              <div id="editReplyForm_${d.id}" style="${isAnswered ? 'display:none;' : ''} margin-top:6px;">
+                <div style="display:flex; gap:8px;">
+                  <input type="text" id="adminReplyInput_${d.id}" class="modern-input" style="padding:4px 8px; font-size:0.8rem;" placeholder="Yanıtınızı yazın..." value="${d.adminReply || ''}">
+                  <button class="btn-action btn-toggle-on" style="padding:4px 12px; font-size:0.8rem;" onclick="replyToQuestionReport('${d.id}')">Kaydet & Gönder</button>
+                </div>
               </div>
             </div>
           </div>
@@ -2024,11 +3438,184 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       });
 
       box.innerHTML = html;
-    } catch(err) {}
+    } catch(err) { box.innerHTML = `<span style="color:red;">Hata: ${err.message}</span>`; }
   }
 
-  // CANLI DESTEK SOHBETLERİ (USER)
+  // MADDE 4: YÜKLENEN SORU DOSYALARINI ADMİN PANELİNDE LİSTELEME VE İNDİRME
+  async function loadAdminUploadedQuestions() {
+    const box = document.getElementById('adminUploadedQuestionsList');
+    box.innerHTML = '<p style="text-align:center; color:#64748b;">Yüklenen sorular listeleniyor...</p>';
+
+    try {
+      const snap = await getDocs(collection(db, "kullanici_yuklenen_sorular"));
+
+      if (snap.empty) {
+        box.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">Henüz kullanıcılar tarafından soru dosyası yüklenmemiş.</p>';
+        return;
+      }
+
+      let files = [];
+      snap.forEach(docSnap => files.push({ id: docSnap.id, ...docSnap.data() }));
+
+      files.sort((a, b) => {
+        const timeA = a.uploadedAt?.toDate ? a.uploadedAt.toDate().getTime() : 0;
+        const timeB = b.uploadedAt?.toDate ? b.uploadedAt.toDate().getTime() : 0;
+        return timeB - timeA;
+      });
+
+      let html = '';
+      files.forEach(f => {
+        const dateStr = f.uploadedAt?.toDate ? f.uploadedAt.toDate().toLocaleString('tr-TR') : 'Tarih Belirtilmedi';
+
+        html += `
+          <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid #2563eb; border-radius:8px; padding:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div>
+              <div style="font-weight:bold; font-size:0.9rem; color:#0f172a;">📄 ${f.fileName}</div>
+              <div style="font-size:0.8rem; color:#64748b; margin-top:3px;">
+                👤 <strong>Yükleyen:</strong> ${f.userName} (${f.userEmail}) | <strong>Üyelik:</strong> ${f.userTier} | 📅 <strong>Tarih:</strong> ${dateStr}
+              </div>
+            </div>
+
+            <div style="display:flex; gap:8px;">
+              <button class="btn-action btn-toggle-on" style="font-size:0.8rem; padding:6px 14px; background:#10b981 !important; border-color:#059669 !important;" onclick="downloadUploadedQuestionFile('${f.id}', '${f.fileName}')">
+                📥 Tek Tıkla İndir
+              </button>
+              <button class="btn-action btn-finish-test" style="font-size:0.8rem; padding:6px 12px;" onclick="deleteUploadedQuestionFile('${f.id}')">
+                🗑️ Sil
+              </button>
+            </div>
+          </div>
+        `;
+      });
+
+      box.innerHTML = html;
+    } catch(err) {
+      box.innerHTML = `<span style="color:red;">Hata: ${err.message}</span>`;
+    }
+  }
+
+  window.downloadUploadedQuestionFile = async function(docId, fileName) {
+    try {
+      const docSnap = await getDoc(doc(db, "kullanici_yuklenen_sorular", docId));
+      if (!docSnap.exists()) { showToast("Dosya bulunamadı.", "error"); return; }
+      
+      const fileData = docSnap.data().fileData;
+      if (!fileData) { showToast("Dosya verisi eksik.", "error"); return; }
+
+      const link = document.createElement('a');
+      link.href = fileData;
+      link.download = fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      showToast("Dosya indiriliyor...", "success");
+    } catch(err) {
+      showToast("İndirme hatası: " + err.message, "error");
+    }
+  };
+
+  window.deleteUploadedQuestionFile = async function(docId) {
+    if (!confirm("Bu yüklenen soru dosyasını silmek istediğinize emin misiniz?")) return;
+    try {
+      await deleteDoc(doc(db, "kullanici_yuklenen_sorular", docId));
+      showToast("Soru dosyası kaydı silindi.", "success");
+      loadAdminUploadedQuestions();
+    } catch(err) {
+      showToast("Silme hatası: " + err.message, "error");
+    }
+  };
+
+  window.toggleSelectAllReports = function(masterCb) {
+    document.querySelectorAll('.report-row-checkbox').forEach(cb => cb.checked = masterCb.checked);
+  };
+
+  window.enableEditReportReply = function(docId, encodedText) {
+    const text = decodeURIComponent(encodedText);
+    document.getElementById(`replyBox_${docId}`).style.display = 'none';
+    const form = document.getElementById(`editReplyForm_${docId}`);
+    form.style.display = 'block';
+    document.getElementById(`adminReplyInput_${docId}`).value = text;
+  };
+
+  window.replyToQuestionReport = async function(docId) {
+    const input = document.getElementById(`adminReplyInput_${docId}`);
+    const replyText = input.value.trim();
+    if (!replyText) { showToast("Lütfen bir yanıt yazınız.", "warning"); return; }
+
+    try {
+      await updateDoc(doc(db, "hatali_sorular", docId), {
+        adminReply: replyText,
+        status: "yanitlandi",
+        adminRepliedAt: serverTimestamp(),
+        userNotified: false
+      });
+      showToast("Yanıt kaydedildi ve kullanıcıya gönderildi.", "success");
+      loadAdminQuestionReports();
+    } catch(err) { showToast("Hata: " + err.message, "error"); }
+  };
+
+  window.openAdminBulkReplyModal = function() {
+    const selected = Array.from(document.querySelectorAll('.report-row-checkbox:checked')).map(cb => cb.value);
+    if (selected.length === 0) { showToast("Lütfen en az bir bildirim seçiniz.", "warning"); return; }
+    
+    document.getElementById('bulkReplyCountText').innerText = `${selected.length} adet seçili bildirim için toplu yanıt oluşturuluyor:`;
+    document.getElementById('adminBulkReplyText').value = '';
+    document.getElementById('adminBulkReplyModal').style.display = 'flex';
+  };
+
+  window.closeAdminBulkReplyModal = function() {
+    document.getElementById('adminBulkReplyModal').style.display = 'none';
+  };
+
+  window.executeAdminBulkReply = async function() {
+    const selected = Array.from(document.querySelectorAll('.report-row-checkbox:checked')).map(cb => cb.value);
+    const bulkText = document.getElementById('adminBulkReplyText').value.trim();
+    if (!bulkText) { showToast("Lütfen yanıt mesajını yazınız.", "warning"); return; }
+
+    for (let id of selected) {
+      await updateDoc(doc(db, "hatali_sorular", id), {
+        adminReply: bulkText,
+        status: "yanitlandi",
+        adminRepliedAt: serverTimestamp(),
+        userNotified: false
+      });
+    }
+    showToast(`${selected.length} bildirime toplu yanıt gönderildi.`, "success");
+    closeAdminBulkReplyModal();
+    loadAdminQuestionReports();
+  };
+
+  window.promptDeleteSingleAdminReport = function(docId) {
+    reportsToDeleteTarget = [docId];
+    document.getElementById('deleteReportsWarningText').innerHTML = `Seçilen <strong>1 adet hatalı soru bildirimi</strong> sistemden kalıcı olarak silinecektir.`;
+    document.getElementById('adminConfirmDeleteReportsModal').style.display = 'flex';
+  };
+
+  window.promptDeleteSelectedAdminReports = function() {
+    const selected = Array.from(document.querySelectorAll('.report-row-checkbox:checked')).map(cb => cb.value);
+    if (selected.length === 0) { showToast("Lütfen silmek istediğiniz bildirimleri seçiniz.", "warning"); return; }
+    
+    reportsToDeleteTarget = selected;
+    document.getElementById('deleteReportsWarningText').innerHTML = `Seçtiğiniz <strong>${selected.length} adet hatalı soru bildirimi</strong> veritabanından kalıcı olarak silinecektir. Devam etmek istiyor musunuz?`;
+    document.getElementById('adminConfirmDeleteReportsModal').style.display = 'flex';
+  };
+
+  window.closeAdminConfirmDeleteReportsModal = function() {
+    document.getElementById('adminConfirmDeleteReportsModal').style.display = 'none';
+  };
+
+  window.executeDeleteAdminReports = async function() {
+    if (reportsToDeleteTarget.length === 0) return;
+    for (let id of reportsToDeleteTarget) {
+      await deleteDoc(doc(db, "hatali_sorular", id));
+    }
+    showToast(`${reportsToDeleteTarget.length} bildirim kalıcı olarak silindi.`, "success");
+    closeAdminConfirmDeleteReportsModal();
+    loadAdminQuestionReports();
+  };
+
   window.openUserChatModal = function() {
+    if (!auth.currentUser) { showToast("Lütfen önce giriş yapınız.", "warning"); return; }
     document.getElementById('userChatModal').style.display = 'flex';
     listenUserChatMessages(auth.currentUser.uid);
   };
@@ -2040,24 +3627,53 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
   function listenUserChatMessages(userUid) {
     const chatBox = document.getElementById('whatsappUserMessages');
+    chatBox.innerHTML = 'Mesajlar yükleniyor...';
+
     const q = query(collection(db, "sohbetler", userUid, "mesajlar"));
     
     if (chatUnsubscribe) chatUnsubscribe();
 
     chatUnsubscribe = onSnapshot(q, (snapshot) => {
       chatBox.innerHTML = '';
+      
       let messages = [];
-      snapshot.forEach(docSnap => messages.push({ id: docSnap.id, ...docSnap.data() }));
+      const sevenDaysAgoMs = Date.now() - (7 * 24 * 60 * 60 * 1000);
+
+      snapshot.forEach(docSnap => {
+        const m = docSnap.data();
+        if (m.deletedByUser) return;
+
+        const msgTime = m.zaman?.toDate ? m.zaman.toDate().getTime() : Date.now();
+        if (msgTime < sevenDaysAgoMs) return;
+
+        messages.push({ id: docSnap.id, ...m });
+      });
+
+      messages.sort((a, b) => {
+        const tA = a.zaman?.toDate ? a.zaman.toDate().getTime() : 0;
+        const tB = b.zaman?.toDate ? b.zaman.toDate().getTime() : 0;
+        return tA - tB;
+      });
+
+      if (messages.length === 0) {
+        chatBox.innerHTML = '<p style="text-align:center; color:#64748b; font-size:0.8rem; margin:auto;">Henüz mesaj yok veya mesajlarınızın süresi (7 gün) doldu.</p>';
+        return;
+      }
 
       messages.forEach(m => {
         const isUserMsg = m.senderUid === userUid;
+        const timeStr = m.zaman?.toDate ? m.zaman.toDate().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}) : '';
+
         const bubble = document.createElement('div');
         bubble.className = `chat-bubble ${isUserMsg ? 'sent' : 'received'}`;
         
+        let deleteBtnHTML = isUserMsg ? `<button class="msg-delete-btn" onclick="deleteUserMessage('${m.id}')" title="Mesajı Sil">🗑️</button>` : '';
+
         bubble.innerHTML = `
           <div>${m.text}</div>
           <div class="chat-meta">
-            <span>${m.timeStr || ''}</span>
+            <span>${timeStr}</span>
+            ${deleteBtnHTML}
           </div>
         `;
         chatBox.appendChild(bubble);
@@ -2070,15 +3686,223 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     const input = document.getElementById('userChatMessageInput');
     const text = input.value.trim();
     if (!text || !auth.currentUser) return;
-    input.value = '';
 
+    input.value = '';
     const userUid = auth.currentUser.uid;
+
     await addDoc(collection(db, "sohbetler", userUid, "mesajlar"), {
       senderUid: userUid,
+      senderName: auth.currentUser.displayName || auth.currentUser.email,
+      senderEmail: auth.currentUser.email,
       text: text,
-      timeStr: new Date().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}),
-      zaman: serverTimestamp()
+      zaman: serverTimestamp(),
+      readByAdmin: false,
+      deletedByUser: false
     });
+
+    await setDoc(doc(db, "sohbetler", userUid), {
+      lastMessageTime: serverTimestamp(),
+      lastMessageText: text,
+      userEmail: auth.currentUser.email,
+      userName: auth.currentUser.displayName || auth.currentUser.email,
+      unreadByAdmin: true
+    }, { merge: true });
+  };
+
+  window.deleteUserMessage = async function(msgId) {
+    if (!auth.currentUser) return;
+    await updateDoc(doc(db, "sohbetler", auth.currentUser.uid, "mesajlar", msgId), {
+      deletedByUser: true
+    });
+    showToast("Mesajınız silindi.", "success");
+  };
+
+  async function loadAdminChatList() {
+    const userListBox = document.getElementById('adminChatUserList');
+    userListBox.innerHTML = '<p style="padding:15px; font-size:0.8rem; color:#64748b;">Sohbetler getiriliyor...</p>';
+
+    const snap = await getDocs(collection(db, "sohbetler"));
+
+    if (snap.empty) {
+      userListBox.innerHTML = '<p style="padding:15px; font-size:0.8rem; color:#64748b;">Aktif sohbet bulunmuyor.</p>';
+      return;
+    }
+
+    let chats = [];
+    snap.forEach(docSnap => chats.push({ uid: docSnap.id, ...docSnap.data() }));
+
+    chats.sort((a, b) => {
+      const tA = a.lastMessageTime?.toDate ? a.lastMessageTime.toDate().getTime() : 0;
+      const tB = b.lastMessageTime?.toDate ? b.lastMessageTime.toDate().getTime() : 0;
+      return tB - tA;
+    });
+
+    let hasGlobalUnread = false;
+    userListBox.innerHTML = '';
+
+    chats.forEach(chat => {
+      const isUnread = chat.unreadByAdmin === true;
+      if (isUnread) hasGlobalUnread = true;
+
+      const item = document.createElement('div');
+      item.style.padding = '10px 12px';
+      item.style.borderBottom = '1px solid #e2e8f0';
+      item.style.cursor = 'pointer';
+      item.className = isUnread ? 'unread-row' : '';
+      
+      item.innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <input type="checkbox" class="chat-row-checkbox" value="${chat.uid}" onclick="event.stopPropagation()">
+            <strong style="font-size:0.85rem; color:#0f172a;">${chat.userName || chat.userEmail}</strong>
+          </div>
+          <div style="display:flex; align-items:center; gap:4px;">
+            ${isUnread ? '<span class="unread-badge-dot"></span>' : ''}
+            <button class="msg-delete-btn" style="opacity:0.8;" onclick="event.stopPropagation(); deleteSingleAdminChat('${chat.uid}')" title="Sohbeti Sil">🗑️</button>
+          </div>
+        </div>
+        <div style="font-size:0.75rem; color:#64748b; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${chat.lastMessageText || ''}</div>
+      `;
+      item.onclick = () => openAdminChatWithUser(chat.uid, chat.userName || chat.userEmail);
+      userListBox.appendChild(item);
+    });
+
+    const badge = document.getElementById('adminChatUnreadBadge');
+    if (badge) badge.style.display = hasGlobalUnread ? 'inline-block' : 'none';
+  }
+
+  window.toggleSelectAllChats = function(masterCb) {
+    document.querySelectorAll('.chat-row-checkbox').forEach(cb => cb.checked = masterCb.checked);
+  };
+
+  window.deleteSingleAdminChat = async function(userUid) {
+    if (!confirm("Bu sohbeti tamamen silmek istediğinize emin misiniz?")) return;
+    await deleteDoc(doc(db, "sohbetler", userUid));
+    showToast("Sohbet silindi.", "success");
+    loadAdminChatList();
+    document.getElementById('adminChatDetailBox').innerHTML = '<div style="padding: 15px; text-align: center; color: var(--text-muted); margin: auto;">👈 Lütfen sol listeden mesajlaşmak istediğiniz kullanıcıyı seçiniz.</div>';
+  };
+
+  window.deleteSelectedAdminChats = async function() {
+    const selected = Array.from(document.querySelectorAll('.chat-row-checkbox:checked')).map(cb => cb.value);
+    if (selected.length === 0) { showToast("Lütfen silmek istediğiniz sohbetleri seçiniz.", "warning"); return; }
+    if (!confirm(`${selected.length} adet seçili sohbet tamamen silinecektir. Onaylıyor musunuz?`)) return;
+
+    for (let uid of selected) {
+      await deleteDoc(doc(db, "sohbetler", uid));
+    }
+    showToast(`${selected.length} sohbet silindi.`, "success");
+    loadAdminChatList();
+    document.getElementById('adminChatDetailBox').innerHTML = '<div style="padding: 15px; text-align: center; color: var(--text-muted); margin: auto;">👈 Lütfen sol listeden mesajlaşmak istediğiniz kullanıcıyı seçiniz.</div>';
+  };
+
+  window.openAdminChatWithUser = function(userUid, userName) {
+    selectedAdminChatUserUid = userUid;
+    const detailBox = document.getElementById('adminChatDetailBox');
+
+    updateDoc(doc(db, "sohbetler", userUid), { unreadByAdmin: false });
+
+    detailBox.innerHTML = `
+      <div class="whatsapp-header" style="border-radius:8px 8px 0 0;">
+        <span>👤 ${userName} ile Sohbet</span>
+      </div>
+      <div id="whatsappAdminMessages" class="whatsapp-messages" style="flex:1;">
+        Mesajlar yükleniyor...
+      </div>
+      <div class="whatsapp-footer">
+        <input type="text" id="adminChatMessageInput" class="modern-input" style="flex:1;" placeholder="Kullanıcıya yanıt yazın..." onkeydown="if(event.key==='Enter') sendAdminChatMessage()">
+        <button class="btn-action btn-toggle-on" onclick="sendAdminChatMessage()">Gönder ➔</button>
+      </div>
+    `;
+
+    const q = query(collection(db, "sohbetler", userUid, "mesajlar"));
+    
+    if (chatUnsubscribe) chatUnsubscribe();
+
+    chatUnsubscribe = onSnapshot(q, (snapshot) => {
+      const msgContainer = document.getElementById('whatsappAdminMessages');
+      if (!msgContainer) return;
+      msgContainer.innerHTML = '';
+
+      let messages = [];
+      snapshot.forEach(docSnap => messages.push({ id: docSnap.id, ...docSnap.data() }));
+
+      messages.sort((a, b) => {
+        const tA = a.zaman?.toDate ? a.zaman.toDate().getTime() : 0;
+        const tB = b.zaman?.toDate ? b.zaman.toDate().getTime() : 0;
+        return tA - tB;
+      });
+
+      messages.forEach(m => {
+        const isAdminMsg = m.senderUid === "admin" || m.senderRole === "admin";
+        const timeStr = m.zaman?.toDate ? m.zaman.toDate().toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}) : '';
+
+        const bubble = document.createElement('div');
+        bubble.className = `chat-bubble ${isAdminMsg ? 'sent' : 'received'}`;
+        
+        let userDeletedBadge = m.deletedByUser ? `<div style="font-size:0.7rem; color:#dc2626; font-weight:bold;">⚠️ (Kullanıcı bu mesajı sildi)</div>` : '';
+
+        const safeText = (m.text || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const safeName = (userName || '').replace(/'/g, "\\'");
+
+        let warnBtnHTML = !isAdminMsg ? `
+          <button class="btn-action" style="font-size:0.65rem; padding:1px 5px; background:#fffbe6; color:#d97706; border-color:#fde68a; margin-left:6px;" onclick="openAdminWarnUserModal('${userUid}', '${safeName}', '${safeText}')" title="Bu mesaj için kullanıcıyı uyar">⚠️ Uyar</button>
+        ` : '';
+
+        bubble.innerHTML = `
+          ${userDeletedBadge}
+          <div>${m.text}</div>
+          <div class="chat-meta">
+            <span>${timeStr}</span>
+            ${warnBtnHTML}
+            <button class="msg-delete-btn" onclick="deleteMessageByAdmin('${userUid}', '${m.id}')" title="Yönetici Olarak Tamamen Sil">🗑️</button>
+          </div>
+        `;
+        msgContainer.appendChild(bubble);
+      });
+      msgContainer.scrollTop = msgContainer.scrollHeight;
+    });
+  };
+
+  window.sendAdminChatMessage = async function() {
+    if (!selectedAdminChatUserUid) return;
+    const input = document.getElementById('adminChatMessageInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    input.value = '';
+
+    await addDoc(collection(db, "sohbetler", selectedAdminChatUserUid, "mesajlar"), {
+      senderUid: "admin",
+      senderRole: "admin",
+      senderName: "Yönetici",
+      text: text,
+      zaman: serverTimestamp(),
+      deletedByUser: false
+    });
+
+    await setDoc(doc(db, "sohbetler", selectedAdminChatUserUid), {
+      lastMessageTime: serverTimestamp(),
+      lastMessageText: `Yönetici: ${text}`
+    }, { merge: true });
+  };
+
+  window.deleteMessageByAdmin = async function(userUid, msgId) {
+    await deleteDoc(doc(db, "sohbetler", userUid, "mesajlar", msgId));
+    showToast("Mesaj yönetici tarafından silindi.", "success");
+  };
+
+  window.openReportQuestionModal = function(index) {
+    currentReportingQuestionIndex = index;
+    const q = currentQuestionsList[index];
+    document.getElementById('reportModalQuestionSummary').innerText = `Soru ${index + 1}: ${q.soruMetni.substring(0, 90)}...`;
+    document.getElementById('reportUserSuggestedOption').value = "";
+    document.getElementById('reportUserComment').value = "";
+    document.getElementById('reportQuestionModal').style.display = 'flex';
+  };
+
+  window.closeReportQuestionModal = function() {
+    document.getElementById('reportQuestionModal').style.display = 'none';
   };
 
   window.submitQuestionReport = async function() {
@@ -2089,14 +3913,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     const meta = parseQuestionMeta(q);
     const cleanOptions = extractAndCleanOptions(q);
 
-    const initialMsg = {
-      id: "msg_" + Date.now(),
-      senderRole: "user",
-      senderName: auth.currentUser ? (auth.currentUser.displayName || auth.currentUser.email) : "Kullanıcı",
-      text: `👉 Önerilen Şık: ${suggestedOpt || 'Belirtilmedi'}\n📝 İtiraz Açıklaması: ${comment || 'Açıklama belirtilmedi.'}`,
-      timeStr: new Date().toLocaleString('tr-TR')
-    };
-
     try {
       await addDoc(collection(db, "hatali_sorular"), {
         userId: auth.currentUser ? auth.currentUser.uid : "anonim",
@@ -2106,30 +3922,90 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         questionOptions: cleanOptions,
         questionTopic: meta.displayName,
         correctLetter: getCorrectLetter(q),
-        messages: [initialMsg],
+        userSuggestedOption: suggestedOpt,
+        userComment: comment,
+        status: "bekliyor",
+        adminReply: "",
+        userNotified: false,
         createdAt: serverTimestamp()
       });
 
-      closeReportQuestionModal();
-      showToast("Bildiriminiz yöneticiye gönderildi.", "success");
-    } catch(err) {}
+      window.closeReportQuestionModal();
+      showToast("Geri bildiriminiz yöneticiye ulaştı, değerlendirme başlatıldı.", "success");
+    } catch(err) {
+      showToast("Bildirim gönderilirken hata oluştu: " + err.message, "error");
+    }
   };
 
-  window.switchAdminTab = function(tabName) {
-    document.getElementById('adminTabUsers').style.display = tabName === 'users' ? 'flex' : 'none';
-    document.getElementById('adminTabReports').style.display = tabName === 'reports' ? 'flex' : 'none';
-    document.getElementById('adminTabUploadedQuestions').style.display = tabName === 'uploadedQuestions' ? 'flex' : 'none';
-    document.getElementById('adminTabChat').style.display = tabName === 'chat' ? 'flex' : 'none';
-    document.getElementById('adminTabLicenses').style.display = tabName === 'licenses' ? 'block' : 'none';
-    document.getElementById('adminTabSettings').style.display = tabName === 'settings' ? 'block' : 'none';
+  window.generateNewLicense = async function() {
+    const days = parseInt(document.getElementById('licenseDaysInput').value) || 30;
+    const tier = document.getElementById('licenseTierSelect').value;
+    const serial = "NR-2026-" + Math.floor(100 + Math.random() * 900);
+    const key = Math.random().toString(36).substring(2, 6).toUpperCase() + "-" + Math.random().toString(36).substring(2, 6).toUpperCase();
+    const pin = Math.floor(1000 + Math.random() * 9000).toString();
 
-    if (tabName === 'reports') loadAdminQuestionReports();
-    if (tabName === 'users') fetchAndRenderUsers('Tümü');
+    await addDoc(collection(db, "promosyon_kodlari"), {
+      seriNo: serial, anahtar: key, pin: pin, tur: tier, gun: days, isUsed: false, createdTime: serverTimestamp()
+    });
+
+    document.getElementById('resCodeMeta').innerText = `${days} Günlük ${tier}`;
+    document.getElementById('resCodeSerial').innerText = serial;
+    document.getElementById('resCodeKey').innerText = key;
+    document.getElementById('resCodePin').innerText = pin;
+    document.getElementById('generatedCodeBox').style.display = 'block';
+    showToast(`${days} Günlük ${tier} kodu üretildi.`, "success");
   };
 
-  window.openAdminModal = () => {
-    document.getElementById('adminModal').style.display = 'flex';
-    fetchAndRenderUsers('Tümü');
+  window.changeAdminPassword = async function() {
+    const newU = document.getElementById('adminNewUsernameInput').value.trim();
+    const oldP = document.getElementById('adminOldPassInput').value.trim();
+    const newP = document.getElementById('adminNewPassInput').value.trim();
+    const confirmP = document.getElementById('adminNewPassConfirmInput').value.trim();
+    
+    let currentAdminPass = "noroloji2026";
+    try {
+      const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
+      if (cfgSnap.exists() && cfgSnap.data().sifre) currentAdminPass = cfgSnap.data().sifre;
+    } catch(e) {}
+
+    if (oldP !== currentAdminPass) { showToast("Mevcut şifre hatalı!", "error"); return; }
+    if (newP && newP.length < 4) { showToast("Yeni şifre en az 4 karakter olmalıdır.", "warning"); return; }
+    if (newP && newP !== confirmP) { showToast("Yeni şifreler uyuşmuyor!", "warning"); return; }
+
+    try {
+      let updatePayload = {};
+      if (newU) updatePayload.kullaniciAdi = newU;
+      if (newP) updatePayload.sifre = newP;
+
+      if (Object.keys(updatePayload).length === 0) {
+        showToast("Lütfen güncellemek istediğiniz bilgileri giriniz.", "warning");
+        return;
+      }
+
+      await setDoc(doc(db, "sistem_ayarlari", "admin_config"), updatePayload, { merge: true });
+      showToast("Yönetici kullanıcı adı ve şifreniz kalıcı olarak Firebase'e kaydedildi.", "success");
+      
+      document.getElementById('adminNewUsernameInput').value = '';
+      document.getElementById('adminOldPassInput').value = '';
+      document.getElementById('adminNewPassInput').value = '';
+      document.getElementById('adminNewPassConfirmInput').value = '';
+    } catch(err) {
+      showToast("Bilgiler kaydedilirken hata oluştu: " + err.message, "error");
+    }
+  };
+
+  window.changeUserStatus = async function(uid, newStatus) {
+    if (!newStatus) return;
+    if (newStatus === 'Engellendi') {
+      await updateDoc(doc(db, "kullanicilar", uid), {
+        durum: "Engellendi",
+        engellenmeSuresiText: "Süresiz / Kalıcı (Yönetici Tarafından)"
+      });
+    } else {
+      await updateDoc(doc(db, "kullanicilar", uid), { durum: newStatus });
+    }
+    showToast(`Durum "${newStatus}" olarak güncellendi.`, 'success');
+    await fetchAndRenderUsers(currentCategoryFilter);
   };
 </script>
 
