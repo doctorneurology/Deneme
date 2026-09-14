@@ -626,7 +626,7 @@
       background: transparent;
       padding: 2px 4px;
       color: #1e293b;
-      width: 220px;
+      width: 210px;
     }
 
     .two-column-wrapper { column-count: 2; column-gap: 10mm; width: 100%; }
@@ -812,22 +812,22 @@
       border-top: 6px solid #ef4444;
     }
 
-    @media print {
-      body { background: white !important; color: black !important; }
-      .no-print, .action-bar, #loginScreen, .loading-overlay, .modal-overlay, #sideAnalysisPanel, .toast-container, .btn-admin-subtle {
-        display: none !important; visibility: hidden !important;
-      }
-      .paper-viewport { padding: 0 !important; margin: 0 !important; width: 100% !important; }
-      .a4-sheet { box-shadow: none !important; margin: 0 !important; padding: 10mm 5mm !important; width: 100% !important; }
-      .print-watermark {
-        display: block !important; position: fixed; top: 45%; left: 50%;
-        transform: translate(-50%, -50%) rotate(-30deg);
-        font-size: 26pt; font-weight: bold;
-        color: rgba(0, 0, 0, 0.08) !important;
-        text-align: center; pointer-events: none; z-index: 9999;
-        width: 100%; white-space: pre-line;
-      }
+    /* MODERN SÜRÜKLE BIRAK YÜKLEME ALANI */
+    .file-drop-area {
+      border: 2px dashed #cbd5e1;
+      border-radius: 12px;
+      padding: 28px 16px;
+      text-align: center;
+      background: #f8fafc;
+      cursor: pointer;
+      transition: all 0.2s ease;
     }
+
+    .file-drop-area:hover, .file-drop-area.drag-over {
+      border-color: #2563eb;
+      background: #eff6ff;
+    }
+
     /* EKSİK CEVAP ANAHTARI VE ÇÖZÜM AÇIKLAMASI BİÇİMLENDİRMELERİ */
     .answer-key-card {
       margin-top: 25px;
@@ -898,16 +898,21 @@
       white-space: pre-line;
     }
 
-    .print-only-text {
-      display: none;
-    }
-
     @media print {
-      .header-input {
-        display: none !important;
+      body { background: white !important; color: black !important; }
+      .no-print, .action-bar, #loginScreen, .loading-overlay, .modal-overlay, #sideAnalysisPanel, .toast-container, .btn-admin-subtle {
+        display: none !important; visibility: hidden !important;
       }
-      .print-only-text {
-        display: inline !important;
+      .paper-viewport { padding: 0 !important; margin: 0 !important; width: 100% !important; }
+      .a4-sheet { box-shadow: none !important; margin: 0 !important; padding: 10mm 5mm !important; width: 100% !important; }
+      .header-input { border: none !important; border-bottom: 1px dashed #000 !important; background: transparent !important; }
+      .print-watermark {
+        display: block !important; position: fixed; top: 45%; left: 50%;
+        transform: translate(-50%, -50%) rotate(-30deg);
+        font-size: 26pt; font-weight: bold;
+        color: rgba(0, 0, 0, 0.08) !important;
+        text-align: center; pointer-events: none; z-index: 9999;
+        width: 100%; white-space: pre-line;
       }
     }
   </style>
@@ -942,19 +947,6 @@ D) Mikroglia
 E) Ependim Hücresi
 Cevap: B
 Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
-===
-
-===
-Konu: Baş Ağrısı
-Zorluk: Orta
-Soru: Akut inmede kanamayı ekarte etmek için ilk çekilecek tetkik hangisidir?
-A) Kranial MRG
-B) Kontrastsız Beyin BT
-C) DSA
-D) PET-BT
-E) BT Anjiyografi
-Cevap: B
-Açıklama: İlk tercih kontrastsız beyin BT'dir.
 ===</pre>
 
       <div style="display: flex; gap: 10px;">
@@ -964,9 +956,9 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     </div>
   </div>
 
-  <!-- MADDE 4: KULLANICI DOSYA SEÇME MODALİ -->
+  <!-- MADDE 3 YENİLİK: MODERN SÜRÜKLE BIRAK KULLANICI DOSYA SEÇME MODALİ -->
   <div id="userQuestionFilePickerModal" class="modal-overlay no-print" style="display: none; z-index: 28600;">
-    <div class="modal-card" style="max-width: 440px; width: 90%;">
+    <div class="modal-card" style="max-width: 480px; width: 90%;">
       <div class="modal-title" style="justify-content: space-between;">
         <span>📁 Dosya Seç ve Yükle</span>
         <button class="btn-action" onclick="closeUserQuestionFilePickerModal()">✕</button>
@@ -976,12 +968,23 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
         Lütfen bilgisayarınızdan hazırdaki <strong>.doc</strong> veya <strong>.docx</strong> uzantılı soru dosyanızı seçiniz.
       </p>
 
-      <div class="input-control">
-        <label>Soru Dosyası (.doc, .docx):</label>
-        <input type="file" id="userQuestionFileInput" class="modern-input" accept=".doc,.docx">
+      <div id="dragDropArea" class="file-drop-area" onclick="document.getElementById('userQuestionFileInput').click()">
+        <input type="file" id="userQuestionFileInput" accept=".doc,.docx" style="display: none;" onchange="handleFileSelect(this.files)">
+        <div id="dropZoneContent">
+          <div style="font-size: 2.5rem; margin-bottom: 6px;">📤</div>
+          <div style="font-size: 0.92rem; font-weight: 600; color: #1e293b;">Dosyanızı buraya sürükleyip bırakın</div>
+          <div style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">veya bilgisayardan göz atmak için <span style="color: #2563eb; text-decoration: underline; font-weight: bold;">tıklayın</span></div>
+          <div style="font-size: 0.72rem; color: #94a3b8; margin-top: 8px;">Desteklenen Formatlar: .doc, .docx</div>
+        </div>
+        <div id="selectedFileInfo" style="display: none; flex-direction: column; align-items: center; justify-content: center;">
+          <div style="font-size: 2.2rem;">📄</div>
+          <div id="selectedFileName" style="font-weight: bold; color: #0f172a; font-size: 0.88rem; margin-top: 4px; word-break: break-all;"></div>
+          <div id="selectedFileSize" style="font-size: 0.75rem; color: #64748b; margin-top: 2px;"></div>
+          <button type="button" class="btn-action" style="margin-top: 10px; font-size: 0.72rem; padding: 3px 10px; background: #fee2e2; color: #dc2626; border-color: #fca5a5;" onclick="event.stopPropagation(); clearSelectedUploadFile()">✕ Farklı Dosya Seç</button>
+        </div>
       </div>
 
-      <div style="display: flex; gap: 10px; margin-top: 15px;">
+      <div style="display: flex; gap: 10px; margin-top: 18px;">
         <button class="btn-action btn-print" style="flex: 1; justify-content: center;" onclick="uploadQuestionFile()">🚀 Yükle ve Gönder</button>
         <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeUserQuestionFilePickerModal()">İptal</button>
       </div>
@@ -1089,7 +1092,7 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     </div>
   </div>
 
-  <!-- MADDE 3: KULLANICI / WHATSAPP İLETİŞİM MODALİ (EMOJİ GÜNCELLENDİ) -->
+  <!-- MADDE 3: KULLANICI / WHATSAPP İLETİŞİM MODALİ -->
   <div id="userChatModal" class="modal-overlay no-print" style="display: none; z-index: 26000;" onclick="if(event.target===this) closeUserChatModal()">
     <div class="modal-card" style="max-width: 550px; width: 94%; padding: 18px;">
       <div class="modal-title" style="justify-content: space-between; margin-bottom: 12px;">
@@ -1141,6 +1144,65 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
       <div style="display: flex; gap: 10px; margin-top: 15px;">
         <button class="btn-action btn-finish-test" style="flex: 1; justify-content: center;" onclick="submitQuestionReport()">🚀 Bildirimi Gönder</button>
         <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeReportQuestionModal()">İptal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MADDE 2 YENİLİK: ÇIKTI SAYFASI VE BAŞLIK DÜZENLEME MODALİ -->
+  <div id="headerCustomizerModal" class="modal-overlay no-print" style="display: none; z-index: 28000;" onclick="if(event.target===this) closeHeaderCustomizerModal()">
+    <div class="modal-card" style="max-width: 480px; width: 92%;">
+      <div class="modal-title" style="justify-content: space-between; color: #1e293b;">
+        <span>🎨 Çıktı Sayfası & Başlık Düzenleme</span>
+        <button class="btn-action" onclick="closeHeaderCustomizerModal()">✕</button>
+      </div>
+      
+      <div class="input-control">
+        <label>Sınav / Kağıt Başlığı:</label>
+        <input type="text" id="customTitleInput" class="modern-input" value="NÖROLOJİ SORU HAZIRLAMA PANELİ" oninput="updateHeaderLayout()">
+      </div>
+
+      <div class="toggle-tile" style="margin-bottom: 8px;">
+        <span>Başlığı Göster</span>
+        <label class="switch">
+          <input type="checkbox" id="chkShowTitle" checked onchange="updateHeaderLayout()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-tile" style="margin-bottom: 8px;">
+        <span>Adı Soyadı Alanı</span>
+        <label class="switch">
+          <input type="checkbox" id="chkShowName" checked onchange="updateHeaderLayout()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-tile" style="margin-bottom: 8px;">
+        <span>Öğrenci No Alanı</span>
+        <label class="switch">
+          <input type="checkbox" id="chkShowStudentNo" onchange="updateHeaderLayout()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-tile" style="margin-bottom: 8px;">
+        <span>Tarih Alanı</span>
+        <label class="switch">
+          <input type="checkbox" id="chkShowDate" checked onchange="updateHeaderLayout()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div class="toggle-tile" style="margin-bottom: 12px;">
+        <span>Aldığı Puan Alanı</span>
+        <label class="switch">
+          <input type="checkbox" id="chkShowScore" onchange="updateHeaderLayout()">
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="closeHeaderCustomizerModal()">👍 Kaydet ve Kapat</button>
       </div>
     </div>
   </div>
@@ -1306,7 +1368,6 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
           <div style="display: flex; gap: 8px; flex-wrap: wrap;">
             <button id="tabUsersBtn" class="btn-action btn-toggle-on" onclick="switchAdminTab('users')">👥 Kullanıcılar ve Yetkiler</button>
             <button id="tabReportsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('reports')">🚨 Hatalı Soru Bildirimleri</button>
-            <!-- MADDE 4: YÜKLENEN SORULAR SEKMESİ (ADMIN) -->
             <button id="tabUploadedQuestionsBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('uploadedQuestions')">📥 Kullanıcı Soruları</button>
             <button id="tabChatBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('chat')">💬 Kullanıcı Mesajları <span id="adminChatUnreadBadge" style="display:none;" class="unread-badge-dot"></span></button>
             <button id="tabLicensesBtn" class="btn-action btn-toggle-off" onclick="switchAdminTab('licenses')">🔑 Lisans Kodu Üret</button>
@@ -1383,7 +1444,7 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
           </div>
         </div>
 
-        <!-- MADDE 4: SEKME - KULLANICILAR TARAFINDAN YÜKLENEN SORULAR (ADMIN) -->
+        <!-- SEKME - KULLANICILAR TARAFINDAN YÜKLENEN SORULAR (ADMIN) -->
         <div id="adminTabUploadedQuestions" style="display: none; flex: 1; flex-direction: column; overflow: hidden;">
           <div style="background: #f8fafc; padding: 10px; border-radius: 8px; margin-bottom: 10px; border: 1px solid var(--border);">
             <span style="font-size: 0.85rem; color: #475569; font-weight: 600;">📥 Kullanıcılar tarafından sisteme yüklenen .doc ve .docx uzantılı soru dosyaları listesi:</span>
@@ -1524,7 +1585,6 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
                 ⚙️ Yönetici Paneli
               </button>
 
-              <!-- MADDE 4: SORU GÖNDER BUTONU (PREMIUM / VIP / ADMIN İÇİN) -->
               <button id="btnUploadUserQuestion" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #2563eb; color: white; border-color: #1d4ed8;" onclick="openUserQuestionUploadModal()">
                 📤 Soru Gönder (Doc/Docx)
               </button>
@@ -1533,7 +1593,6 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
                 📋 Hatalı Soru Bildirimlerimi Kontrol Et
               </button>
 
-              <!-- MADDE 3: CANLI DESTİK BUTON EMOJİSİ -->
               <button id="btnContactAdmin" class="btn-action" style="font-size: 0.78rem; padding: 5px 10px; background: #059669; color: white; border-color: #047857;" onclick="openUserChatModal()">
                 💬👨‍⚕️ Yönetici ile Canlı Destek
               </button>
@@ -1606,7 +1665,6 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
           İlerle ve Testi Oluştur ➔
         </button>
 
-        <!-- MADDE 2: İMLA DÜZELTMESİ YAPILAN YAZI -->
         <div class="feedback-note">
           Görüş, öneri ve yanlış soru bildirimi için: <a href="mailto:kgulsen1994@gmail.com">kgulsen1994@gmail.com</a>
         </div>
@@ -1627,7 +1685,6 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
         </div>
 
         <div class="action-btn-group">
-          <!-- MADDE 5: DETAYLI KONU ANALİZİ TEKRAR AÇMA BUTONU -->
           <button id="btnOpenSideAnalysis" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important;" onclick="openSideAnalysisPanel()">
             📊 Detaylı Konu Analizi
           </button>
@@ -1638,6 +1695,12 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
           <button id="toggleExpBtn" class="btn-action btn-toggle-off" onclick="cycleExpMode()">
             📖 Çözüm Açıklamaları: <strong>GİZLİ</strong> 🙈
           </button>
+
+          <!-- MADDE 2 YENİLİK: ÇIKTI SAYFASI DÜZENLEME BUTONU -->
+          <button id="btnHeaderCustomizer" class="btn-action" style="background: #8b5cf6 !important; border-color: #7c3aed !important; color: white !important;" onclick="openHeaderCustomizerModal()">
+            🎨 Çıktı Sayfası Düzenle
+          </button>
+
           <button id="btnFinishTestTop" class="btn-action btn-finish-test" style="display: none;" onclick="finishTest()">🏁 Testi Bitir</button>
           <button class="btn-action btn-print" onclick="triggerPrint()">🖨️ Yazdır / PDF İndir</button>
           
@@ -1661,20 +1724,31 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
         <div id="printWatermark" class="print-watermark"></div>
 
         <div class="a4-sheet" id="a4PaperSheet">
-          <div class="exam-header">
-            <div class="exam-main-title">NÖROLOJİ SORU HAZIRLAMA PANELİ</div>
+          
+          <!-- MADDE 1 & MADDE 2 YENİLİK: DİNAMİK VE TEMİZLENSİN DÜZENLENEBİLİR SINAV BAŞLIĞI -->
+          <div class="exam-header" id="examHeaderBlock">
+            <div class="exam-main-title" id="examMainTitleDisplay">NÖROLOJİ SORU HAZIRLAMA PANELİ</div>
             <table>
               <tr>
-                <td>
-                  <strong>Adı Soyadı:</strong> 
-                  <input type="text" id="inputStudentName" class="header-input" placeholder="......................................................" oninput="syncPrintHeader()" autocomplete="off">
-                  <span id="printStudentName" class="print-only-text">___________________________</span>
+                <td style="vertical-align: top; width: 50%;">
+                  <div id="hdrItemName" style="margin-bottom: 4px;">
+                    <strong>Adı Soyadı:</strong> 
+                    <input type="text" id="inputStudentName" class="header-input" placeholder="......................................................" autocomplete="off">
+                  </div>
+                  <div id="hdrItemStudentNo" style="display: none; margin-bottom: 4px;">
+                    <strong>Öğrenci No:</strong> 
+                    <input type="text" id="inputStudentNo" class="header-input" placeholder="......................................................" autocomplete="off">
+                  </div>
                 </td>
-                <td style="text-align: right;">
-                  <strong>Tarih:</strong> 
-                  <input type="text" id="inputExamDate" class="header-input date-input" placeholder=".... / .... / 20...." oninput="syncPrintHeader()" autocomplete="off">
-                  <span id="printExamDate" class="print-only-text">____/____/20__</span>
-                  <span style="margin-left: 15px;"><strong>Aldığı Puan:</strong> ________</span>
+                <td style="vertical-align: top; text-align: right; width: 50%;">
+                  <div id="hdrItemDate" style="margin-bottom: 4px;">
+                    <strong>Tarih:</strong> 
+                    <input type="text" id="inputExamDate" class="header-input date-input" placeholder=".... / .... / 20...." autocomplete="off">
+                  </div>
+                  <div id="hdrItemScore" style="display: none; margin-bottom: 4px;">
+                    <strong>Aldığı Puan:</strong> 
+                    <input type="text" id="inputExamScore" class="header-input" placeholder="...................." style="width: 100px;" autocomplete="off">
+                  </div>
                 </td>
               </tr>
             </table>
@@ -1726,6 +1800,7 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
   let testTimerInterval = null;
   let remainingSeconds = 0;
   let currentReportingQuestionIndex = null;
+  let currentSelectedUploadFile = null;
 
   let currentKeyMode = 'none';
   let currentExpMode = 'none';
@@ -1733,13 +1808,6 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
   function cleanMultiParagraphs(text) {
     if (!text) return '';
     return String(text).replace(/\n\s*\n/g, '\n').trim();
-  }
-
-  function syncPrintHeader() {
-    const nameVal = document.getElementById('inputStudentName').value.trim();
-    const dateVal = document.getElementById('inputExamDate').value.trim();
-    document.getElementById('printStudentName').innerText = nameVal !== '' ? nameVal : '___________________________';
-    document.getElementById('printExamDate').innerText = dateVal !== '' ? dateVal : '____/____/20__';
   }
 
   function normStr(str) {
@@ -1797,7 +1865,8 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     return { displayName: cleanKonuName, konuKey: normStr(cleanKonuName), zorlukKey: detectedZorluk };
   }
 
-function extractAndCleanOptions(q) {
+  // TIBBİ ŞIKLARDA PARSE/BÖLÜNME RİSKİNİ ÖNLEYEN GÜVENLİ TEMİZLEYİCİ
+  function extractAndCleanOptions(q) {
     if (!q || !q.secenekler) return [];
     if (Array.isArray(q.secenekler) && q.secenekler.length > 1) {
       return q.secenekler.map(p => String(p).replace(/^[A-E][\)\.]\s*/i, '').replace(/^\)\s*/, '').trim());
@@ -1956,6 +2025,15 @@ function extractAndCleanOptions(q) {
     }
   }
 
+  window.manualLoadQuestions = function() {
+    if (typeof loadDataAndInit === 'function') {
+      loadDataAndInit();
+      showToast("Sorular yeniden yükleniyor...", "info");
+    } else {
+      showToast("Yükleme fonksiyonuna erişilemedi.", "error");
+    }
+  };
+
   function cancelQuestionLoading() {
     if (activeFetchAbortController) { activeFetchAbortController.abort(); activeFetchAbortController = null; }
     hideLoading();
@@ -1973,14 +2051,6 @@ function extractAndCleanOptions(q) {
     showToast("Yerel yedek soru havuzu yüklendi.", "warning");
   }
   window.useFallbackData = useFallbackData;
-  window.manualLoadQuestions = function() {
-    if (typeof loadDataAndInit === 'function') {
-      loadDataAndInit();
-      showToast("Sorular yeniden yükleniyor...", "info");
-    } else {
-      showToast("Yükleme fonksiyonuna erişilemedi.", "error");
-    }
-  };
 
   function toggleAllTopics() {
     const checkboxes = document.querySelectorAll('.topic-check');
@@ -2164,6 +2234,45 @@ function extractAndCleanOptions(q) {
   }
   window.cycleExpMode = cycleExpMode;
 
+  // MADDE 2 YENİLİK: DİNAMİK BAŞLIK VE ELEMAN DÜZENLEME
+  function updateHeaderLayout() {
+    const titleInput = document.getElementById('customTitleInput')?.value || '';
+    const showTitle = document.getElementById('chkShowTitle')?.checked;
+    const showName = document.getElementById('chkShowName')?.checked;
+    const showStudentNo = document.getElementById('chkShowStudentNo')?.checked;
+    const showDate = document.getElementById('chkShowDate')?.checked;
+    const showScore = document.getElementById('chkShowScore')?.checked;
+
+    const titleDisplay = document.getElementById('examMainTitleDisplay');
+    if (titleDisplay) {
+      titleDisplay.innerText = titleInput;
+      titleDisplay.style.display = showTitle ? 'block' : 'none';
+    }
+
+    const itemName = document.getElementById('hdrItemName');
+    if (itemName) itemName.style.display = showName ? 'block' : 'none';
+
+    const itemStudentNo = document.getElementById('hdrItemStudentNo');
+    if (itemStudentNo) itemStudentNo.style.display = showStudentNo ? 'block' : 'none';
+
+    const itemDate = document.getElementById('hdrItemDate');
+    if (itemDate) itemDate.style.display = showDate ? 'block' : 'none';
+
+    const itemScore = document.getElementById('hdrItemScore');
+    if (itemScore) itemScore.style.display = showScore ? 'block' : 'none';
+  }
+  window.updateHeaderLayout = updateHeaderLayout;
+
+  function openHeaderCustomizerModal() {
+    document.getElementById('headerCustomizerModal').style.display = 'flex';
+  }
+  window.openHeaderCustomizerModal = openHeaderCustomizerModal;
+
+  function closeHeaderCustomizerModal() {
+    document.getElementById('headerCustomizerModal').style.display = 'none';
+  }
+  window.closeHeaderCustomizerModal = closeHeaderCustomizerModal;
+
   function buildPaperView(questions) {
     const qContainer = document.getElementById('questionsContainer');
     const keyGrid = document.getElementById('answerKeyGrid');
@@ -2172,8 +2281,6 @@ function extractAndCleanOptions(q) {
     qContainer.innerHTML = '';
     keyGrid.innerHTML = '';
     expContainer.innerHTML = '';
-
-    syncPrintHeader();
 
     const sheet = document.getElementById('a4PaperSheet');
     if (isTestActive) { sheet.classList.add('interactive-mode'); sheet.classList.remove('analysis-mode'); }
@@ -2414,7 +2521,6 @@ function extractAndCleanOptions(q) {
     showToast("Analiz modu aktif.", "success");
   }
 
-  // MADDE 5: DETAYLI KONU ANALİZİ PANELİNİ TEKRAR AÇMA İŞLEVİ
   window.openSideAnalysisPanel = function() {
     const userTier = window.currentUserTier || 'Ücretsiz';
     if (userTier === 'Ücretsiz') return;
@@ -2519,6 +2625,60 @@ function extractAndCleanOptions(q) {
     document.getElementById('adminAuthModal').style.display = 'flex';
   };
   window.closeAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'none';
+
+  // MADDE 3 YENİLİK: SÜRÜKLE BIRAK DOSYA SÜRÜKLEME DINLEYICILERI
+  function initDragAndDrop() {
+    const dropArea = document.getElementById('dragDropArea');
+    if (!dropArea) return;
+
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      }, false);
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+      dropArea.addEventListener(eventName, () => dropArea.classList.add('drag-over'), false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+      dropArea.addEventListener(eventName, () => dropArea.classList.remove('drag-over'), false);
+    });
+
+    dropArea.addEventListener('drop', (e) => {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+      handleFileSelect(files);
+    }, false);
+  }
+
+  function handleFileSelect(files) {
+    if (!files || files.length === 0) return;
+    const file = files[0];
+    const ext = file.name.split('.').pop().toLowerCase();
+    if (ext !== 'doc' && ext !== 'docx') {
+      showToast("Lütfen sadece .doc veya .docx formatında dosya seçiniz.", "error");
+      return;
+    }
+    currentSelectedUploadFile = file;
+    document.getElementById('dropZoneContent').style.display = 'none';
+    const fileInfo = document.getElementById('selectedFileInfo');
+    fileInfo.style.display = 'flex';
+    document.getElementById('selectedFileName').innerText = file.name;
+    document.getElementById('selectedFileSize').innerText = (file.size / 1024).toFixed(1) + ' KB';
+  }
+
+  function clearSelectedUploadFile() {
+    currentSelectedUploadFile = null;
+    document.getElementById('userQuestionFileInput').value = '';
+    document.getElementById('dropZoneContent').style.display = 'block';
+    document.getElementById('selectedFileInfo').style.display = 'none';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initDragAndDrop();
+  });
 </script>
 
 <!-- FIREBASE & GELİŞTİRİLMİŞ MODÜL KODLARI -->
@@ -2800,7 +2960,6 @@ function extractAndCleanOptions(q) {
     }
   };
 
-  // MADDE 4: SORU GÖNDERME PANİLİ MODAL İŞLEMLERİ
   window.openUserQuestionUploadModal = function() {
     const userTier = window.currentUserTier || 'Ücretsiz';
     if (userTier === 'Ücretsiz' || userTier === 'Deneme') {
@@ -2816,7 +2975,7 @@ function extractAndCleanOptions(q) {
 
   window.acceptUploadRules = function() {
     closeUserQuestionUploadRulesModal();
-    document.getElementById('userQuestionFileInput').value = '';
+    if (window.clearSelectedUploadFile) window.clearSelectedUploadFile();
     document.getElementById('userQuestionFilePickerModal').style.display = 'flex';
   };
 
@@ -2825,13 +2984,13 @@ function extractAndCleanOptions(q) {
   };
 
   window.uploadQuestionFile = async function() {
-    const input = document.getElementById('userQuestionFileInput');
-    if (!input.files || input.files.length === 0) {
+    const file = currentSelectedUploadFile || (document.getElementById('userQuestionFileInput').files ? document.getElementById('userQuestionFileInput').files[0] : null);
+    
+    if (!file) {
       showToast("Lütfen yüklenecek bir dosya seçiniz.", "warning");
       return;
     }
 
-    const file = input.files[0];
     const fileName = file.name;
     const ext = fileName.split('.').pop().toLowerCase();
 
@@ -3257,7 +3416,6 @@ function extractAndCleanOptions(q) {
 
   window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
 
-  // MADDE 1: KULLANICI HATALI BİLDİRİMLERİM MODALİ (TEK KART KİLENME, DİNAMİK BUTON VE WHATSAPP SOHBET FORMATI)
   window.openUserReportsModal = async function() {
     document.getElementById('userReportsModal').style.display = 'flex';
     const box = document.getElementById('userReportsList');
@@ -3328,7 +3486,6 @@ function extractAndCleanOptions(q) {
               <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin-bottom:6px;">📄 Sorunun Detayı ve Seçenekleri:</div>
               <div style="font-size:0.85rem; color:#334155; background:#f8fafc; padding:10px; border-radius:6px; margin-bottom:10px; white-space:pre-line;">${d.questionText}</div>
 
-              <!-- KRONOLOJİK WHATSAPP TARZI SOHBET AKIŞI -->
               <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin:14px 0 8px 0;">💬 Mesajlaşma Geçmişi:</div>
               
               <div class="whatsapp-container" style="height:auto; max-height:360px; margin-bottom:12px;">
@@ -3337,7 +3494,6 @@ function extractAndCleanOptions(q) {
                 </div>
                 <div class="whatsapp-messages" style="padding:12px;">
                   
-                  <!-- 1. MESAJ: İLK BİLDİRİM (KULLANICI) -->
                   <div class="chat-bubble sent">
                     <div style="font-weight:bold; font-size:0.75rem; color:#065f46; margin-bottom:2px;">Siz (Hatalı Soru Bildirimi)</div>
                     <div>👉 <strong>Önerilen Şık:</strong> ${d.userSuggestedOption || 'Belirtilmedi'}</div>
@@ -3345,7 +3501,6 @@ function extractAndCleanOptions(q) {
                     <div class="chat-meta"><span>${dateStr}</span></div>
                   </div>
 
-                  <!-- 2. MESAJ: YÖNETİCİ YANITI (YÖNETİCİ) -->
                   ${isAnswered ? `
                     <div class="chat-bubble received">
                       <div style="font-weight:bold; font-size:0.75rem; color:#1e40af; margin-bottom:2px;">👨‍⚕️ Yönetici Yanıtı</div>
@@ -3354,7 +3509,6 @@ function extractAndCleanOptions(q) {
                     </div>
                   ` : ''}
 
-                  <!-- 3. MESAJ: KULLANICI TAKİP MESAJI (KULLANICI) -->
                   ${d.userFollowup ? `
                     <div class="chat-bubble sent">
                       <div style="font-weight:bold; font-size:0.75rem; color:#065f46; margin-bottom:2px;">Siz (Takip Cevabı)</div>
@@ -3385,7 +3539,6 @@ function extractAndCleanOptions(q) {
     }
   };
 
-  // MADDE 1: DETAYLARA TIKLAYINCA DİĞER BİLDİRİMLERİ GİZLEME VE BUTON YAZISINI "DETAYI KAPAT" YAPMA
   window.toggleUserReportDetail = function(id) {
     const card = document.getElementById(`reportDetailCard_${id}`);
     const btn = document.getElementById(`toggleReportBtn_${id}`);
@@ -3535,7 +3688,6 @@ function extractAndCleanOptions(q) {
     } catch(err) { box.innerHTML = `<span style="color:red;">Hata: ${err.message}</span>`; }
   }
 
-  // MADDE 4: YÜKLENEN SORU DOSYALARINI ADMİN PANELİNDE LİSTELEME VE İNDİRME
   async function loadAdminUploadedQuestions() {
     const box = document.getElementById('adminUploadedQuestionsList');
     box.innerHTML = '<p style="text-align:center; color:#64748b;">Yüklenen sorular listeleniyor...</p>';
