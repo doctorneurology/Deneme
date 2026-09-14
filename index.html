@@ -697,7 +697,7 @@
     .whatsapp-container {
       display: flex;
       flex-direction: column;
-      height: 480px;
+      height: 380px;
       background: #efeae2;
       border-radius: 12px;
       overflow: hidden;
@@ -707,7 +707,7 @@
     .whatsapp-header {
       background: #075e54;
       color: white;
-      padding: 12px 16px;
+      padding: 10px 14px;
       font-weight: 600;
       display: flex;
       align-items: center;
@@ -717,18 +717,18 @@
 
     .whatsapp-messages {
       flex: 1;
-      padding: 16px;
+      padding: 12px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 8px;
     }
 
     .chat-bubble {
-      max-width: 80%;
+      max-width: 82%;
       padding: 8px 12px;
       border-radius: 10px;
-      font-size: 0.88rem;
+      font-size: 0.85rem;
       position: relative;
       word-wrap: break-word;
       box-shadow: 0 1px 1px rgba(0,0,0,0.15);
@@ -770,17 +770,16 @@
 
     .whatsapp-footer {
       background: #f0f2f5;
-      padding: 10px 14px;
+      padding: 8px 12px;
       display: flex;
       align-items: center;
       gap: 8px;
       position: relative;
     }
 
-    /* MADDE 2 YENİLİK: WHATSAPP TARZI EMOJI PICKER POPUP */
     .emoji-picker-popup {
       position: absolute;
-      bottom: 54px;
+      bottom: 52px;
       left: 10px;
       background: white;
       border: 1px solid var(--border);
@@ -1086,9 +1085,9 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
   <!-- KULLANICI HATALI BİLDİRİMLERİM MODALİ -->
   <div id="userReportsModal" class="modal-overlay no-print" style="display: none; z-index: 26000;" onclick="if(event.target===this) closeUserReportsModal()">
-    <div class="modal-card" style="max-width: 750px; width: 92%; max-height: 85vh; display: flex; flex-direction: column;">
+    <div class="modal-card" style="max-width: 800px; width: 92%; max-height: 85vh; display: flex; flex-direction: column;">
       <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 10px;">
-        <span>📋 Hatalı Soru Bildirimlerim</span>
+        <span>📋 Hatalı Soru Bildirimlerim & Mesajlaşma Geçmişi</span>
         <button class="btn-action" onclick="closeUserReportsModal()">✕ Kapat</button>
       </div>
       <div id="userReportsList" style="flex: 1; overflow-y: auto; margin-top: 15px; padding-right: 5px;">
@@ -1118,7 +1117,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     </div>
   </div>
 
-  <!-- MADDE 2 YENİLİK: KULLANICI / WHATSAPP İLETİŞİM MODALİ (EMOJİ DESTEKLİ) -->
+  <!-- KULLANICI / WHATSAPP İLETİŞİM MODALİ (EMOJİ DESTEKLİ) -->
   <div id="userChatModal" class="modal-overlay no-print" style="display: none; z-index: 26000;" onclick="if(event.target===this) closeUserChatModal()">
     <div class="modal-card" style="max-width: 550px; width: 94%; padding: 18px;">
       <div class="modal-title" style="justify-content: space-between; margin-bottom: 12px;">
@@ -1134,7 +1133,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           Yükleniyor...
         </div>
         <div class="whatsapp-footer">
-          <!-- EMOJİ SEÇİCİ POPUP (KULLANICI) -->
           <div id="userEmojiPicker" class="emoji-picker-popup" style="display: none;">
             <span onclick="insertEmoji('userChatMessageInput', '😀', 'userEmojiPicker')">😀</span>
             <span onclick="insertEmoji('userChatMessageInput', '😂', 'userEmojiPicker')">😂</span>
@@ -1157,7 +1155,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           </div>
 
           <button class="btn-action" style="padding: 6px 10px; font-size: 1.1rem; background: transparent; border: none;" onclick="toggleEmojiPicker('userEmojiPicker')">😊</button>
-          <!-- MADDE 3 YENİLİK: ENTER TUŞU DESTEĞİ -->
           <input type="text" id="userChatMessageInput" class="modern-input" style="flex:1;" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter') sendUserChatMessage()">
           <button class="btn-action btn-toggle-on" onclick="sendUserChatMessage()">Gönder ➔</button>
         </div>
@@ -1465,7 +1462,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
                   </th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">Ad Soyad</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
-                  <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: center;">Uyarı</th>
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: center;">Uyarı Yıldızları</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">Rol / Durum</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">Aksiyonlar</th>
                 </tr>
@@ -1486,7 +1483,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
               <button class="btn-action btn-toggle-on" style="font-size: 0.8rem; padding: 4px 10px;" onclick="openAdminBulkReplyModal()">💬 Seçilenleri Toplu Yanıtla</button>
               <button class="btn-action btn-finish-test" style="font-size: 0.8rem; padding: 4px 10px;" onclick="promptDeleteSelectedAdminReports()">🗑️ Seçilenleri Sil</button>
             </div>
-            <span style="font-size: 0.8rem; color: var(--text-muted);">Gelen soru bildirimlerinin tüm detaylarını ve şıklarını inceleyebilirsiniz.</span>
+            <span style="font-size: 0.8rem; color: var(--text-muted);">Gelen soru bildirimlerinin tüm şıklarını görebilir ve WhatsApp tarzında canlı mesajlaşabilirsiniz.</span>
           </div>
           
           <div style="flex: 1; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px; padding: 10px;" id="adminQuestionReportsList">
@@ -1618,10 +1615,8 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     <div id="configScreen" class="config-screen">
       <div class="config-card">
         
-        <!-- MADDE 1 YENİLİK: DÜZENLENMİŞ VE HİZALANMIŞ PANEL ÜST BİLGİ ALANI -->
         <div class="panel-header" style="display: flex; flex-direction: column; align-items: flex-start; gap: 12px;">
           
-          <!-- SATIR 1: EN ÜSTTE SOLDAB AŞLIK VE SAĞDA STATUS DOT -->
           <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
             <div class="panel-title">
               <span>🧠</span> Nöroloji Soru Hazırlama Paneli
@@ -1629,16 +1624,16 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
             <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Edildiği"></span>
           </div>
           
-          <!-- SATIR 2: KULLANICI ADI SOYADI, YETKİ VE ÇIKIŞ TUŞU -->
           <div>
             <div class="user-profile-badge">
               <span class="user-name-target">...</span>
               <span id="userTierBadge" style="padding: 2px 8px; border-radius: 10px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0; color: #475569;">Ücretsiz</span>
               <button class="btn-logout-sm btn-logout-action">Çıkış</button>
+              <!-- MADDE 3 YENİLİK: UYARI ALAN KULLANICININ YILDIZLARI -->
+              <span id="mainUserWarningStars" style="margin-left: 4px; font-size: 0.95rem; color: #f59e0b;"></span>
             </div>
           </div>
 
-          <!-- SATIR 3: BİRAZ BOŞLUK SONRASI TEK SATIRDA SIRALANMIŞ AKSİYON BUTONLARI -->
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap; width: 100%; margin-top: 4px;">
             <button id="btnAdminPanel" class="btn-action btn-toggle-on" style="display: none; background: #8b5cf6 !important; border-color: #7c3aed !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openAdminModal()">
               ⚙️ Yönetici Paneli
@@ -1858,7 +1853,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
   let currentKeyMode = 'none';
   let currentExpMode = 'none';
 
-  // MADDE 2 YENİLİK: EMOJİ EKLEME VE POPUP KONTROL FONKSİYONLARI
   function toggleEmojiPicker(pickerId) {
     const picker = document.getElementById(pickerId);
     if (picker) {
@@ -2781,6 +2775,8 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
   let userToDeleteTarget = null;
   let chatUnsubscribe = null;
   let warningUnsubscribe = null;
+  let userReportsUnsubscribe = null;
+  let adminReportsUnsubscribe = null;
   let selectedAdminChatUserUid = null;
 
   let currentWarnUserUid = null;
@@ -2855,6 +2851,14 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     return false;
   }
 
+  // MADDE 3 YENİLİK: UYARI SAYISINA GÖRE YILDIZLARI GÜNCELLE
+  function updateMainUserStarsDisplay(warnCount) {
+    const starsSpan = document.getElementById('mainUserWarningStars');
+    if (starsSpan) {
+      starsSpan.innerHTML = (warnCount > 0) ? '⭐'.repeat(warnCount) : '';
+    }
+  }
+
   function listenUserWarnings(uid) {
     if (warningUnsubscribe) warningUnsubscribe();
     const userRef = doc(db, "kullanicilar", uid);
@@ -2863,6 +2867,9 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       const data = snap.data();
 
       if (checkAndHandleBannedUser(data)) return;
+
+      const warnCount = data.uyariSayisi || 0;
+      updateMainUserStarsDisplay(warnCount);
 
       if (data.activeWarning && !data.activeWarning.read) {
         document.getElementById('userWarningContentBox').innerText = `🚨 Uyarı Mesajı: ${data.activeWarning.reason}`;
@@ -2928,6 +2935,8 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       window.currentUserTier = currentUserData.durum;
       const formattedName = formatNameSurname(currentUserData.adSoyad || user.displayName || user.email);
       document.querySelectorAll('.user-name-target').forEach(el => el.textContent = formattedName);
+
+      updateMainUserStarsDisplay(currentUserData.uyariSayisi || 0);
 
       const isAdm = currentUserData.rol === 'admin';
       const btnRedeem = document.getElementById('btnRedeemLicense');
@@ -3220,10 +3229,19 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       const warnCount = u.uyariSayisi || 0;
       let starsHTML = '';
       if (warnCount > 0) {
-        starsHTML = '⭐'.repeat(Math.min(warnCount, 5));
-        if (warnCount >= 3) starsHTML += ' <span style="color:#ef4444; font-weight:bold;" title="3 veya üzeri uyarı aldı! Engelleme önerilir.">🚨</span>';
+        starsHTML = '⭐'.repeat(warnCount);
+        if (warnCount >= 3) starsHTML += ' <span style="color:#ef4444; font-weight:bold;" title="3 veya üzeri uyarı aldı!">🚨</span>';
       } else {
         starsHTML = '<span style="color:#cbd5e1;">-</span>';
+      }
+
+      // MADDE 3 YENİLİK: YÖNETİCİ UYARI YILDIZLARINI EKSİLTME VE TEMİZLEME BUTONLARI
+      let warnControlsHTML = '';
+      if (!isRoleAdmin && warnCount > 0) {
+        warnControlsHTML = `
+          <button class="btn-action" style="font-size:0.7rem; padding:2px 6px; background:#fef3c7; color:#b45309; border-color:#fde68a;" onclick="reduceUserWarning('${u.id}')" title="1 Yıldız/Uyarı Eksilt">➖ Yıldız Sil</button>
+          <button class="btn-action" style="font-size:0.7rem; padding:2px 6px; background:#fee2e2; color:#dc2626; border-color:#fca5a5;" onclick="clearUserWarnings('${u.id}')" title="Tüm Yıldızları Sıfırla">🧹 Sıfırla</button>
+        `;
       }
 
       let actionTdHTML = `
@@ -3257,13 +3275,45 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         </td>
         <td style="padding: 10px; font-weight: 600;">${formattedName}</td>
         <td style="padding: 10px; color: #64748b;">${u.email}</td>
-        <td style="padding: 10px; text-align: center;">${starsHTML}</td>
+        <td style="padding: 10px; text-align: center;">
+          <div style="display:flex; align-items:center; justify-content:center; gap:6px;">
+            <span>${starsHTML}</span>
+            ${warnControlsHTML}
+          </div>
+        </td>
         <td style="padding: 10px;"><span style="padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0;">${statusText}</span></td>
         <td style="padding: 10px; text-align: right; display: flex; gap: 6px; justify-content: flex-end; align-items: center;">${actionTdHTML}</td>
       `;
       tbody.appendChild(row);
     });
   }
+
+  // MADDE 3 YENİLİK: UYARI / YILDIZ SİLME FONKSİYONLARI
+  window.reduceUserWarning = async function(uid) {
+    try {
+      const uRef = doc(db, "kullanicilar", uid);
+      const uSnap = await getDoc(uRef);
+      if (uSnap.exists()) {
+        const currentWarns = uSnap.data().uyariSayisi || 0;
+        const newWarns = Math.max(0, currentWarns - 1);
+        await updateDoc(uRef, { uyariSayisi: newWarns });
+        showToast("Kullanıcının 1 uyarısı/yıldızı silindi.", "success");
+        await fetchAndRenderUsers(currentCategoryFilter);
+      }
+    } catch(err) {
+      showToast("Yıldız silinirken hata oluştu: " + err.message, "error");
+    }
+  };
+
+  window.clearUserWarnings = async function(uid) {
+    try {
+      await updateDoc(doc(db, "kullanicilar", uid), { uyariSayisi: 0 });
+      showToast("Kullanıcının tüm uyarı yıldızları temizlendi.", "success");
+      await fetchAndRenderUsers(currentCategoryFilter);
+    } catch(err) {
+      showToast("Yıldızlar temizlenirken hata oluştu: " + err.message, "error");
+    }
+  };
 
   window.toggleSelectAllUsers = function(masterCb) {
     document.querySelectorAll('.user-row-checkbox').forEach(cb => cb.checked = masterCb.checked);
@@ -3488,20 +3538,19 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
   window.closeActivityModal = () => document.getElementById('activityModal').style.display = 'none';
 
-  window.openUserReportsModal = async function() {
+  // MADDE 1 & MADDE 2 YENİLİK: HATALI SORU BİLDİRİMLERİ SOHBETİ (KULLANICI TARAFI)
+  window.openUserReportsModal = function() {
     document.getElementById('userReportsModal').style.display = 'flex';
+    if (!auth.currentUser) return;
+
     const box = document.getElementById('userReportsList');
     box.innerHTML = '<p style="text-align:center; color:#64748b;">Bildirimleriniz yükleniyor...</p>';
 
-    if (!auth.currentUser) {
-      box.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">Lütfen öncelikle giriş yapınız.</p>';
-      return;
-    }
+    const q = query(collection(db, "hatali_sorular"), where("userId", "==", auth.currentUser.uid));
 
-    try {
-      const q = query(collection(db, "hatali_sorular"), where("userId", "==", auth.currentUser.uid));
-      const snap = await getDocs(q);
+    if (userReportsUnsubscribe) userReportsUnsubscribe();
 
+    userReportsUnsubscribe = onSnapshot(q, (snap) => {
       if (snap.empty) {
         box.innerHTML = '<p style="text-align:center; color:#64748b; padding:30px; font-weight:500;">Henüz kayıtlı bir hatalı soru bildiriminiz bulunmamaktadır.</p>';
         return;
@@ -3518,17 +3567,48 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
       let html = '';
       reports.forEach(d => {
-        const isAnswered = d.status === 'yanitlandi';
+        const isAnswered = d.status === 'yanitlandi' || (Array.isArray(d.mesajlar) && d.mesajlar.length > 1);
         const dateStr = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('tr-TR') : '';
-        const replyDateStr = d.adminRepliedAt?.toDate ? d.adminRepliedAt.toDate().toLocaleString('tr-TR') : '';
-        const followupDateStr = d.userFollowupAt?.toDate ? d.userFollowupAt.toDate().toLocaleString('tr-TR') : '';
 
-        let deleteReportBtnHTML = isAnswered ? `
-          <button class="btn-action btn-finish-test" style="font-size:0.75rem; padding:3px 8px;" onclick="deleteUserReport('${d.id}')">🗑️ Bildirimi Sil</button>
-        ` : '';
+        let cleanOptionsHTML = '';
+        if (Array.isArray(d.questionOptions) && d.questionOptions.length > 0) {
+          cleanOptionsHTML = d.questionOptions.map((opt, i) => {
+            const letter = String.fromCharCode(65 + i);
+            const isCorrect = (d.correctLetter || '').includes(letter);
+            return `
+              <div style="padding:5px 8px; margin-top:3px; border-radius:6px; font-size:0.83rem; ${isCorrect ? 'background:#d1fae5; font-weight:bold; color:#065f46; border:1px solid #10b981;' : 'background:#ffffff; color:#334155; border:1px solid #e2e8f0;'}">
+                <strong>${letter})</strong> ${opt}
+              </div>
+            `;
+          }).join('');
+        }
+
+        let chatBubblesHTML = '';
+        if (Array.isArray(d.mesajlar)) {
+          d.mesajlar.forEach(m => {
+            if (m.deletedByAdmin) return;
+            if (m.deletedByUser) return;
+
+            const isUser = m.senderRole === 'user';
+            const timeFormatted = m.timestamp ? new Date(m.timestamp).toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}) : '';
+
+            chatBubblesHTML += `
+              <div class="chat-bubble ${isUser ? 'sent' : 'received'}">
+                <div style="font-weight:bold; font-size:0.72rem; color:${isUser ? '#065f46' : '#1e40af'}; margin-bottom:2px;">
+                  ${isUser ? 'Siz' : '👨‍⚕️ Yönetici'}
+                </div>
+                <div style="white-space:pre-line;">${m.text}</div>
+                <div class="chat-meta">
+                  <span>${timeFormatted}</span>
+                  ${isUser ? `<button class="msg-delete-btn" onclick="deleteUserReportMessage('${d.id}', '${m.id}')" title="Mesajımı Sil">🗑️</button>` : ''}
+                </div>
+              </div>
+            `;
+          });
+        }
 
         html += `
-          <div id="userReportCard_${d.id}" class="user-report-card-item" style="background:#ffffff; border:1px solid var(--border); border-left:4px solid ${isAnswered ? '#10b981' : '#f59e0b'}; border-radius:10px; padding:14px; margin-bottom:12px; box-shadow:var(--shadow-sm);">
+          <div id="userReportCard_${d.id}" class="user-report-card-item" style="background:#ffffff; border:1px solid var(--border); border-left:4px solid ${isAnswered ? '#10b981' : '#f59e0b'}; border-radius:10px; padding:14px; margin-bottom:14px; box-shadow:var(--shadow-sm);">
             
             <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
               <div>
@@ -3539,66 +3619,42 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
                 <span style="padding:3px 10px; border-radius:12px; font-size:0.75rem; font-weight:bold; background:${isAnswered ? '#d1fae5' : '#fef3c7'}; color:${isAnswered ? '#047857' : '#b45309'};">
                   ${isAnswered ? '✅ Yanıtlandı' : '⏳ Değerlendirmede'}
                 </span>
-                ${deleteReportBtnHTML}
+                <button class="btn-action btn-finish-test" style="font-size:0.75rem; padding:3px 8px;" onclick="deleteUserReport('${d.id}')">🗑️ Bildirimi Sil</button>
               </div>
             </div>
 
-            <div style="font-size:0.85rem; color:#475569; margin-top:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
-              <strong>Soru:</strong> ${d.questionText}
+            <div style="font-size:0.85rem; color:#475569; margin-top:8px;">
+              <strong>Soru Metni:</strong> ${d.questionText}
             </div>
 
-            <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
+            <div style="margin-top:10px;">
               <button id="toggleReportBtn_${d.id}" class="btn-action btn-toggle-on" style="font-size:0.78rem; padding:4px 12px;" onclick="toggleUserReportDetail('${d.id}')">
-                🔍 Detay İçin Tıkla
+                🔍 Sorunun Tamamını & Mesaj Sohbetini Gör
               </button>
             </div>
 
             <div id="reportDetailCard_${d.id}" style="display:none; margin-top:12px; border-top:1px dashed #cbd5e1; padding-top:12px;">
               
-              <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin-bottom:6px;">📄 Sorunun Detayı ve Seçenekleri:</div>
-              <div style="font-size:0.85rem; color:#334155; background:#f8fafc; padding:10px; border-radius:6px; margin-bottom:10px; white-space:pre-line;">${d.questionText}</div>
+              <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin-bottom:6px;">📄 Sorunun Tüm Şıkları:</div>
+              <div style="background:#f8fafc; padding:10px; border-radius:8px; margin-bottom:12px;">
+                ${cleanOptionsHTML || 'Şıklar bulunamadı.'}
+              </div>
 
-              <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin:14px 0 8px 0;">💬 Mesajlaşma Geçmişi:</div>
+              <div style="font-size:0.88rem; font-weight:bold; color:#0f172a; margin-bottom:6px;">💬 Canlı Sohbet Geçmişi:</div>
               
               <div class="whatsapp-container" style="height:auto; max-height:360px; margin-bottom:12px;">
                 <div class="whatsapp-header" style="font-size:0.82rem; padding:8px 12px;">
-                  <span>📋 Bildirim & Yanıt Akışı</span>
+                  <span>📋 Bildirime Ait Mesajlaşma Akışı</span>
                 </div>
                 <div class="whatsapp-messages" style="padding:12px;">
-                  
-                  <div class="chat-bubble sent">
-                    <div style="font-weight:bold; font-size:0.75rem; color:#065f46; margin-bottom:2px;">Siz (Hatalı Soru Bildirimi)</div>
-                    <div>👉 <strong>Önerilen Şık:</strong> ${d.userSuggestedOption || 'Belirtilmedi'}</div>
-                    <div style="margin-top:4px;">📝 <strong>İtiraz Açıklaması:</strong> ${d.userComment || 'Açıklama belirtilmedi.'}</div>
-                    <div class="chat-meta"><span>${dateStr}</span></div>
-                  </div>
-
-                  ${isAnswered ? `
-                    <div class="chat-bubble received">
-                      <div style="font-weight:bold; font-size:0.75rem; color:#1e40af; margin-bottom:2px;">👨‍⚕️ Yönetici Yanıtı</div>
-                      <div>${d.adminReply}</div>
-                      <div class="chat-meta"><span>${replyDateStr || dateStr}</span></div>
-                    </div>
-                  ` : ''}
-
-                  ${d.userFollowup ? `
-                    <div class="chat-bubble sent">
-                      <div style="font-weight:bold; font-size:0.75rem; color:#065f46; margin-bottom:2px;">Siz (Takip Cevabı)</div>
-                      <div>${d.userFollowup}</div>
-                      <div class="chat-meta"><span>${followupDateStr || dateStr}</span></div>
-                    </div>
-                  ` : ''}
-
+                  ${chatBubblesHTML || '<p style="text-align:center; color:#64748b; font-size:0.8rem;">Henüz mesaj yok.</p>'}
                 </div>
               </div>
 
-              ${isAnswered ? `
-                <div style="display:flex; gap:8px; margin-top:8px;">
-                  <!-- MADDE 3 YENİLİK: ENTER TUŞU İLE MESAJ GÖNDERME -->
-                  <input type="text" id="userFollowupInput_${d.id}" class="modern-input" style="padding:6px 10px; font-size:0.82rem;" placeholder="Yönetici yanıtına takip mesajı yazın..." onkeydown="if(event.key==='Enter') sendUserFollowup('${d.id}')">
-                  <button class="btn-action btn-toggle-on" style="padding:6px 14px; font-size:0.82rem;" onclick="sendUserFollowup('${d.id}')">Gönder ➔</button>
-                </div>
-              ` : ''}
+              <div style="display:flex; gap:8px; margin-top:8px;">
+                <input type="text" id="userReportFollowupInput_${d.id}" class="modern-input" style="padding:6px 10px; font-size:0.82rem;" placeholder="Yöneticiye ek yanıt yazın..." onkeydown="if(event.key==='Enter') sendUserReportChatMessage('${d.id}')">
+                <button class="btn-action btn-toggle-on" style="padding:6px 14px; font-size:0.82rem;" onclick="sendUserReportChatMessage('${d.id}')">Gönder ➔</button>
+              </div>
 
             </div>
 
@@ -3607,67 +3663,95 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       });
 
       box.innerHTML = html;
-    } catch(err) {
-      box.innerHTML = `<p style="color:red; text-align:center; padding:10px;">Bildirimler yüklenirken hata oluştu: ${err.message}</p>`;
-    }
+    });
   };
 
   window.toggleUserReportDetail = function(id) {
     const card = document.getElementById(`reportDetailCard_${id}`);
     const btn = document.getElementById(`toggleReportBtn_${id}`);
-    const allCards = document.querySelectorAll('.user-report-card-item');
 
     if (!card) return;
 
     if (card.style.display === 'none') {
-      allCards.forEach(c => {
-        if (c.id !== `userReportCard_${id}`) c.style.display = 'none';
-      });
       card.style.display = 'block';
       if (btn) btn.innerText = '🔍 Detayı Kapat';
     } else {
-      allCards.forEach(c => c.style.display = 'block');
       card.style.display = 'none';
-      if (btn) btn.innerText = '🔍 Detay İçin Tıkla';
+      if (btn) btn.innerText = '🔍 Sorunun Tamamını & Mesaj Sohbetini Gör';
     }
   };
 
-  window.closeUserReportsModal = () => document.getElementById('userReportsModal').style.display = 'none';
+  window.closeUserReportsModal = () => {
+    document.getElementById('userReportsModal').style.display = 'none';
+    if (userReportsUnsubscribe) userReportsUnsubscribe();
+  };
 
   window.deleteUserReport = async function(docId) {
-    if (!confirm("Bu bildirim kaydını silmek istediğinize emin misiniz?")) return;
+    if (!confirm("Bu bildirim kaydını tamamen silmek istediğinize emin misiniz?")) return;
     try {
       await deleteDoc(doc(db, "hatali_sorular", docId));
       showToast("Bildiriminiz silindi.", "success");
-      openUserReportsModal();
     } catch(err) {
       showToast("Silme hatası: " + err.message, "error");
     }
   };
 
-  window.sendUserFollowup = async function(docId) {
-    const input = document.getElementById(`userFollowupInput_${docId}`);
+  window.sendUserReportChatMessage = async function(docId) {
+    const input = document.getElementById(`userReportFollowupInput_${docId}`);
     const text = input.value.trim();
     if (!text) { showToast("Lütfen cevabınızı yazınız.", "warning"); return; }
 
+    const newMsg = {
+      id: "msg_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+      senderRole: "user",
+      senderUid: auth.currentUser ? auth.currentUser.uid : "anonim",
+      text: text,
+      timestamp: new Date().toISOString(),
+      deletedByUser: false,
+      deletedByAdmin: false
+    };
+
     try {
       await updateDoc(doc(db, "hatali_sorular", docId), {
-        userFollowup: text,
-        userFollowupAt: serverTimestamp(),
+        mesajlar: arrayUnion(newMsg),
         status: "kullanici_yanitladi"
       });
-      showToast("Yanıtınız yöneticiye iletildi.", "success");
-      openUserReportsModal();
+      input.value = '';
+      showToast("Yanıtınız gönderildi.", "success");
     } catch(err) { showToast("Hata: " + err.message, "error"); }
   };
 
+  window.deleteUserReportMessage = async function(docId, msgId) {
+    try {
+      const docRef = doc(db, "hatali_sorular", docId);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) return;
+
+      let msgs = docSnap.data().mesajlar || [];
+      msgs = msgs.map(m => {
+        if (m.id === msgId) {
+          return { ...m, deletedByUser: true };
+        }
+        return m;
+      });
+
+      await updateDoc(docRef, { mesajlar: msgs });
+      showToast("Mesajınız silindi.", "success");
+    } catch(err) {
+      showToast("Silme hatası: " + err.message, "error");
+    }
+  };
+
+  // MADDE 2 YENİLİK: YÖNETİCİ HATALI SORU BİLDİRİMLERİ SOHBET AKIŞI
   async function loadAdminQuestionReports() {
     const box = document.getElementById('adminQuestionReportsList');
     box.innerHTML = '<p style="text-align:center; color:#64748b;">Bildirimler yükleniyor...</p>';
 
-    try {
-      const snap = await getDocs(collection(db, "hatali_sorular"));
+    const q = collection(db, "hatali_sorular");
 
+    if (adminReportsUnsubscribe) adminReportsUnsubscribe();
+
+    adminReportsUnsubscribe = onSnapshot(q, (snap) => {
       if (snap.empty) {
         box.innerHTML = '<p style="text-align:center; color:#64748b; padding:20px;">Henüz hatalı soru bildirimi yapılmamış.</p>';
         return;
@@ -3685,7 +3769,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       let html = '';
       reports.forEach(d => {
         const dateStr = d.createdAt?.toDate ? d.createdAt.toDate().toLocaleString('tr-TR') : '';
-        const isAnswered = d.status === 'yanitlandi';
+        const isAnswered = d.status === 'yanitlandi' || (Array.isArray(d.mesajlar) && d.mesajlar.length > 1);
 
         let optionsHTML = '';
         if (Array.isArray(d.questionOptions) && d.questionOptions.length > 0) {
@@ -3694,6 +3778,38 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
             const isCorrect = (d.correctLetter || '').includes(letter);
             return `<div style="padding:4px 8px; margin-top:2px; border-radius:4px; font-size:0.82rem; ${isCorrect ? 'background:#d1fae5; font-weight:bold; color:#065f46;' : 'background:#ffffff; color:#334155;'}">${letter}) ${opt}</div>`;
           }).join('');
+        }
+
+        let chatBubblesHTML = '';
+        if (Array.isArray(d.mesajlar)) {
+          d.mesajlar.forEach(m => {
+            if (m.deletedByAdmin) return;
+
+            const isUser = m.senderRole === 'user';
+            const timeFormatted = m.timestamp ? new Date(m.timestamp).toLocaleTimeString('tr-TR', {hour:'2-digit', minute:'2-digit'}) : '';
+
+            let textContent = m.text;
+            if (m.deletedByUser) {
+              textContent = `<em style="color:#ef4444; font-weight:bold;">⚠️ (Kullanıcı bu mesajı sildi)</em><br><span style="text-decoration:line-through; opacity:0.6;">${m.text}</span>`;
+            }
+
+            const safeMsgText = (m.text || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+            const safeUserName = (d.userName || d.userEmail || '').replace(/'/g, "\\'");
+
+            chatBubblesHTML += `
+              <div class="chat-bubble ${isUser ? 'received' : 'sent'}">
+                <div style="font-weight:bold; font-size:0.72rem; color:${isUser ? '#065f46' : '#1e40af'}; margin-bottom:2px;">
+                  ${isUser ? `👤 ${d.userName}` : '👨‍⚕️ Yönetici'}
+                </div>
+                <div style="white-space:pre-line;">${textContent}</div>
+                <div class="chat-meta">
+                  <span>${timeFormatted}</span>
+                  ${isUser ? `<button class="btn-action" style="font-size:0.62rem; padding:1px 4px; background:#fffbe6; color:#d97706; border-color:#fde68a;" onclick="openAdminWarnUserModal('${d.userId}', '${safeUserName}', '${safeMsgText}')">⚠️ Uyar</button>` : ''}
+                  <button class="msg-delete-btn" onclick="deleteReportMessageByAdmin('${d.id}', '${m.id}')" title="Yönetici Olarak Mesajı Sil">🗑️</button>
+                </div>
+              </div>
+            `;
+          });
         }
 
         const safeComment = (d.userComment || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
@@ -3720,47 +3836,78 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
             ${optionsHTML ? `
               <div style="background:#f1f5f9; padding:8px; border-radius:6px; margin-bottom:8px;">
-                <strong style="font-size:0.8rem; color:#475569;">Sorunun Seçenekleri:</strong>
+                <strong style="font-size:0.8rem; color:#475569;">Sorunun Tüm Şıkları:</strong>
                 ${optionsHTML}
               </div>
             ` : ''}
 
-            <div style="font-size:0.83rem; color:#475569; margin-bottom:8px; background:#fff; padding:6px; border:1px solid #e2e8f0; border-radius:6px;">
-              👉 <strong>Kullanıcının Önerdiği Şık:</strong> ${d.userSuggestedOption || 'Belirtilmedi'}<br>
-              📝 <strong>Kullanıcı İtiraz Açıklaması:</strong> ${d.userComment || 'Açıklama yazılmadı.'}
-            </div>
-
-            ${d.userFollowup ? `
-              <div style="margin-bottom:8px; background:#eff6ff; padding:6px 10px; border-radius:6px; font-size:0.82rem; color:#1e40af;">
-                💬 <strong>Kullanıcının Takip Yanıtı:</strong> ${d.userFollowup}
+            <!-- WHATSAPP SOHBET ALANI (ADMIN) -->
+            <div class="whatsapp-container" style="height:auto; max-height:320px; margin:10px 0;">
+              <div class="whatsapp-header" style="font-size:0.8rem; padding:6px 12px;">
+                <span>💬 Kullanıcı ile Canlı Bildirim Sohbeti</span>
               </div>
-            ` : ''}
-            
-            <div style="border-top:1px dashed #cbd5e1; padding-top:8px; margin-top:8px;">
-              ${isAnswered ? `
-                <div id="replyBox_${d.id}">
-                  <div style="font-size:0.82rem; color:#047857; background:#d1fae5; padding:8px; border-radius:6px; display:flex; justify-content:space-between; align-items:center;">
-                    <span><strong>Yönetici Yanıtı:</strong> ${d.adminReply}</span>
-                    <button class="btn-action" style="font-size:0.72rem; padding:2px 6px;" onclick="enableEditReportReply('${d.id}', '${encodeURIComponent(d.adminReply)}')">✏️ Yanıtı Düzenle</button>
-                  </div>
-                </div>
-              ` : ''}
-
-              <div id="editReplyForm_${d.id}" style="${isAnswered ? 'display:none;' : ''} margin-top:6px;">
-                <div style="display:flex; gap:8px;">
-                  <!-- MADDE 3 YENİLİK: ENTER TUŞU İLE YANITLA -->
-                  <input type="text" id="adminReplyInput_${d.id}" class="modern-input" style="padding:4px 8px; font-size:0.8rem;" placeholder="Yanıtınızı yazın..." value="${d.adminReply || ''}" onkeydown="if(event.key==='Enter') replyToQuestionReport('${d.id}')">
-                  <button class="btn-action btn-toggle-on" style="padding:4px 12px; font-size:0.8rem;" onclick="replyToQuestionReport('${d.id}')">Kaydet & Gönder</button>
-                </div>
+              <div class="whatsapp-messages" style="padding:10px;">
+                ${chatBubblesHTML || '<p style="text-align:center; color:#64748b; font-size:0.8rem;">Mesaj yok.</p>'}
+              </div>
+              <div class="whatsapp-footer" style="padding:6px 10px;">
+                <input type="text" id="adminReportReplyInput_${d.id}" class="modern-input" style="padding:4px 8px; font-size:0.8rem; flex:1;" placeholder="Kullanıcıya mesaj yanıtı yazın..." onkeydown="if(event.key==='Enter') sendAdminReportChatMessage('${d.id}')">
+                <button class="btn-action btn-toggle-on" style="padding:4px 12px; font-size:0.8rem;" onclick="sendAdminReportChatMessage('${d.id}')">Gönder ➔</button>
               </div>
             </div>
+
           </div>
         `;
       });
 
       box.innerHTML = html;
-    } catch(err) { box.innerHTML = `<span style="color:red;">Hata: ${err.message}</span>`; }
+    });
   }
+
+  window.sendAdminReportChatMessage = async function(docId) {
+    const input = document.getElementById(`adminReportReplyInput_${docId}`);
+    const text = input.value.trim();
+    if (!text) { showToast("Lütfen bir yanıt yazınız.", "warning"); return; }
+
+    const newMsg = {
+      id: "msg_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+      senderRole: "admin",
+      senderUid: "admin",
+      text: text,
+      timestamp: new Date().toISOString(),
+      deletedByUser: false,
+      deletedByAdmin: false
+    };
+
+    try {
+      await updateDoc(doc(db, "hatali_sorular", docId), {
+        mesajlar: arrayUnion(newMsg),
+        status: "yanitlandi"
+      });
+      input.value = '';
+      showToast("Yanıtınız gönderildi.", "success");
+    } catch(err) { showToast("Hata: " + err.message, "error"); }
+  };
+
+  window.deleteReportMessageByAdmin = async function(docId, msgId) {
+    try {
+      const docRef = doc(db, "hatali_sorular", docId);
+      const docSnap = await getDoc(docRef);
+      if (!docSnap.exists()) return;
+
+      let msgs = docSnap.data().mesajlar || [];
+      msgs = msgs.map(m => {
+        if (m.id === msgId) {
+          return { ...m, deletedByAdmin: true };
+        }
+        return m;
+      });
+
+      await updateDoc(docRef, { mesajlar: msgs });
+      showToast("Mesaj yönetici tarafından tamamen silindi.", "success");
+    } catch(err) {
+      showToast("Silme hatası: " + err.message, "error");
+    }
+  };
 
   async function loadAdminUploadedQuestions() {
     const box = document.getElementById('adminUploadedQuestionsList');
@@ -3849,31 +3996,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     document.querySelectorAll('.report-row-checkbox').forEach(cb => cb.checked = masterCb.checked);
   };
 
-  window.enableEditReportReply = function(docId, encodedText) {
-    const text = decodeURIComponent(encodedText);
-    document.getElementById(`replyBox_${docId}`).style.display = 'none';
-    const form = document.getElementById(`editReplyForm_${docId}`);
-    form.style.display = 'block';
-    document.getElementById(`adminReplyInput_${docId}`).value = text;
-  };
-
-  window.replyToQuestionReport = async function(docId) {
-    const input = document.getElementById(`adminReplyInput_${docId}`);
-    const replyText = input.value.trim();
-    if (!replyText) { showToast("Lütfen bir yanıt yazınız.", "warning"); return; }
-
-    try {
-      await updateDoc(doc(db, "hatali_sorular", docId), {
-        adminReply: replyText,
-        status: "yanitlandi",
-        adminRepliedAt: serverTimestamp(),
-        userNotified: false
-      });
-      showToast("Yanıt kaydedildi ve kullanıcıya gönderildi.", "success");
-      loadAdminQuestionReports();
-    } catch(err) { showToast("Hata: " + err.message, "error"); }
-  };
-
   window.openAdminBulkReplyModal = function() {
     const selected = Array.from(document.querySelectorAll('.report-row-checkbox:checked')).map(cb => cb.value);
     if (selected.length === 0) { showToast("Lütfen en az bir bildirim seçiniz.", "warning"); return; }
@@ -3893,16 +4015,22 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     if (!bulkText) { showToast("Lütfen yanıt mesajını yazınız.", "warning"); return; }
 
     for (let id of selected) {
+      const newMsg = {
+        id: "msg_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+        senderRole: "admin",
+        senderUid: "admin",
+        text: bulkText,
+        timestamp: new Date().toISOString(),
+        deletedByUser: false,
+        deletedByAdmin: false
+      };
       await updateDoc(doc(db, "hatali_sorular", id), {
-        adminReply: bulkText,
-        status: "yanitlandi",
-        adminRepliedAt: serverTimestamp(),
-        userNotified: false
+        mesajlar: arrayUnion(newMsg),
+        status: "yanitlandi"
       });
     }
     showToast(`${selected.length} bildirime toplu yanıt gönderildi.`, "success");
     closeAdminBulkReplyModal();
-    loadAdminQuestionReports();
   };
 
   window.promptDeleteSingleAdminReport = function(docId) {
@@ -3931,7 +4059,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     }
     showToast(`${reportsToDeleteTarget.length} bildirim kalıcı olarak silindi.`, "success");
     closeAdminConfirmDeleteReportsModal();
-    loadAdminQuestionReports();
   };
 
   window.openUserChatModal = function() {
@@ -4130,7 +4257,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         Mesajlar yükleniyor...
       </div>
       <div class="whatsapp-footer">
-        <!-- MADDE 2 YENİLİK: YÖNETİCİ EMOJİ SEÇİCİ POPUP -->
         <div id="adminEmojiPicker" class="emoji-picker-popup" style="display: none;">
           <span onclick="insertEmoji('adminChatMessageInput', '😀', 'adminEmojiPicker')">😀</span>
           <span onclick="insertEmoji('adminChatMessageInput', '😂', 'adminEmojiPicker')">😂</span>
@@ -4153,7 +4279,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         </div>
 
         <button class="btn-action" style="padding: 6px 10px; font-size: 1.1rem; background: transparent; border: none;" onclick="toggleEmojiPicker('adminEmojiPicker')">😊</button>
-        <!-- MADDE 3 YENİLİK: ENTER TUŞU İLE MESAJ GÖNDERME -->
         <input type="text" id="adminChatMessageInput" class="modern-input" style="flex:1;" placeholder="Kullanıcıya yanıt yazın..." onkeydown="if(event.key==='Enter') sendAdminChatMessage()">
         <button class="btn-action btn-toggle-on" onclick="sendAdminChatMessage()">Gönder ➔</button>
       </div>
@@ -4257,6 +4382,16 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     const meta = parseQuestionMeta(q);
     const cleanOptions = extractAndCleanOptions(q);
 
+    const initialMsg = {
+      id: "msg_" + Date.now() + "_" + Math.random().toString(36).substr(2, 4),
+      senderRole: "user",
+      senderUid: auth.currentUser ? auth.currentUser.uid : "anonim",
+      text: `👉 Önerilen Şık: ${suggestedOpt || 'Belirtilmedi'}\n📝 İtiraz Açıklaması: ${comment || 'Açıklama belirtilmedi.'}`,
+      timestamp: new Date().toISOString(),
+      deletedByUser: false,
+      deletedByAdmin: false
+    };
+
     try {
       await addDoc(collection(db, "hatali_sorular"), {
         userId: auth.currentUser ? auth.currentUser.uid : "anonim",
@@ -4269,8 +4404,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         userSuggestedOption: suggestedOpt,
         userComment: comment,
         status: "bekliyor",
-        adminReply: "",
-        userNotified: false,
+        mesajlar: [initialMsg],
         createdAt: serverTimestamp()
       });
 
