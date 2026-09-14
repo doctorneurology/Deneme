@@ -828,6 +828,88 @@
         width: 100%; white-space: pre-line;
       }
     }
+    /* EKSİK CEVAP ANAHTARI VE ÇÖZÜM AÇIKLAMASI BİÇİMLENDİRMELERİ */
+    .answer-key-card {
+      margin-top: 25px;
+      padding: 15px;
+      border: 1.5px solid #000;
+      border-radius: 8px;
+      background: #f8fafc;
+      break-inside: avoid;
+      page-break-inside: avoid;
+    }
+
+    .key-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .key-cell {
+      background: white;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      padding: 6px 2px;
+      text-align: center;
+      font-size: 9pt;
+      line-height: 1.2;
+    }
+
+    .explanation-sheet {
+      margin-top: 30px;
+      padding-top: 15px;
+    }
+
+    .exp-item {
+      margin-bottom: 12px;
+      padding: 10px;
+      background: #f8fafc;
+      border-left: 3px solid var(--primary);
+      border-radius: 4px;
+      font-size: 9.5pt;
+      line-height: 1.4;
+    }
+
+    .exp-title {
+      font-weight: bold;
+      color: var(--primary-hover);
+      margin-bottom: 4px;
+    }
+
+    .q-inline-answer {
+      margin-top: 6px;
+      padding: 4px 8px;
+      background: #d1fae5;
+      color: #065f46;
+      font-size: 8.5pt;
+      font-weight: bold;
+      border-radius: 4px;
+    }
+
+    .q-inline-exp {
+      margin-top: 6px;
+      padding: 8px;
+      background: #eff6ff;
+      color: #1e40af;
+      font-size: 8.5pt;
+      border-radius: 6px;
+      border: 1px solid #bfdbfe;
+      white-space: pre-line;
+    }
+
+    .print-only-text {
+      display: none;
+    }
+
+    @media print {
+      .header-input {
+        display: none !important;
+      }
+      .print-only-text {
+        display: inline !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1715,13 +1797,17 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     return { displayName: cleanKonuName, konuKey: normStr(cleanKonuName), zorlukKey: detectedZorluk };
   }
 
-  function extractAndCleanOptions(q) {
+function extractAndCleanOptions(q) {
     if (!q || !q.secenekler) return [];
-    let rawArr = Array.isArray(q.secenekler) ? q.secenekler : [q.secenekler];
-    let fullText = rawArr.join(" ");
-    let parts = fullText.split(/(?=\b[A-E][\)\.]\s*)/i).map(s => s.trim()).filter(Boolean);
-    if (parts.length >= 2) return parts.map(p => p.replace(/^[A-E][\)\.]\s*/i, '').replace(/^\)\s*/, '').trim());
-    return rawArr.map(p => String(p).replace(/^[A-E][\)\.]\s*/i, '').replace(/^\)\s*/, '').trim());
+    if (Array.isArray(q.secenekler) && q.secenekler.length > 1) {
+      return q.secenekler.map(p => String(p).replace(/^[A-E][\)\.]\s*/i, '').replace(/^\)\s*/, '').trim());
+    }
+    let rawStr = Array.isArray(q.secenekler) ? q.secenekler.join(" ") : String(q.secenekler);
+    let parts = rawStr.split(/(?=\b[A-E][\)\.]\s+)/i).map(s => s.trim()).filter(Boolean);
+    if (parts.length >= 2) {
+      return parts.map(p => p.replace(/^[A-E][\)\.]\s*/i, '').replace(/^\)\s*/, '').trim());
+    }
+    return [rawStr];
   }
 
   function deduplicateQuestions(arr) {
@@ -1887,6 +1973,14 @@ Açıklama: İlk tercih kontrastsız beyin BT'dir.
     showToast("Yerel yedek soru havuzu yüklendi.", "warning");
   }
   window.useFallbackData = useFallbackData;
+  window.manualLoadQuestions = function() {
+    if (typeof loadDataAndInit === 'function') {
+      loadDataAndInit();
+      showToast("Sorular yeniden yükleniyor...", "info");
+    } else {
+      showToast("Yükleme fonksiyonuna erişilemedi.", "error");
+    }
+  };
 
   function toggleAllTopics() {
     const checkboxes = document.querySelectorAll('.topic-check');
