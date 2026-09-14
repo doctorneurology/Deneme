@@ -790,6 +790,29 @@
 
     .unread-row { background: #f0fdf4 !important; font-weight: bold; }
 
+    /* MADDE 2: ENGELLENMİŞ KULLANICI EKRANI GÖRSELİ */
+    .banned-screen-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(135deg, #1e1b4b 0%, #0f172a 100%);
+      z-index: 99999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .banned-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 36px;
+      max-width: 520px;
+      width: 92%;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      border-top: 6px solid #ef4444;
+    }
+
     @media print {
       body { background: white !important; color: black !important; }
       .no-print, .action-bar, #loginScreen, .loading-overlay, .modal-overlay, #sideAnalysisPanel, .toast-container, .btn-admin-subtle {
@@ -809,6 +832,73 @@
   </style>
 </head>
 <body>
+
+  <!-- MADDE 2: ENGELLENEN KULLANICI EKRANI (TAM KİLİT) -->
+  <div id="bannedUserScreen" class="banned-screen-overlay" style="display: none;">
+    <div class="banned-card">
+      <div style="font-size: 3.5rem; margin-bottom: 10px;">🚫</div>
+      <h2 style="font-size: 1.4rem; font-weight: 800; color: #991b1b; margin-bottom: 10px;">HESABINIZ ENGELLENDİ</h2>
+      <p id="bannedDurationText" style="font-size: 0.95rem; font-weight: 700; color: #1e293b; margin-bottom: 15px; background: #fee2e2; padding: 10px; border-radius: 8px;"></p>
+      <div id="bannedReasonsBox" style="font-size: 0.88rem; color: #475569; text-align: left; background: #f8fafc; padding: 14px; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 20px; line-height: 1.5;"></div>
+      <button class="btn-proceed" style="background: #991b1b;" onclick="signOutAndReload()">🚪 Çıkış Yap</button>
+    </div>
+  </div>
+
+  <!-- MADDE 2: KULLANICI UYARI BİLDİRİM MODALİ (BÜYÜK EKRAN ORTASI) -->
+  <div id="userWarningNoticeModal" class="modal-overlay no-print" style="display: none; z-index: 30000;">
+    <div class="modal-card" style="max-width: 520px; width: 92%; border-top: 6px solid #f59e0b; text-align: center;">
+      <div style="font-size: 3rem; margin-bottom: 8px;">⚠️</div>
+      <div class="modal-title" style="justify-content: center; color: #b45309; font-size: 1.3rem;">YÖNETİCİ UYARISI ALDINIZ</div>
+      <p style="font-size: 0.88rem; color: #475569; margin-bottom: 15px;">
+        Yönetici tarafından uygunsuz ifadeleriniz veya sistem kuralları ihlali nedeniyle bir uyarı aldınız.
+      </p>
+      
+      <div id="userWarningContentBox" style="background: #fffbe6; border: 1px solid #fde68a; padding: 14px; border-radius: 10px; font-size: 0.88rem; color: #78350f; text-align: left; margin-bottom: 15px; font-weight: 500;"></div>
+      
+      <div style="font-size: 0.8rem; color: #ef4444; font-weight: bold; margin-bottom: 20px;">
+        ⚠️ Dikkat: Toplam 3 uyarı alan kullanıcıların hesapları süreli veya kalıcı olarak engellenmektedir.
+      </div>
+
+      <button class="btn-proceed" style="background: #d97706;" onclick="acknowledgeUserWarning()">
+        👍 Anladım ve Kapat
+      </button>
+    </div>
+  </div>
+
+  <!-- MADDE 1: MODERN BİLDİRİM SİLME UYARI MODALİ (ADMIN) -->
+  <div id="adminConfirmDeleteReportsModal" class="modal-overlay no-print" style="display: none; z-index: 29500;">
+    <div class="modal-card" style="max-width: 420px; width: 90%;">
+      <div class="modal-title" style="color: #ef4444;">🚨 Bildirim Silme Onayı</div>
+      <p id="deleteReportsWarningText" style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5;">
+        Seçilen hatalı soru bildirimi(leri) sistemden <strong>kalıcı olarak silinecektir</strong>. Devam etmek istediğinize emin misiniz?
+      </p>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn-action btn-finish-test" style="flex: 1; justify-content: center;" onclick="executeDeleteAdminReports()">🗑️ Evet, Sil</button>
+        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeAdminConfirmDeleteReportsModal()">İptal</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MADDE 2: YÖNETİCİ KULLANICI UYARMA MODALİ (ADMIN) -->
+  <div id="adminWarnUserModal" class="modal-overlay no-print" style="display: none; z-index: 29000;" onclick="if(event.target===this) closeAdminWarnUserModal()">
+    <div class="modal-card" style="max-width: 480px; width: 92%;">
+      <div class="modal-title" style="justify-content: space-between; color: #d97706;">
+        <span>⚠️ Kullanıcıya Resmi Uyarı Gönder</span>
+        <button class="btn-action" onclick="closeAdminWarnUserModal()">✕</button>
+      </div>
+      <p id="warnTargetUserText" style="font-size: 0.85rem; color: #475569; margin-bottom: 12px; font-weight: 600;"></p>
+      
+      <div class="input-control">
+        <label>Uyarı Nedeni / Mesajı (Kullanıcının İhlal Eden Mesajı):</label>
+        <textarea id="adminWarnReasonInput" class="modern-input" rows="4" placeholder="Uyarı nedenini yazın..."></textarea>
+      </div>
+
+      <div style="display: flex; gap: 10px; margin-top: 15px;">
+        <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center; background: #d97706 !important; border-color: #b45309 !important;" onclick="executeSendUserWarning()">⚠️ Uyarıyı Gönder</button>
+        <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeAdminWarnUserModal()">İptal</button>
+      </div>
+    </div>
+  </div>
 
   <!-- KULLANICI HATALI BİLDİRİMLERİM MODALİ -->
   <div id="userReportsModal" class="modal-overlay no-print" style="display: none; z-index: 26000;" onclick="if(event.target===this) closeUserReportsModal()">
@@ -1107,12 +1197,14 @@
                   </th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">Ad Soyad</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">E-posta</th>
+                  <!-- MADDE 2: UYARI SÜTUNU VE YILDIZ SAYISI -->
+                  <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: center;">Uyarı</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border);">Rol / Durum</th>
                   <th style="padding: 10px; border-bottom: 1px solid var(--border); text-align: right;">Aksiyonlar</th>
                 </tr>
               </thead>
               <tbody id="adminUserTableBody">
-                <tr><td colspan="5" style="padding: 15px; text-align: center;">Kullanıcılar sıralanıyor...</td></tr>
+                <tr><td colspan="6" style="padding: 15px; text-align: center;">Kullanıcılar sıralanıyor...</td></tr>
               </tbody>
             </table>
           </div>
@@ -1125,7 +1217,7 @@
               <input type="checkbox" id="selectAllReportsCheckbox" onchange="toggleSelectAllReports(this)">
               <span style="font-size: 0.8rem; font-weight: bold;">Tümünü Seç</span>
               <button class="btn-action btn-toggle-on" style="font-size: 0.8rem; padding: 4px 10px;" onclick="openAdminBulkReplyModal()">💬 Seçilenleri Toplu Yanıtla</button>
-              <button class="btn-action btn-finish-test" style="font-size: 0.8rem; padding: 4px 10px;" onclick="deleteSelectedAdminReports()">🗑️ Seçilenleri Sil</button>
+              <button class="btn-action btn-finish-test" style="font-size: 0.8rem; padding: 4px 10px;" onclick="promptDeleteSelectedAdminReports()">🗑️ Seçilenleri Sil</button>
             </div>
             <span style="font-size: 0.8rem; color: var(--text-muted);">Gelen soru bildirimlerinin tüm detaylarını ve şıklarını inceleyebilirsiniz.</span>
           </div>
@@ -1179,9 +1271,13 @@
           </div>
         </div>
 
-        <!-- SEKME 5: ADMIN ŞİFRE DEĞİŞTİRME -->
+        <!-- SEKME 5: ADMIN ŞİFRE VE KULLANICI ADI AYARLARI (MADDE 3) -->
         <div id="adminTabSettings" style="display: none; max-width: 450px;">
-          <h4 style="margin-bottom: 12px; color: var(--bg-dark);">🔐 Yönetici Şifresini Güncelle</h4>
+          <h4 style="margin-bottom: 12px; color: var(--bg-dark);">🔐 Yönetici Kullanıcı Adı & Şifre Güncelle</h4>
+          <div class="input-control">
+            <label>Yeni Yönetici Kullanıcı Adı:</label>
+            <input type="text" id="adminNewUsernameInput" class="modern-input" placeholder="admin">
+          </div>
           <div class="input-control">
             <label>Mevcut Şifre:</label>
             <input type="password" id="adminOldPassInput" class="modern-input">
@@ -1194,7 +1290,7 @@
             <label>Yeni Şifre (Tekrar):</label>
             <input type="password" id="adminNewPassConfirmInput" class="modern-input">
           </div>
-          <button class="btn-action btn-toggle-on" style="margin-top: 10px; padding: 10px 18px;" onclick="changeAdminPassword()">💾 Şifreyi Kaydet</button>
+          <button class="btn-action btn-toggle-on" style="margin-top: 10px; padding: 10px 18px;" onclick="changeAdminPassword()">💾 Bilgileri Kaydet</button>
         </div>
 
       </div>
@@ -1252,7 +1348,7 @@
             </div>
             
             <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 8px;">
-              <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Ediliyor"></span>
+              <span id="dataStatusDot" class="status-dot" title="Sistem Durumu Kontrol Edildiği"></span>
               
               <button id="btnRedeemLicense" class="btn-action btn-toggle-on" style="background: #10b981 !important; border-color: #059669 !important; font-size: 0.8rem; padding: 6px 12px;" onclick="openRedeemModal()">
                 🔑 Lisans Kodu Kullan
@@ -2224,11 +2320,11 @@
   window.closeAdminAuthModal = () => document.getElementById('adminAuthModal').style.display = 'none';
 </script>
 
-<!-- FIREBASE & SOHBET / BİLDİRİMLER SİSTEMİ -->
+<!-- FIREBASE & UYARI/ENGELLEME SİSTEMİ -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
   import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
-  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, addDoc, deleteDoc, query, where, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+  import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, addDoc, deleteDoc, query, where, onSnapshot, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
   const firebaseConfig = {
     apiKey: "AIzaSyB8dZe4nDuvU2SjH2FzX3r7sgGtohE6mo4",
@@ -2251,7 +2347,13 @@
   let currentInspectedUserUid = null;
   let userToDeleteTarget = null;
   let chatUnsubscribe = null;
+  let warningUnsubscribe = null;
   let selectedAdminChatUserUid = null;
+
+  let currentWarnUserUid = null;
+  let currentWarnUserName = null;
+  let reportsToDeleteTarget = [];
+
   window.isAdminSessionActive = false;
 
   function formatNameSurname(str) {
@@ -2263,6 +2365,10 @@
     return `${names} ${surname}`;
   }
   window.formatNameSurname = formatNameSurname;
+
+  window.signOutAndReload = function() {
+    signOut(auth).then(() => location.reload());
+  };
 
   const btnGoogleLoginModal = document.getElementById('btnGoogleLoginModal');
   if (btnGoogleLoginModal) {
@@ -2293,6 +2399,56 @@
     });
   };
 
+  // MADDE 2: ENGELLENMİŞ KULLANICI KONTROLÜ
+  function checkAndHandleBannedUser(data) {
+    if (data.durum === 'Engellendi') {
+      const durText = data.engellenmeSuresiText || 'Süresiz / Kalıcı';
+      let reasonsList = '';
+      
+      if (Array.isArray(data.engellenmeNedenleri) && data.engellenmeNedenleri.length > 0) {
+        const joinedReasons = data.engellenmeNedenleri.map(r => `"${r}"`).join(', ');
+        reasonsList = `Engellenme nedeniniz: <strong>${joinedReasons}</strong> mesajlarınız nedeniyledir.`;
+      } else {
+        reasonsList = `Engellenme nedeniniz: Uygunsuz davranış veya kural ihlali nedeniyledir.`;
+      }
+
+      document.getElementById('bannedDurationText').innerText = `⏱️ Engellenme Süreniz: ${durText}`;
+      document.getElementById('bannedReasonsBox').innerHTML = reasonsList;
+      
+      document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('loginScreen').style.display = 'none';
+      document.getElementById('bannedUserScreen').style.display = 'flex';
+      return true;
+    }
+    return false;
+  }
+
+  // MADDE 2: CANLI UYARI DİNLEYİCİSİ (EKRAN ORTASINDA UYARI)
+  function listenUserWarnings(uid) {
+    if (warningUnsubscribe) warningUnsubscribe();
+    const userRef = doc(db, "kullanicilar", uid);
+    warningUnsubscribe = onSnapshot(userRef, (snap) => {
+      if (!snap.exists()) return;
+      const data = snap.data();
+
+      if (checkAndHandleBannedUser(data)) return;
+
+      if (data.activeWarning && !data.activeWarning.read) {
+        document.getElementById('userWarningContentBox').innerText = `🚨 Uyarı Mesajı: ${data.activeWarning.reason}`;
+        document.getElementById('userWarningNoticeModal').style.display = 'flex';
+      }
+    });
+  }
+
+  window.acknowledgeUserWarning = async function() {
+    if (!auth.currentUser) return;
+    await updateDoc(doc(db, "kullanicilar", auth.currentUser.uid), {
+      "activeWarning.read": true
+    });
+    document.getElementById('userWarningNoticeModal').style.display = 'none';
+    showToast("Uyarı okundu olarak işaretlendi.", "info");
+  };
+
   onAuthStateChanged(auth, async (user) => {
     if (user && !window.isAdminSessionActive) {
       sessionStartTime = Date.now();
@@ -2307,6 +2463,8 @@
           sonGirisTarihi: serverTimestamp(),
           denemeBaslangicTarihi: serverTimestamp(),
           durum: "Deneme",
+          uyariSayisi: 0,
+          engellenmeNedenleri: [],
           rol: (user.email === "kgulsen1994@gmail.com") ? "admin" : "kullanici"
         };
         await setDoc(userRef, currentUserData);
@@ -2324,11 +2482,7 @@
 
       window.currentUserData = currentUserData;
 
-      if (currentUserData.durum === 'Engellendi') {
-        signOut(auth);
-        if (window.showToast) window.showToast("Hesabınız kilitlenmiştir.", "error");
-        return;
-      }
+      if (checkAndHandleBannedUser(currentUserData)) return;
 
       if (currentUserData.durum === 'Deneme') {
         const createdDate = currentUserData.denemeBaslangicTarihi?.toDate ? currentUserData.denemeBaslangicTarihi.toDate() : new Date();
@@ -2369,6 +2523,8 @@
       document.getElementById('loginScreen').style.display = 'none';
       document.getElementById('mainApp').style.display = 'block';
 
+      listenUserWarnings(user.uid);
+
       if (typeof masterPool !== 'undefined' && masterPool.length === 0) window.loadDataAndInit();
 
     } else if (!window.isAdminSessionActive) {
@@ -2391,28 +2547,25 @@
     } catch (e) {}
   };
 
+  // MADDE 3: YÖNETİCİ KULLANICI ADI VE ŞİFRESİNİN FİREBASE'DEN KONTROLÜ
   window.submitAdminAuth = async function() {
     const userVal = document.getElementById('adminUsernameInput').value.trim();
     const passVal = document.getElementById('adminPasswordInput').value.trim();
     if (!userVal || !passVal) { showToast("Lütfen tüm alanları doldurunuz.", "warning"); return; }
 
+    let currentAdminUser = "admin";
     let currentAdminPass = "noroloji2026";
+    
     try {
       const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
-      if (cfgSnap.exists() && cfgSnap.data().sifre) {
-        currentAdminPass = cfgSnap.data().sifre;
+      if (cfgSnap.exists()) {
+        const data = cfgSnap.data();
+        if (data.kullaniciAdi) currentAdminUser = data.kullaniciAdi;
+        if (data.sifre) currentAdminPass = data.sifre;
       }
     } catch(e) {}
 
-    let isAuthorized = (userVal === "admin" && passVal === currentAdminPass);
-
-    if (!isAuthorized) {
-      try {
-        const q = query(collection(db, "yoneticiler"), where("kullaniciAdi", "==", userVal), where("sifre", "==", passVal));
-        const snap = await getDocs(q);
-        if (!snap.empty) isAuthorized = true;
-      } catch (e) {}
-    }
+    let isAuthorized = (userVal === currentAdminUser && passVal === currentAdminPass);
 
     if (isAuthorized) {
       window.isAdminSessionActive = true;
@@ -2479,8 +2632,20 @@
     } catch (err) { showToast("Aktivasyon hatası: " + err.message, "error"); }
   };
 
-  // ADMIN PANEL SEKMELERİ
+  // MADDE 4: SEKMELER ARASI GEÇİŞTE TOPLU SEÇİM KUTULARININ SIFIRLANMASI
   window.switchAdminTab = function(tabName) {
+    const uCb = document.getElementById('selectAllUsersCheckbox');
+    if (uCb) uCb.checked = false;
+    document.querySelectorAll('.user-row-checkbox').forEach(cb => cb.checked = false);
+
+    const rCb = document.getElementById('selectAllReportsCheckbox');
+    if (rCb) rCb.checked = false;
+    document.querySelectorAll('.report-row-checkbox').forEach(cb => cb.checked = false);
+
+    const cCb = document.getElementById('selectAllChatsCheckbox');
+    if (cCb) cCb.checked = false;
+    document.querySelectorAll('.chat-row-checkbox').forEach(cb => cb.checked = false);
+
     document.getElementById('adminTabUsers').style.display = tabName === 'users' ? 'flex' : 'none';
     document.getElementById('adminTabReports').style.display = tabName === 'reports' ? 'flex' : 'none';
     document.getElementById('adminTabChat').style.display = tabName === 'chat' ? 'flex' : 'none';
@@ -2507,13 +2672,13 @@
   async function fetchAndRenderUsers(filterCategory) {
     currentCategoryFilter = filterCategory;
     const tbody = document.getElementById('adminUserTableBody');
-    tbody.innerHTML = '<tr><td colspan="5" style="padding: 15px; text-align: center;">Kullanıcılar yükleniyor...</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center;">Kullanıcılar yükleniyor...</td></tr>';
     try {
       const snap = await getDocs(collection(db, "kullanicilar"));
       allFetchedUsers = [];
       snap.forEach(d => allFetchedUsers.push({ id: d.id, ...d.data() }));
       renderUserRows();
-    } catch (e) { tbody.innerHTML = `<tr><td colspan="5" style="color:red; padding:10px;">Hata: ${e.message}</td></tr>`; }
+    } catch (e) { tbody.innerHTML = `<tr><td colspan="6" style="color:red; padding:10px;">Hata: ${e.message}</td></tr>`; }
   }
 
   window.filterAdminUsers = function(cat, btnElem) {
@@ -2525,6 +2690,7 @@
 
   window.filterAdminUsersSearch = () => renderUserRows();
 
+  // MADDE 2: UYARI SAYISI VE YILDIZLARIN TABLODA GÖSTERİLMESİ
   function renderUserRows() {
     const tbody = document.getElementById('adminUserTableBody');
     tbody.innerHTML = '';
@@ -2547,7 +2713,7 @@
     }
 
     if (list.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="5" style="padding: 15px; text-align: center;">Kullanıcı bulunamadı.</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="6" style="padding: 15px; text-align: center;">Kullanıcı bulunamadı.</td></tr>';
       return;
     }
 
@@ -2555,6 +2721,15 @@
       const isRoleAdmin = (u.rol === 'admin' || u.email === 'kgulsen1994@gmail.com');
       const statusText = isRoleAdmin ? '👑 Yönetici' : (u.durum || 'Ücretsiz');
       const formattedName = formatNameSurname(u.adSoyad || u.email);
+
+      const warnCount = u.uyariSayisi || 0;
+      let starsHTML = '';
+      if (warnCount > 0) {
+        starsHTML = '⭐'.repeat(Math.min(warnCount, 5));
+        if (warnCount >= 3) starsHTML += ' <span style="color:#ef4444; font-weight:bold;" title="3 veya üzeri uyarı aldı! Engelleme önerilir.">🚨</span>';
+      } else {
+        starsHTML = '<span style="color:#cbd5e1;">-</span>';
+      }
 
       let actionTdHTML = `
         <button class="btn-action" style="font-size: 0.75rem; padding: 4px 8px;" onclick="viewUserActivities('${u.id}', '${u.email}')">👁️ Aktivite</button>
@@ -2579,6 +2754,7 @@
       const row = document.createElement('tr');
       row.style.borderBottom = '1px solid #e2e8f0';
       if (isRoleAdmin) row.style.background = '#fcf5ff';
+      if (warnCount >= 3) row.style.background = '#fff5f5';
 
       row.innerHTML = `
         <td style="padding: 10px; text-align: center;">
@@ -2586,6 +2762,7 @@
         </td>
         <td style="padding: 10px; font-weight: 600;">${formattedName}</td>
         <td style="padding: 10px; color: #64748b;">${u.email}</td>
+        <td style="padding: 10px; text-align: center;">${starsHTML}</td>
         <td style="padding: 10px;"><span style="padding: 3px 8px; border-radius: 12px; font-size: 0.75rem; font-weight: bold; background: #e2e8f0;">${statusText}</span></td>
         <td style="padding: 10px; text-align: right; display: flex; gap: 6px; justify-content: flex-end; align-items: center;">${actionTdHTML}</td>
       `;
@@ -2607,9 +2784,16 @@
       document.getElementById('adminConfirmDeleteModal').style.display = 'flex';
     } else {
       for (let uid of selectedCbs) {
-        await updateDoc(doc(db, "kullanicilar", uid), { durum: action });
+        if (action === 'Engellendi') {
+          await updateDoc(doc(db, "kullanicilar", uid), {
+            durum: "Engellendi",
+            engellenmeSuresiText: "Süresiz / Kalıcı (Toplu İşlem)"
+          });
+        } else {
+          await updateDoc(doc(db, "kullanicilar", uid), { durum: action });
+        }
       }
-      showToast(`${selectedCbs.length} kullanıcının yetkisi ${action} olarak güncellendi.`, "success");
+      showToast(`${selectedCbs.length} kullanıcının durumu ${action} olarak güncellendi.`, "success");
       await fetchAndRenderUsers(currentCategoryFilter);
     }
   };
@@ -2640,6 +2824,55 @@
     }
     window.closeAdminConfirmDeleteModal();
     await fetchAndRenderUsers(currentCategoryFilter);
+  };
+
+  // MADDE 2: KULLANICIYI UYARMA İŞLEMLERİ (ADMIN MODAL)
+  window.openAdminWarnUserModal = function(userUid, userName, messageText = "") {
+    currentWarnUserUid = userUid;
+    currentWarnUserName = userName;
+    document.getElementById('warnTargetUserText').innerText = `Hedef Kullanıcı: ${userName}`;
+    document.getElementById('adminWarnReasonInput').value = messageText;
+    document.getElementById('adminWarnUserModal').style.display = 'flex';
+  };
+
+  window.closeAdminWarnUserModal = () => document.getElementById('adminWarnUserModal').style.display = 'none';
+
+  window.executeSendUserWarning = async function() {
+    if (!currentWarnUserUid) return;
+    const reasonText = document.getElementById('adminWarnReasonInput').value.trim();
+    if (!reasonText) { showToast("Lütfen uyarı nedenini giriniz.", "warning"); return; }
+
+    try {
+      const uRef = doc(db, "kullanicilar", currentWarnUserUid);
+      const uSnap = await getDoc(uRef);
+      const uData = uSnap.exists() ? uSnap.data() : {};
+      
+      const newWarnCount = (uData.uyariSayisi || 0) + 1;
+
+      await updateDoc(uRef, {
+        uyariSayisi: newWarnCount,
+        engellenmeNedenleri: arrayUnion(reasonText),
+        activeWarning: {
+          reason: reasonText,
+          time: serverTimestamp(),
+          read: false
+        }
+      });
+
+      showToast(`Kullanıcıya ${newWarnCount}. uyarı gönderildi!`, "success");
+
+      if (newWarnCount >= 3) {
+        setTimeout(() => {
+          alert(`🚨 DİKKAT: ${currentWarnUserName} isimli kullanıcı toplam ${newWarnCount} uyarıya ulaştı!\n\nKullanıcının hesabını süreli veya kalıcı olarak engellemeniz önerilir.`);
+        }, 500);
+      }
+
+      closeAdminWarnUserModal();
+      await fetchAndRenderUsers(currentCategoryFilter);
+
+    } catch(err) {
+      showToast("Uyarı gönderilemedi: " + err.message, "error");
+    }
   };
 
   // AKTİVİTE TAKİBİ
@@ -2805,7 +3038,6 @@
           }).join('');
         }
 
-        // MADDE 1: YANITLANAN BİLDİRİMLER İÇİN SİLME BUTONU
         let deleteReportBtnHTML = isAnswered ? `
           <button class="btn-action btn-finish-test" style="font-size:0.75rem; padding:3px 8px;" onclick="deleteUserReport('${d.id}')">🗑️ Bildirimi Sil</button>
         ` : '';
@@ -2830,7 +3062,7 @@
               <strong>Soru:</strong> ${d.questionText}
             </div>
 
-            <div style="margin-top:10px; display:flex; justify-function:space-between; align-items:center;">
+            <div style="margin-top:10px; display:flex; justify-content:space-between; align-items:center;">
               <button class="btn-action btn-toggle-on" style="font-size:0.78rem; padding:4px 12px;" onclick="toggleUserReportDetail('${d.id}')">
                 🔍 Detay İçin Tıkla
               </button>
@@ -2920,7 +3152,7 @@
     } catch(err) { showToast("Hata: " + err.message, "error"); }
   };
 
-  // ADMİN BİLDİRİM DETAYLARI VE YÖNETİMİ
+  // ADMİN BİLDİRİM DETAYLARI VE YÖNETİMİ (MADDE 2: UYAR BUTONU EKLENDİ)
   async function loadAdminQuestionReports() {
     const box = document.getElementById('adminQuestionReportsList');
     box.innerHTML = '<p style="text-align:center; color:#64748b;">Bildirimler yükleniyor...</p>';
@@ -2956,6 +3188,9 @@
           }).join('');
         }
 
+        const safeComment = (d.userComment || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const safeName = (d.userName || d.userEmail || '').replace(/'/g, "\\'");
+
         html += `
           <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid ${isAnswered ? '#10b981' : '#ef4444'}; border-radius:8px; padding:12px; margin-bottom:12px;">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
@@ -2965,7 +3200,8 @@
               </div>
               <div style="display:flex; align-items:center; gap:8px;">
                 <span style="font-size:0.75rem; color:#64748b;">${dateStr}</span>
-                <button class="msg-delete-btn" onclick="deleteSingleAdminReport('${d.id}')" title="Bildirimi Sil">🗑️</button>
+                <button class="btn-action" style="font-size:0.72rem; padding:3px 8px; background:#fffbe6; color:#d97706; border-color:#fde68a;" onclick="openAdminWarnUserModal('${d.userId}', '${safeName}', '${safeComment}')" title="Kullanıcıya Uyarı Gönder">⚠️ Uyar</button>
+                <button class="msg-delete-btn" onclick="promptDeleteSingleAdminReport('${d.id}')" title="Bildirimi Sil">🗑️</button>
               </div>
             </div>
             
@@ -3046,7 +3282,6 @@
     } catch(err) { showToast("Hata: " + err.message, "error"); }
   };
 
-  // MADDE 2: MODERN TOPLU YANITLA MODALİ
   window.openAdminBulkReplyModal = function() {
     const selected = Array.from(document.querySelectorAll('.report-row-checkbox:checked')).map(cb => cb.value);
     if (selected.length === 0) { showToast("Lütfen en az bir bildirim seçiniz.", "warning"); return; }
@@ -3078,29 +3313,37 @@
     loadAdminQuestionReports();
   };
 
-  // MADDE 3: SEÇİLENLERİ TOPLU SİLME VE TEKLİ SİLME (ADMIN)
-  window.deleteSingleAdminReport = async function(docId) {
-    if (!confirm("Bu bildirimi silmek istediğinize emin misiniz?")) return;
-    try {
-      await deleteDoc(doc(db, "hatali_sorular", docId));
-      showToast("Bildirim silindi.", "success");
-      loadAdminQuestionReports();
-    } catch(err) { showToast("Hata: " + err.message, "error"); }
+  // MADDE 1: MODERN BİLDİRİM SİLME UYARI MODALİ UYGULAMASI
+  window.promptDeleteSingleAdminReport = function(docId) {
+    reportsToDeleteTarget = [docId];
+    document.getElementById('deleteReportsWarningText').innerHTML = `Seçilen <strong>1 adet hatalı soru bildirimi</strong> sistemden kalıcı olarak silinecektir.`;
+    document.getElementById('adminConfirmDeleteReportsModal').style.display = 'flex';
   };
 
-  window.deleteSelectedAdminReports = async function() {
+  window.promptDeleteSelectedAdminReports = function() {
     const selected = Array.from(document.querySelectorAll('.report-row-checkbox:checked')).map(cb => cb.value);
     if (selected.length === 0) { showToast("Lütfen silmek istediğiniz bildirimleri seçiniz.", "warning"); return; }
-    if (!confirm(`${selected.length} adet seçili bildirim tamamen silinecektir. Onaylıyor musunuz?`)) return;
+    
+    reportsToDeleteTarget = selected;
+    document.getElementById('deleteReportsWarningText').innerHTML = `Seçtiğiniz <strong>${selected.length} adet hatalı soru bildirimi</strong> veritabanından kalıcı olarak silinecektir. Devam etmek istiyor musunuz?`;
+    document.getElementById('adminConfirmDeleteReportsModal').style.display = 'flex';
+  };
 
-    for (let id of selected) {
+  window.closeAdminConfirmDeleteReportsModal = function() {
+    document.getElementById('adminConfirmDeleteReportsModal').style.display = 'none';
+  };
+
+  window.executeDeleteAdminReports = async function() {
+    if (reportsToDeleteTarget.length === 0) return;
+    for (let id of reportsToDeleteTarget) {
       await deleteDoc(doc(db, "hatali_sorular", id));
     }
-    showToast(`${selected.length} bildirim silindi.`, "success");
+    showToast(`${reportsToDeleteTarget.length} bildirim kalıcı olarak silindi.`, "success");
+    closeAdminConfirmDeleteReportsModal();
     loadAdminQuestionReports();
   };
 
-  // KULLANICI MESAJLARI & WHATSAPP
+  // KULLANICI MESAJLARI & WHATSAPP (MADDE 2: UYAR BUTONU EKLENDİ)
   window.openUserChatModal = function() {
     if (!auth.currentUser) { showToast("Lütfen önce giriş yapınız.", "warning"); return; }
     document.getElementById('userChatModal').style.display = 'flex';
@@ -3329,11 +3572,19 @@
         
         let userDeletedBadge = m.deletedByUser ? `<div style="font-size:0.7rem; color:#dc2626; font-weight:bold;">⚠️ (Kullanıcı bu mesajı sildi)</div>` : '';
 
+        const safeText = (m.text || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
+        const safeName = (userName || '').replace(/'/g, "\\'");
+
+        let warnBtnHTML = !isAdminMsg ? `
+          <button class="btn-action" style="font-size:0.65rem; padding:1px 5px; background:#fffbe6; color:#d97706; border-color:#fde68a; margin-left:6px;" onclick="openAdminWarnUserModal('${userUid}', '${safeName}', '${safeText}')" title="Bu mesaj için kullanıcıyı uyar">⚠️ Uyar</button>
+        ` : '';
+
         bubble.innerHTML = `
           ${userDeletedBadge}
           <div>${m.text}</div>
           <div class="chat-meta">
             <span>${timeStr}</span>
+            ${warnBtnHTML}
             <button class="msg-delete-btn" onclick="deleteMessageByAdmin('${userUid}', '${m.id}')" title="Yönetici Olarak Tamamen Sil">🗑️</button>
           </div>
         `;
@@ -3435,8 +3686,9 @@
     showToast(`${days} Günlük ${tier} kodu üretildi.`, "success");
   };
 
-  // MADDE 4: YÖNETİCİ ŞİFRESİNİN FIREBASE'E KAYDEDİLEREK KALICI HALE GETİRİLMESİ
+  // MADDE 3: FİREBASE'E YÖNETİCİ KULLANICI ADI & ŞİFRE KAYDI
   window.changeAdminPassword = async function() {
+    const newU = document.getElementById('adminNewUsernameInput').value.trim();
     const oldP = document.getElementById('adminOldPassInput').value.trim();
     const newP = document.getElementById('adminNewPassInput').value.trim();
     const confirmP = document.getElementById('adminNewPassConfirmInput').value.trim();
@@ -3448,23 +3700,41 @@
     } catch(e) {}
 
     if (oldP !== currentAdminPass) { showToast("Mevcut şifre hatalı!", "error"); return; }
-    if (!newP || newP.length < 4) { showToast("Yeni şifre en az 4 karakter olmalıdır.", "warning"); return; }
-    if (newP !== confirmP) { showToast("Yeni şifreler uyuşmuyor!", "warning"); return; }
+    if (newP && newP.length < 4) { showToast("Yeni şifre en az 4 karakter olmalıdır.", "warning"); return; }
+    if (newP && newP !== confirmP) { showToast("Yeni şifreler uyuşmuyor!", "warning"); return; }
 
     try {
-      await setDoc(doc(db, "sistem_ayarlari", "admin_config"), { sifre: newP }, { merge: true });
-      showToast("Yönetici şifreniz başarıyla Firebase'e kaydedildi ve kalıcı hale getirildi.", "success");
+      let updatePayload = {};
+      if (newU) updatePayload.kullaniciAdi = newU;
+      if (newP) updatePayload.sifre = newP;
+
+      if (Object.keys(updatePayload).length === 0) {
+        showToast("Lütfen güncellemek istediğiniz bilgileri giriniz.", "warning");
+        return;
+      }
+
+      await setDoc(doc(db, "sistem_ayarlari", "admin_config"), updatePayload, { merge: true });
+      showToast("Yönetici kullanıcı adı ve şifreniz kalıcı olarak Firebase'e kaydedildi.", "success");
+      
+      document.getElementById('adminNewUsernameInput').value = '';
       document.getElementById('adminOldPassInput').value = '';
       document.getElementById('adminNewPassInput').value = '';
       document.getElementById('adminNewPassConfirmInput').value = '';
     } catch(err) {
-      showToast("Şifre kaydedilirken hata oluştu: " + err.message, "error");
+      showToast("Bilgiler kaydedilirken hata oluştu: " + err.message, "error");
     }
   };
 
   window.changeUserStatus = async function(uid, newStatus) {
     if (!newStatus) return;
-    await updateDoc(doc(db, "kullanicilar", uid), { durum: newStatus });
+    if (newStatus === 'Engellendi') {
+      await updateDoc(doc(db, "kullanicilar", uid), {
+        durum: "Engellendi",
+        engellenmeSuresiText: "Süresiz / Kalıcı (Yönetici Tarafından)"
+      });
+    } else {
+      await updateDoc(doc(db, "kullanicilar", uid), { durum: newStatus });
+    }
     showToast(`Durum "${newStatus}" olarak güncellendi.`, 'success');
     await fetchAndRenderUsers(currentCategoryFilter);
   };
