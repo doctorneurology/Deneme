@@ -1127,6 +1127,19 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         <span>💬👨‍⚕️ Yönetici ile Canlı Destek</span>
         <button class="btn-action" onclick="closeUserChatModal()">✕ Kapat</button>
       </div>
+<!-- CANLI DESTEK DOSYA GÖNDERME UYARI MODALİ -->
+<div id="chatFileUploadWarningModal" class="modal-overlay no-print" style="display: none; z-index: 29000;">
+  <div class="modal-card" style="max-width: 450px; width: 90%; border-top: 5px solid #2563eb;">
+    <div class="modal-title" style="color: #1e40af;">📎 Dosya Gönderme Uyarısı</div>
+    <p style="font-size: 0.88rem; color: #334155; margin-bottom: 15px; line-height: 1.5;">
+      Gönderilen tüm içerikler ve dosyalar yönetici ekibi tarafından kontrol edilmektedir. Uygunsuz, telif ihlali içeren veya kural dışı dosya paylaşımı durumunda <strong>hesabınız geçici veya kalıcı olarak engellenebilir</strong>.
+    </p>
+    <div style="display: flex; gap: 10px;">
+      <button class="btn-action btn-toggle-on" style="flex: 1; justify-content: center;" onclick="confirmAndExecuteFileUpload()">👍 Anladım, Gönder</button>
+      <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeChatFileUploadWarningModal()">✕ İptal</button>
+    </div>
+  </div>
+</div>
       
       <div class="whatsapp-container">
         <div class="whatsapp-header">
@@ -1135,27 +1148,26 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         <div id="whatsappUserMessages" class="whatsapp-messages">
           Yükleniyor...
         </div>
-        <div class="whatsapp-footer">
-          <div id="userEmojiPicker" class="emoji-picker-popup" style="display: none;">
-            <span onclick="insertEmoji('userChatMessageInput', '😀', 'userEmojiPicker')">😀</span>
-            <span onclick="insertEmoji('userChatMessageInput', '😂', 'userEmojiPicker')">😂</span>
-            <span onclick="insertEmoji('userChatMessageInput', '😊', 'userEmojiPicker')">😊</span>
-            <span onclick="insertEmoji('userChatMessageInput', '😍', 'userEmojiPicker')">😍</span>
-            <span onclick="insertEmoji('userChatMessageInput', '🙏', 'userEmojiPicker')">🙏</span>
-            <span onclick="insertEmoji('userChatMessageInput', '👍', 'userEmojiPicker')">👍</span>
-            <span onclick="insertEmoji('userChatMessageInput', '👎', 'userEmojiPicker')">👎</span>
-            <span onclick="insertEmoji('userChatMessageInput', '🧠', 'userEmojiPicker')">🧠</span>
-            <span onclick="insertEmoji('userChatMessageInput', '👨‍⚕️', 'userEmojiPicker')">👨‍⚕️</span>
-            <span onclick="insertEmoji('userChatMessageInput', '🩺', 'userEmojiPicker')">🩺</span>
-            <span onclick="insertEmoji('userChatMessageInput', '💊', 'userEmojiPicker')">💊</span>
-            <span onclick="insertEmoji('userChatMessageInput', '⚠️', 'userEmojiPicker')">⚠️</span>
-            <span onclick="insertEmoji('userChatMessageInput', '✅', 'userEmojiPicker')">✅</span>
-            <span onclick="insertEmoji('userChatMessageInput', '❌', 'userEmojiPicker')">❌</span>
-            <span onclick="insertEmoji('userChatMessageInput', '❓', 'userEmojiPicker')">❓</span>
-            <span onclick="insertEmoji('userChatMessageInput', '🎉', 'userEmojiPicker')">🎉</span>
-            <span onclick="insertEmoji('userChatMessageInput', '🔥', 'userEmojiPicker')">🔥</span>
-            <span onclick="insertEmoji('userChatMessageInput', '👏', 'userEmojiPicker')">👏</span>
-          </div>
+<div class="whatsapp-footer" id="userChatFooter">
+  <!-- Sürükle Bırak / Dosya Seç + Butonu -->
+  <input type="file" id="userChatFileInput" style="display: none;" onchange="handleChatFileSelect(this.files, 'user')">
+  <button class="btn-action" style="padding: 6px 10px; font-size: 1.2rem; background: transparent; border: none; font-weight: bold; color: #075e54;" onclick="triggerChatFilePicker('user')" title="Dosya Gönder">+ </button>
+
+  <div id="userEmojiPicker" class="emoji-picker-popup" style="display: none;">
+    <span onclick="insertEmoji('userChatMessageInput', '😀', 'userEmojiPicker')">😀</span>
+    <span onclick="insertEmoji('userChatMessageInput', '😂', 'userEmojiPicker')">😂</span>
+    <span onclick="insertEmoji('userChatMessageInput', '😊', 'userEmojiPicker')">😊</span>
+    <span onclick="insertEmoji('userChatMessageInput', '😍', 'userEmojiPicker')">😍</span>
+    <span onclick="insertEmoji('userChatMessageInput', '👍', 'userEmojiPicker')">👍</span>
+    <span onclick="insertEmoji('userChatMessageInput', '🧠', 'userEmojiPicker')">🧠</span>
+    <span onclick="insertEmoji('userChatMessageInput', '👨‍⚕️', 'userEmojiPicker')">👨‍⚕️</span>
+    <span onclick="insertEmoji('userChatMessageInput', '🩺', 'userEmojiPicker')">🩺</span>
+  </div>
+
+  <button class="btn-action" style="padding: 6px 10px; font-size: 1.1rem; background: transparent; border: none;" onclick="toggleEmojiPicker('userEmojiPicker')">😊</button>
+  <input type="text" id="userChatMessageInput" class="modern-input" style="flex:1;" placeholder="Mesaj yazın veya dosya yapıştırın..." onkeydown="if(event.key==='Enter') sendUserChatMessage()">
+  <button class="btn-action btn-toggle-on" onclick="sendUserChatMessage()">Gönder ➔</button>
+</div>
 
           <button class="btn-action" style="padding: 6px 10px; font-size: 1.1rem; background: transparent; border: none;" onclick="toggleEmojiPicker('userEmojiPicker')">😊</button>
           <input type="text" id="userChatMessageInput" class="modern-input" style="flex:1;" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter') sendUserChatMessage()">
@@ -1666,8 +1678,8 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
             </button>
 
             <button id="btnContactAdmin" class="btn-action" style="font-size: 0.78rem; padding: 6px 12px; background: #059669; color: white; border-color: #047857;" onclick="openUserChatModal()">
-              💬👨‍⚕️ Yönetici ile Canlı Destek
-            </button>
+  💬👨‍⚕️ Canlı Destek
+</button>
           </div>
 
         </div>
@@ -2759,6 +2771,113 @@ if (window.checkDailyLimitAndIncrement) {
     messagingSenderId: "847076697635",
     appId: "1:847076697635:web:f26dbbd758e9211225b396"
   };
+
+let pendingChatFile = null;
+let pendingChatSenderRole = 'user';
+
+window.triggerChatFilePicker = function(role) {
+  pendingChatSenderRole = role;
+  const inputId = role === 'user' ? 'userChatFileInput' : 'adminChatFileInput';
+  document.getElementById(inputId).click();
+};
+
+window.handleChatFileSelect = function(files, role) {
+  if (!files || files.length === 0) return;
+  pendingChatFile = files[0];
+  pendingChatSenderRole = role;
+
+  if (role === 'user') {
+    document.getElementById('chatFileUploadWarningModal').style.display = 'flex';
+  } else {
+    executeUploadChatFile();
+  }
+};
+
+window.confirmAndExecuteFileUpload = function() {
+  document.getElementById('chatFileUploadWarningModal').style.display = 'none';
+  executeUploadChatFile();
+};
+
+window.closeChatFileUploadWarningModal = function() {
+  document.getElementById('chatFileUploadWarningModal').style.display = 'none';
+  pendingChatFile = null;
+};
+
+async function executeUploadChatFile() {
+  if (!pendingChatFile) return;
+  const file = pendingChatFile;
+  const role = pendingChatSenderRole;
+  showToast("Dosya karşıya yükleniyor...", "info");
+
+  try {
+    const fileRef = ref(storage, `chat_files/${Date.now()}_${file.name}`);
+    await uploadBytes(fileRef, file);
+    const downloadURL = await getDownloadURL(fileRef);
+
+    const filePayload = {
+      fileUrl: downloadURL,
+      fileName: file.name,
+      fileType: file.type || 'application/octet-stream'
+    };
+
+    if (role === 'user') {
+      const userUid = auth.currentUser.uid;
+      await addDoc(collection(db, "sohbetler", userUid, "mesajlar"), {
+        senderUid: userUid,
+        senderName: auth.currentUser.displayName || auth.currentUser.email,
+        text: `📎 [Dosya]: ${file.name}`,
+        fileData: filePayload,
+        zaman: serverTimestamp(),
+        readByAdmin: false,
+        deletedByUser: false
+      });
+      await setDoc(doc(db, "sohbetler", userUid), {
+        lastMessageTime: serverTimestamp(),
+        lastMessageText: `📎 [Dosya Ekledi]: ${file.name}`,
+        userEmail: auth.currentUser.email,
+        userName: auth.currentUser.displayName || auth.currentUser.email,
+        unreadByAdmin: true
+      }, { merge: true });
+    } else {
+      if (!selectedAdminChatUserUid) return;
+      await addDoc(collection(db, "sohbetler", selectedAdminChatUserUid, "mesajlar"), {
+        senderUid: "admin",
+        senderRole: "admin",
+        senderName: "Yönetici",
+        text: `📎 [Dosya]: ${file.name}`,
+        fileData: filePayload,
+        zaman: serverTimestamp(),
+        deletedByUser: false
+      });
+      await setDoc(doc(db, "sohbetler", selectedAdminChatUserUid), {
+        lastMessageTime: serverTimestamp(),
+        lastMessageText: `Yönetici 📎 [Dosya]: ${file.name}`
+      }, { merge: true });
+    }
+    showToast("Dosya başarıyla gönderildi.", "success");
+  } catch (err) {
+    showToast("Dosya gönderilemedi: " + err.message, "error");
+  } finally {
+    pendingChatFile = null;
+  }
+}
+
+// Panodan Kopyalanan Görsel/Dosyayı Yapıştırma (Paste) Desteği
+document.addEventListener('paste', (e) => {
+  const activeInput = document.activeElement;
+  if (activeInput && (activeInput.id === 'userChatMessageInput' || activeInput.id === 'adminChatMessageInput')) {
+    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
+    for (let item of items) {
+      if (item.kind === 'file') {
+        const file = item.getAsFile();
+        if (file) {
+          const role = activeInput.id === 'userChatMessageInput' ? 'user' : 'admin';
+          handleChatFileSelect([file], role);
+        }
+      }
+    }
+  }
+});
   
 window.filterAdminSearch = function() {
   const activeTab = window.currentAdminTab || 'users';
@@ -4309,13 +4428,26 @@ window.downloadUploadedQuestionFile = async function(docId, fileName) {
         
         let deleteBtnHTML = isUserMsg ? `<button class="msg-delete-btn" onclick="deleteUserMessage('${m.id}')" title="Mesajı Sil">🗑️</button>` : '';
 
-        bubble.innerHTML = `
-          <div>${m.text}</div>
-          <div class="chat-meta">
-            <span>${timeStr}</span>
-            ${deleteBtnHTML}
-          </div>
-        `;
+// Aratın: listenUserChatMessages fonksiyonu içindeki bubble.innerHTML kısmını bulun
+
+let fileHTML = '';
+if (m.fileData && m.fileData.fileUrl) {
+  const isImage = m.fileData.fileType.startsWith('image/');
+  if (isImage) {
+    fileHTML = `<div style="margin-top:5px;"><a href="${m.fileData.fileUrl}" target="_blank"><img src="${m.fileData.fileUrl}" style="max-width:200px; max-height:150px; border-radius:8px; border:1px solid #cbd5e1;"></a></div>`;
+  } else {
+    fileHTML = `<div style="margin-top:5px;"><a href="${m.fileData.fileUrl}" target="_blank" style="color:#2563eb; font-weight:bold; text-decoration:underline;">📥 ${m.fileData.fileName} (İndir / Görüntüle)</a></div>`;
+  }
+}
+
+bubble.innerHTML = `
+  <div>${m.text}</div>
+  ${fileHTML} <!-- BURAYI EKLEYİN -->
+  <div class="chat-meta">
+    <span>${timeStr}</span>
+    ${deleteBtnHTML}
+  </div>
+`;
         chatBox.appendChild(bubble);
       });
       chatBox.scrollTop = chatBox.scrollHeight;
@@ -4472,8 +4604,12 @@ window.renderAdminChatList = function() {
       <div id="whatsappAdminMessages" class="whatsapp-messages" style="flex:1;">
         Mesajlar yükleniyor...
       </div>
-      <div class="whatsapp-footer">
-        <div id="adminEmojiPicker" class="emoji-picker-popup" style="display: none;">
+
+<div class="whatsapp-footer" id="adminChatFooter">
+  <input type="file" id="adminChatFileInput" style="display: none;" onchange="handleChatFileSelect(this.files, 'admin')">
+  <button class="btn-action" style="padding: 6px 10px; font-size: 1.2rem; background: transparent; border: none; font-weight: bold; color: #075e54;" onclick="triggerChatFilePicker('admin')" title="Dosya Gönder">+</button>
+
+  <div id="adminEmojiPicker" class="emoji-picker-popup" style="display: none;">
           <span onclick="insertEmoji('adminChatMessageInput', '😀', 'adminEmojiPicker')">😀</span>
           <span onclick="insertEmoji('adminChatMessageInput', '😂', 'adminEmojiPicker')">😂</span>
           <span onclick="insertEmoji('adminChatMessageInput', '😊', 'adminEmojiPicker')">😊</span>
@@ -4492,12 +4628,12 @@ window.renderAdminChatList = function() {
           <span onclick="insertEmoji('adminChatMessageInput', '🎉', 'adminEmojiPicker')">🎉</span>
           <span onclick="insertEmoji('adminChatMessageInput', '🔥', 'adminEmojiPicker')">🔥</span>
           <span onclick="insertEmoji('adminChatMessageInput', '👏', 'adminEmojiPicker')">👏</span>
-        </div>
+  </div>
 
-        <button class="btn-action" style="padding: 6px 10px; font-size: 1.1rem; background: transparent; border: none;" onclick="toggleEmojiPicker('adminEmojiPicker')">😊</button>
-        <input type="text" id="adminChatMessageInput" class="modern-input" style="flex:1;" placeholder="Kullanıcıya yanıt yazın..." onkeydown="if(event.key==='Enter') sendAdminChatMessage()">
-        <button class="btn-action btn-toggle-on" onclick="sendAdminChatMessage()">Gönder ➔</button>
-      </div>
+  <button class="btn-action" style="padding: 6px 10px; font-size: 1.1rem; background: transparent; border: none;" onclick="toggleEmojiPicker('adminEmojiPicker')">😊</button>
+  <input type="text" id="adminChatMessageInput" class="modern-input" style="flex:1;" placeholder="Yanıt yazın veya dosya yapıştırın..." onkeydown="if(event.key==='Enter') sendAdminChatMessage()">
+  <button class="btn-action btn-toggle-on" onclick="sendAdminChatMessage()">Gönder ➔</button>
+</div>
     `;
 
     const q = query(collection(db, "sohbetler", userUid, "mesajlar"));
@@ -4534,15 +4670,28 @@ window.renderAdminChatList = function() {
           <button class="btn-action" style="font-size:0.65rem; padding:1px 5px; background:#fffbe6; color:#d97706; border-color:#fde68a; margin-left:6px;" onclick="openAdminWarnUserModal('${userUid}', '${safeName}', '${safeText}')" title="Bu mesaj için kullanıcıyı uyar">⚠️ Uyar</button>
         ` : '';
 
-        bubble.innerHTML = `
-          ${userDeletedBadge}
-          <div>${m.text}</div>
-          <div class="chat-meta">
-            <span>${timeStr}</span>
-            ${warnBtnHTML}
-            <button class="msg-delete-btn" onclick="deleteMessageByAdmin('${userUid}', '${m.id}')" title="Yönetici Olarak Tamamen Sil">🗑️</button>
-          </div>
-        `;
+// Aratın: openAdminChatWithUser fonksiyonu içindeki bubble.innerHTML kısmını bulun
+
+let fileHTML = '';
+if (m.fileData && m.fileData.fileUrl) {
+  const isImage = m.fileData.fileType.startsWith('image/');
+  if (isImage) {
+    fileHTML = `<div style="margin-top:5px;"><a href="${m.fileData.fileUrl}" target="_blank"><img src="${m.fileData.fileUrl}" style="max-width:200px; max-height:150px; border-radius:8px; border:1px solid #cbd5e1;"></a></div>`;
+  } else {
+    fileHTML = `<div style="margin-top:5px;"><a href="${m.fileData.fileUrl}" target="_blank" style="color:#2563eb; font-weight:bold; text-decoration:underline;">📥 ${m.fileData.fileName} (İndir / Görüntüle)</a></div>`;
+  }
+}
+
+bubble.innerHTML = `
+  ${userDeletedBadge}
+  <div>${m.text}</div>
+  ${fileHTML} <!-- BURAYI EKLEYİN -->
+  <div class="chat-meta">
+    <span>${timeStr}</span>
+    ${warnBtnHTML}
+    <button class="msg-delete-btn" onclick="deleteMessageByAdmin('${userUid}', '${m.id}')" title="Yönetici Olarak Tamamen Sil">🗑️</button>
+  </div>
+`;
         msgContainer.appendChild(bubble);
       });
       msgContainer.scrollTop = msgContainer.scrollHeight;
