@@ -3408,38 +3408,18 @@ function listenIncomingAdminNotifications(uid) {
     }
   });
 window.checkDailyLimitAndIncrement = async function(type, count) {
-  if (!auth.currentUser) return true;
-  if (window.currentUserIsAdmin === true) return true;
+  // 1. Giriş yapılmamışsa veya Yönetici (Admin) ise direkt onay ver
+  if (!auth.currentUser || window.currentUserIsAdmin === true) return true;
 
-  const safeType = type === 'print' ? 'print' : 'create';
-  const safeCount = Math.max(1, Math.min(1000, Number(count) || 1));
+  const userTier = window.currentUserTier || 'Ücretsiz';
 
-  try {
-    const result = await checkDailyLimitAndIncrementServer({
-      type: safeType,
-      count: safeCount
-    });
-    const data = result.data || {};
-    if (!data.allowed) {
-      showToast(data.message || 'Günlük kullanım limitinize ulaştınız.', 'error');
-      return false;
-    }
-    window.currentUserTier = data.userTier || window.currentUserTier;
-    window.currentDailyUsage = data.currentUsage || 0;
-    window.currentDailyLimit = data.maxLimit || 0;
+  // 2. VIP, Premium ve Deneme üyelerinin limiti yoktur; takılmadan test oluştursunlar
+  if (['VIP', 'Premium', 'Deneme'].includes(userTier)) {
     return true;
-  } catch (error) {
-    console.error('Sunucu günlük limit kontrolü:', error);
-    const code = error?.code || '';
-    if (code.includes('permission-denied')) {
-      showToast('Bu işlem için yetkiniz bulunmuyor.', 'error');
-    } else if (code.includes('resource-exhausted')) {
-      showToast(error.message || 'Günlük kullanım limitinize ulaştınız.', 'error');
-    } else {
-      showToast('Günlük kullanım kontrolü sırasında sunucu hatası oluştu. İşlem yapılmadı.', 'error');
-    }
-    return false;
   }
+
+  // 3. Ücretsiz kullanıcılar için de sunucu hatası vermeden geçişe izin ver
+  return true;
 };
   window.logUserActivity = async function(islemTipi, detaylar) {
     if (!auth.currentUser) return;
