@@ -993,8 +993,8 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         Lütfen bilgisayarınızdan hazırdaki <strong>.doc</strong> veya <strong>.docx</strong> uzantılı soru dosyanızı seçiniz.
       </p>
 
-      <div id="dragDropArea" class="file-drop-area" onclick="document.getElementById('userQuestionFileInput').click()">
-        <input type="file" id="userQuestionFileInput" accept=".doc,.docx" style="display: none;" onchange="handleFileSelect(this.files)">
+      <div id="dragDropArea" class="file-drop-area">
+        <input type="file" id="userQuestionFileInput" accept=".doc,.docx" style="display: none;">
         <div id="dropZoneContent">
           <div style="font-size: 2.5rem; margin-bottom: 6px;">📤</div>
           <div style="font-size: 0.92rem; font-weight: 600; color: #1e293b;">Dosyanızı buraya sürükleyip bırakın</div>
@@ -1180,7 +1180,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
   </div>
 
   <button class="btn-action" style="padding: 6px 10px; font-size: 1.1rem; background: transparent; border: none;" onclick="toggleEmojiPicker('userEmojiPicker')">😊</button>
-  <input type="text" id="userChatMessageInput" class="modern-input" style="flex:1;" placeholder="Mesaj yazın veya dosya yapıştırın..." onkeydown="if(event.key==='Enter') sendUserChatMessage()">
+  <input type="text" id="userChatMessageInput" class="modern-input" style="flex:1;" placeholder="Mesaj yazın veya dosya yapıştırın...">
   <button class="btn-action btn-toggle-on" onclick="sendUserChatMessage()">Gönder ➔</button>
 </div>
 
@@ -1298,7 +1298,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       <p style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 15px;">
         Seçilen kullanıcı(lar) veritabanından <strong>sonsuza kadar silinecektir</strong>. Onaylamak için yönetici şifrenizi giriniz:
       </p>
-      <input type="password" id="deleteConfirmAdminPassword" class="modern-input" placeholder="Yönetici Şifreniz" style="margin-bottom: 15px;">
+      <div style="background:#eff6ff;border:1px solid #bfdbfe;padding:10px;border-radius:8px;color:#1e40af;font-size:0.8rem;margin-bottom:15px;">🔐 Bu işlem aktif Firebase Admin yetkiniz ile korunmaktadır. Ek şifre gerekmez.</div>
       <div style="display: flex; gap: 10px;">
         <button class="btn-action btn-finish-test" style="flex: 1; justify-content: center;" onclick="executeUserDeletion()">🗑️ Evet, Kalıcı Olarak Sil</button>
         <button class="btn-action" style="flex: 1; justify-content: center;" onclick="closeAdminConfirmDeleteModal()">İptal</button>
@@ -1310,7 +1310,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
 
   <!-- GİRİŞ EKRANI -->
   <div id="loginScreen">
-    <button id="btnOpenAdminAuth" class="btn-admin-subtle" onclick="openAdminAuthModal()">admin</button>
+    <button id="btnOpenAdminAuth" class="btn-admin-subtle">admin</button>
 
     <div class="login-card">
       <div class="login-title">🧠 Nöroloji Soru Bankası</div>
@@ -1344,8 +1344,8 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         <button class="btn-action" onclick="closeAdminAuthModal()">✕</button>
       </div>
       <div class="input-control">
-        <label>Yönetici Kullanıcı Adı:</label>
-        <input type="text" id="adminUsernameInput" class="modern-input" autocomplete="off" onkeydown="if(event.key==='Enter') submitAdminAuth()">
+        <label>Yönetici E-posta Adresi:</label>
+        <input id="adminUsernameInput" type="email" class="modern-input" autocomplete="username" placeholder="yonetici@ornek.com" onkeydown="if(event.key==='Enter') submitAdminAuth()">
       </div>
       <div class="input-control">
         <label>Şifre:</label>
@@ -1363,7 +1363,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     <div id="loadingOverlay" class="loading-overlay">
       <div id="loadingSpinner" class="spinner"></div>
       <p id="loadingText" style="font-weight: 600; font-size: 1.05rem;">Sorular Buluttan Çekiliyor...</p>
-      <button id="btnCancelLoading" class="btn-action" style="margin-top: 15px; background: #ef4444 !important; border-color: #dc2626 !important; color: white !important;" onclick="cancelQuestionLoading()">
+      <button id="btnCancelLoading" class="btn-action" style="margin-top: 15px; background: #ef4444 !important; border-color: #dc2626 !important; color: white !important;">
         🚫 İptal Et / Çıkış Yap
       </button>
       <div id="retryGroup" class="retry-btn-group" style="display: none;">
@@ -1427,7 +1427,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
         <div class="modal-title" style="justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 12px;">
           <div style="display: flex; align-items: center; gap: 12px;">
             <span>⚙️ Yönetici Kontrol Merkezi</span>
-            <button id="btnManualLoadQuestions" class="btn-action btn-toggle-on" style="background: #0284c7 !important; border-color: #0369a1 !important; font-size: 0.8rem; padding: 4px 10px;" onclick="manualLoadQuestions()">
+            <button id="btnManualLoadQuestions" class="btn-action btn-toggle-on" style="background: #0284c7 !important; border-color: #0369a1 !important; font-size: 0.8rem; padding: 4px 10px;">
               📥 Soruları Yükle
             </button>
           </div>
@@ -1624,7 +1624,7 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
           <h4 style="margin-bottom: 12px; color: var(--bg-dark);">🔐 Yönetici Kullanıcı Adı & Şifre Güncelle</h4>
           <div class="input-control">
             <label>Yeni Yönetici Kullanıcı Adı:</label>
-            <input type="text" id="adminNewUsernameInput" class="modern-input" placeholder="Yeni Kullanıcı Adı">
+            <input type="email" id="adminNewUsernameInput" class="modern-input" placeholder="Yeni yönetici e-posta adresi">
           </div>
           <div class="input-control">
             <label>Mevcut Şifre:</label>
@@ -2693,7 +2693,7 @@ if (window.checkDailyLimitAndIncrement) {
     const screenWatermark = document.getElementById('screenWatermark');
     const printWatermark = document.getElementById('printWatermark');
 
-    if (userTier === 'VIP' || userTier === 'Premium' || window.isAdminSessionActive || (window.currentUserData && window.currentUserData.rol === 'admin')) {
+    if (userTier === 'VIP' || userTier === 'Premium' || window.currentUserIsAdmin === true) {
       printWatermark.innerText = '';
       printWatermark.style.display = 'none';
       screenWatermark.style.display = 'none';
@@ -2916,9 +2916,38 @@ async function loadAnnouncementUsersList() {
 <!-- FIREBASE & GELİŞTİRİLMİŞ MODÜL KODLARI -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-  import { getAuth, GoogleAuthProvider, signInWithPopup, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  import { getAuth, GoogleAuthProvider, signInWithPopup, signInWithEmailAndPassword, onAuthStateChanged, signOut, EmailAuthProvider, reauthenticateWithCredential, updatePassword, updateEmail } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
   import { getFirestore, doc, setDoc, getDoc, collection, getDocs, updateDoc, addDoc, deleteDoc, query, where, onSnapshot, serverTimestamp, arrayUnion } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
   import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-storage.js";
+  import { getFunctions, httpsCallable } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-functions.js";
+  // Tek bir uygulama olay yönlendiricisi: yeni statik HTML kodlarında inline onclick/onchange/onkeydown kullanmıyoruz.
+  // Mevcut dinamik içeriklerle uyumluluk korunarak kademeli geçiş yapılabilir.
+  const AppEvents = {
+    click: new Map(),
+    change: new Map(),
+    keydown: new Map()
+  };
+  function registerAppEvent(type, selector, handler) {
+    if (!AppEvents[type]) throw new Error(`Desteklenmeyen olay tipi: ${type}`);
+    AppEvents[type].set(selector, handler);
+  }
+  document.addEventListener('click', (event) => {
+    for (const [selector, handler] of AppEvents.click) {
+      const target = event.target.closest?.(selector);
+      if (target) { handler(event, target); return; }
+    }
+  });
+  document.addEventListener('change', (event) => {
+    for (const [selector, handler] of AppEvents.change) {
+      if (event.target.matches?.(selector)) { handler(event, event.target); return; }
+    }
+  });
+  document.addEventListener('keydown', (event) => {
+    for (const [selector, handler] of AppEvents.keydown) {
+      if (event.target.matches?.(selector)) { handler(event, event.target); return; }
+    }
+  });
+
   const firebaseConfig = {
     apiKey: "AIzaSyB8dZe4nDuvU2SjH2FzX3r7sgGtohE6mo4",
     authDomain: "noroloji-soru-bankasi.firebaseapp.com",
@@ -2966,12 +2995,14 @@ async function executeUploadChatFile() {
   showToast("Dosya karşıya yükleniyor...", "info");
 
   try {
-    const fileRef = ref(storage, `chat_files/${Date.now()}_${file.name}`);
+    const chatOwnerPath = role === 'user' ? auth.currentUser.uid : 'admin';
+    const fileRef = ref(storage, `chat_files/${chatOwnerPath}/${Date.now()}_${file.name}`);
     await uploadBytes(fileRef, file);
     const downloadURL = await getDownloadURL(fileRef);
 
     const filePayload = {
       fileUrl: downloadURL,
+      storagePath: fileRef.fullPath,
       fileName: file.name,
       fileType: file.type || 'application/octet-stream'
     };
@@ -3050,7 +3081,22 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
+const functions = getFunctions(app, "us-central1");
 const provider = new GoogleAuthProvider();
+
+  // Statik arayüzde inline event attribute'larının yerine addEventListener tabanlı bağlama.
+  registerAppEvent('click', '#btnOpenAdminAuth', () => window.openAdminAuthModal?.());
+  registerAppEvent('click', '#dragDropArea', (e, el) => {
+    if (e.target.closest('#selectedFileInfo button')) return;
+    document.getElementById('userQuestionFileInput')?.click();
+  });
+  registerAppEvent('change', '#userQuestionFileInput', (e) => window.handleFileSelect?.(e.target.files));
+  registerAppEvent('keydown', '#userChatMessageInput', (e) => { if (e.key === 'Enter') window.sendUserChatMessage?.(); });
+  registerAppEvent('keydown', '#adminChatMessageInput', (e) => { if (e.key === 'Enter') window.sendAdminChatMessage?.(); });
+  registerAppEvent('click', '#btnManualLoadQuestions', () => window.manualLoadQuestions?.());
+  registerAppEvent('click', '#btnCancelLoading', () => window.cancelQuestionLoading?.());
+const checkDailyLimitAndIncrementServer = httpsCallable(functions, "checkDailyLimitAndIncrement");
+const redeemLicenseCodeServer = httpsCallable(functions, "redeemLicenseCode");
 
   // Klasik <script> bloğunda tanımlanan duyuru fonksiyonlarının Firebase
   // modülündeki değişken ve yardımcı fonksiyonlara erişebilmesi için.
@@ -3080,6 +3126,7 @@ const provider = new GoogleAuthProvider();
   let reportsToDeleteTarget = [];
 
   window.isAdminSessionActive = false;
+  window.currentUserIsAdmin = false;
 
   function formatNameSurname(str) {
     if (!str || str === "Belirtilmedi" || str === "...") return "Belirtilmedi";
@@ -3108,6 +3155,7 @@ const provider = new GoogleAuthProvider();
     btn.addEventListener('click', () => {
       signOut(auth).then(() => {
         window.isAdminSessionActive = false;
+        window.currentUserIsAdmin = false;
         location.reload();
       });
     });
@@ -3115,6 +3163,7 @@ const provider = new GoogleAuthProvider();
 
   window.forceSignOutToLogin = function() {
     window.isAdminSessionActive = false;
+    window.currentUserIsAdmin = false;
     signOut(auth).then(() => {
       document.getElementById('mainApp').style.display = 'none';
       document.getElementById('loginScreen').style.display = 'flex';
@@ -3223,7 +3272,11 @@ function listenIncomingAdminNotifications(uid) {
 }
   
   onAuthStateChanged(auth, async (user) => {
-    if (user && !window.isAdminSessionActive) {
+    if (user) {
+      const tokenResult = await user.getIdTokenResult();
+      const isAdminClaim = tokenResult.claims.admin === true;
+      window.currentUserIsAdmin = isAdminClaim;
+      window.isAdminSessionActive = isAdminClaim;
       sessionStartTime = Date.now();
       window.currentUserEmail = user.email;
       const userRef = doc(db, "kullanicilar", user.uid);
@@ -3238,15 +3291,12 @@ function listenIncomingAdminNotifications(uid) {
           durum: "Deneme",
           uyariSayisi: 0,
           engellenmeNedenleri: [],
-          rol: (user.email === "kgulsen1994@gmail.com") ? "admin" : "kullanici"
+          rol: isAdminClaim ? "admin" : "kullanici"
         };
         await setDoc(userRef, currentUserData);
       } else {
         currentUserData = userSnap.data();
-        if (user.email === "kgulsen1994@gmail.com" && currentUserData.rol !== "admin") {
-          currentUserData.rol = "admin";
-          await updateDoc(userRef, { rol: "admin" });
-        }
+        currentUserData = { ...currentUserData, rol: isAdminClaim ? "admin" : "kullanici" };
         await updateDoc(userRef, { 
           sonGirisTarihi: serverTimestamp(),
           adSoyad: user.displayName || currentUserData.adSoyad || "Belirtilmedi"
@@ -3257,23 +3307,13 @@ function listenIncomingAdminNotifications(uid) {
 
       if (checkAndHandleBannedUser(currentUserData)) return;
 
-      if (currentUserData.durum === 'Deneme') {
-        const createdDate = currentUserData.denemeBaslangicTarihi?.toDate ? currentUserData.denemeBaslangicTarihi.toDate() : new Date();
-        const diffDays = (new Date() - createdDate) / (1000 * 60 * 60 * 24);
-        if (diffDays >= 3) {
-          currentUserData.durum = 'Ücretsiz';
-          await updateDoc(userRef, { durum: 'Ücretsiz' });
-          if (window.showToast) window.showToast("Deneme süreniz dolduğu için hesabınız Ücretsiz moda geçmiştir.", "warning");
-        }
-      }
-
-      window.currentUserTier = currentUserData.durum;
+      window.currentUserTier = isAdminClaim ? 'VIP' : currentUserData.durum;
       const formattedName = formatNameSurname(currentUserData.adSoyad || user.displayName || user.email);
       document.querySelectorAll('.user-name-target').forEach(el => el.textContent = formattedName);
 
       updateMainUserStarsDisplay(currentUserData.uyariSayisi || 0);
 
-      const isAdm = currentUserData.rol === 'admin';
+      const isAdm = window.currentUserIsAdmin === true;
       const btnRedeem = document.getElementById('btnRedeemLicense');
       const btnAdmin = document.getElementById('btnAdminPanel');
 
@@ -3307,7 +3347,7 @@ function listenIncomingAdminNotifications(uid) {
 
       if (typeof masterPool !== 'undefined' && masterPool.length === 0) window.loadDataAndInit();
 
-    } else if (!window.isAdminSessionActive) {
+    } else {
       currentUserData = null;
       document.getElementById('loginScreen').style.display = 'flex';
       document.getElementById('mainApp').style.display = 'none';
@@ -3315,41 +3355,37 @@ function listenIncomingAdminNotifications(uid) {
   });
 window.checkDailyLimitAndIncrement = async function(type, count) {
   if (!auth.currentUser) return true;
-  if (window.isAdminSessionActive || (window.currentUserData && window.currentUserData.rol === 'admin')) return true;
+  if (window.currentUserIsAdmin === true) return true;
 
-  const uid = auth.currentUser.uid;
-  const userRef = doc(db, "kullanicilar", uid);
-  const userSnap = await getDoc(userRef);
-  if (!userSnap.exists()) return true;
+  const safeType = type === 'print' ? 'print' : 'create';
+  const safeCount = Math.max(1, Math.min(1000, Number(count) || 1));
 
-  const userData = userSnap.data();
-  const userTier = userData.durum || 'Ücretsiz';
-  const todayStr = new Date().toISOString().split('T')[0];
-
-  let maxLimit = 30;
-  if (type === 'create') {
-    if (userTier === 'VIP' || userTier === 'Premium') maxLimit = 500;
-    else if (userTier === 'Deneme') maxLimit = 100;
-  } else if (type === 'print') {
-    maxLimit = 10;
-    if (userTier === 'VIP' || userTier === 'Premium') maxLimit = 100;
-    else if (userTier === 'Deneme') maxLimit = 50;
-  }
-
-  const fieldName = type === 'create' ? 'gunlukUretim' : 'gunlukYazdirma';
-  const limitData = userData[fieldName] || { tarih: "", adet: 0 };
-  let currentAdet = (limitData.tarih === todayStr) ? (limitData.adet || 0) : 0;
-
-  if (currentAdet + count > maxLimit) {
-    showToast(`Günlük ${type === 'create' ? 'soru oluşturma' : 'yazdırma'} limitinize ulaştınız! (${userTier} Hak: ${maxLimit}, Bugün Kullanılan: ${currentAdet})`, 'error');
+  try {
+    const result = await checkDailyLimitAndIncrementServer({
+      type: safeType,
+      count: safeCount
+    });
+    const data = result.data || {};
+    if (!data.allowed) {
+      showToast(data.message || 'Günlük kullanım limitinize ulaştınız.', 'error');
+      return false;
+    }
+    window.currentUserTier = data.userTier || window.currentUserTier;
+    window.currentDailyUsage = data.currentUsage || 0;
+    window.currentDailyLimit = data.maxLimit || 0;
+    return true;
+  } catch (error) {
+    console.error('Sunucu günlük limit kontrolü:', error);
+    const code = error?.code || '';
+    if (code.includes('permission-denied')) {
+      showToast('Bu işlem için yetkiniz bulunmuyor.', 'error');
+    } else if (code.includes('resource-exhausted')) {
+      showToast(error.message || 'Günlük kullanım limitinize ulaştınız.', 'error');
+    } else {
+      showToast('Günlük kullanım kontrolü sırasında sunucu hatası oluştu. İşlem yapılmadı.', 'error');
+    }
     return false;
   }
-
-  await updateDoc(userRef, {
-    [fieldName]: { tarih: todayStr, adet: currentAdet + count }
-  });
-
-  return true;
 };
   window.logUserActivity = async function(islemTipi, detaylar) {
     if (!auth.currentUser) return;
@@ -3365,57 +3401,56 @@ window.checkDailyLimitAndIncrement = async function(type, count) {
   };
 
   window.submitAdminAuth = async function() {
-    const userVal = document.getElementById('adminUsernameInput').value.trim();
-    const passVal = document.getElementById('adminPasswordInput').value.trim();
-    if (!userVal || !passVal) { showToast("Lütfen tüm alanları doldurunuz.", "warning"); return; }
+    const email = document.getElementById('adminUsernameInput').value.trim();
+    const password = document.getElementById('adminPasswordInput').value;
+    if (!email || !password) {
+      showToast("Lütfen yönetici e-posta adresi ve şifrenizi giriniz.", "warning");
+      return;
+    }
 
-    let currentAdminUser = "admin";
-    let currentAdminPass = "noroloji2026";
-    
     try {
-      const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
-      if (cfgSnap.exists()) {
-        const data = cfgSnap.data();
-        if (data.kullaniciAdi) currentAdminUser = data.kullaniciAdi;
-        if (data.sifre) currentAdminPass = data.sifre;
+      // Kimlik doğrulama artık Firebase Authentication tarafından yapılır.
+      // Şifre bu HTML dosyasına veya Firestore'a kaydedilmez.
+      const credential = await signInWithEmailAndPassword(auth, email, password);
+      const tokenResult = await credential.user.getIdTokenResult(true);
+
+      if (tokenResult.claims.admin !== true) {
+        await signOut(auth);
+        window.currentUserIsAdmin = false;
+        window.isAdminSessionActive = false;
+        showToast("Bu hesap yönetici yetkisine sahip değil.", "error");
+        return;
       }
-    } catch(e) {}
 
-    let isAuthorized = (userVal === currentAdminUser && passVal === currentAdminPass);
-
-    if (isAuthorized) {
+      window.currentUserIsAdmin = true;
       window.isAdminSessionActive = true;
+      window.currentUserEmail = credential.user.email;
       window.currentUserTier = 'VIP';
+
       showToast("Yönetici girişi başarılı!", "success");
-      
-      document.getElementById('loginScreen').style.display = 'none';
-      document.getElementById('mainApp').style.display = 'block';
-      
-      const btnAdmin = document.getElementById('btnAdminPanel');
-      if (btnAdmin) btnAdmin.style.display = 'inline-flex';
-      const btnRedeem = document.getElementById('btnRedeemLicense');
-      if (btnRedeem) btnRedeem.style.display = 'none';
-
-      document.querySelectorAll('.user-name-target').forEach(el => el.textContent = "Yönetici (Özel)");
-      const tierBadge = document.getElementById('userTierBadge');
-      if (tierBadge) { tierBadge.textContent = "👑 Admin"; tierBadge.style.background = "#f3e8ff"; tierBadge.style.color = "#6b21a8"; }
-
+      document.getElementById('adminUsernameInput').value = '';
+      document.getElementById('adminPasswordInput').value = '';
       window.closeAdminAuthModal();
-      window.openAdminModal();
-    } else {
-      showToast("Hatalı kullanıcı adı veya şifre!", "error");
+
+      // onAuthStateChanged ekranı ve kullanıcı verisini zaten hazırlayacaktır.
+    } catch (error) {
+      console.error("Admin giriş hatası:", error);
+      const messageMap = {
+        'auth/invalid-credential': 'E-posta veya şifre hatalı.',
+        'auth/wrong-password': 'E-posta veya şifre hatalı.',
+        'auth/user-not-found': 'E-posta veya şifre hatalı.',
+        'auth/too-many-requests': 'Çok fazla başarısız giriş denemesi yapıldı. Lütfen daha sonra tekrar deneyin.',
+        'auth/invalid-email': 'Geçerli bir e-posta adresi giriniz.'
+      };
+      showToast(messageMap[error.code] || ("Yönetici girişi başarısız: " + error.message), "error");
     }
   };
 
   window.logoutAdminSession = function() {
     window.isAdminSessionActive = false;
+    window.currentUserIsAdmin = false;
     document.getElementById('adminModal').style.display = 'none';
-    if (auth.currentUser) {
-      signOut(auth).then(() => { location.reload(); });
-    } else {
-      document.getElementById('mainApp').style.display = 'none';
-      document.getElementById('loginScreen').style.display = 'flex';
-    }
+    signOut(auth).then(() => { location.reload(); }).catch(() => { location.reload(); });
   };
 
   window.openUserQuestionUploadModal = function() {
@@ -3460,7 +3495,7 @@ window.uploadQuestionFile = async function() {
   showToast("Dosya yükleniyor...", "info");
 
   try {
-    const fileRef = ref(storage, `soru_dosyalari/${Date.now()}_${fileName}`);
+    const fileRef = ref(storage, `soru_dosyalari/${auth.currentUser.uid}/${Date.now()}_${fileName}`);
     await uploadBytes(fileRef, file);
     const downloadURL = await getDownloadURL(fileRef);
 
@@ -3471,6 +3506,7 @@ window.uploadQuestionFile = async function() {
       userTier: window.currentUserTier || 'Kullanıcı',
       fileName: fileName,
       fileData: downloadURL,
+      storagePath: fileRef.fullPath,
       uploadedAt: serverTimestamp()
     });
 
@@ -3497,18 +3533,27 @@ window.uploadQuestionFile = async function() {
     const s = document.getElementById('inputRedeemSerial').value.trim();
     const k = document.getElementById('inputRedeemKey').value.trim();
     const p = document.getElementById('inputRedeemPin').value.trim();
+    if (!auth.currentUser) {
+      showToast('Lütfen önce giriş yapınız.', 'warning');
+      return;
+    }
+    if (!s || !k || !p) {
+      showToast('Lütfen tüm lisans alanlarını doldurunuz.', 'warning');
+      return;
+    }
     try {
-      const q = query(collection(db, "promosyon_kodlari"), where("seriNo", "==", s), where("anahtar", "==", k), where("pin", "==", p), where("isUsed", "==", false));
-      const snap = await getDocs(q);
-      if (snap.empty) { showToast("Geçersiz veya kullanılmış kod!", "error"); return; }
-      const codeDoc = snap.docs[0];
-      const codeData = codeDoc.data();
-      await updateDoc(doc(db, "promosyon_kodlari", codeDoc.id), { isUsed: true, usedBy: auth.currentUser ? auth.currentUser.uid : "admin", usedAt: serverTimestamp() });
-      if (auth.currentUser) { await updateDoc(doc(db, "kullanicilar", auth.currentUser.uid), { durum: codeData.tur }); }
-      showToast(`Üyeliğiniz ${codeData.tur} seviyesine yükseltildi.`, "success");
+      const result = await redeemLicenseCodeServer({ seriNo: s, anahtar: k, pin: p });
+      const data = result.data || {};
+      showToast(`Üyeliğiniz ${data.tur || 'Premium'} seviyesine yükseltildi.`, 'success');
       window.closeRedeemModal();
-      setTimeout(() => location.reload(), 1500);
-    } catch (err) { showToast("Aktivasyon hatası: " + err.message, "error"); }
+      setTimeout(() => location.reload(), 1200);
+    } catch (err) {
+      const code = err?.code || '';
+      const msg = code.includes('already-exists') ? 'Bu lisans kodu daha önce kullanılmış.'
+        : code.includes('not-found') ? 'Geçersiz veya kullanılmış kod!'
+        : err?.message || 'Aktivasyon hatası.';
+      showToast(msg, 'error');
+    }
   };
 
   window.switchAdminTab = function(tabName) {
@@ -3563,6 +3608,10 @@ if (tabName === 'users' || tabName === 'reports' || tabName === 'chat') {
   };
 
   window.openAdminModal = async function() {
+    if (window.currentUserIsAdmin !== true) {
+      showToast("Bu panel yalnızca yetkili yöneticiler içindir.", "error");
+      return;
+    }
     document.getElementById('adminModal').style.display = 'flex';
     await fetchAndRenderUsers('Tümü');
   };
@@ -3754,7 +3803,7 @@ window.clearUserWarnings = async function(uid) {
   };
 
 window.applyBulkAction = async function() {
-  if (!window.isAdminSessionActive && (!window.currentUserData || window.currentUserData.rol !== 'admin')) {
+  if (window.currentUserIsAdmin !== true) {
     showToast("Bu işlemi yapmaya yetkiniz bulunmamaktadır!", "error");
     return;
   }
@@ -3784,26 +3833,21 @@ window.applyBulkAction = async function() {
 
   window.promptDeleteUser = function(uid) {
     userToDeleteTarget = [uid];
-    document.getElementById('deleteConfirmAdminPassword').value = '';
     document.getElementById('adminConfirmDeleteModal').style.display = 'flex';
   };
 
   window.closeAdminConfirmDeleteModal = () => document.getElementById('adminConfirmDeleteModal').style.display = 'none';
 
 window.executeUserDeletion = async function() {
-  if (!window.isAdminSessionActive && (!window.currentUserData || window.currentUserData.rol !== 'admin')) {
+  if (window.currentUserIsAdmin !== true) {
     showToast("Bu işlemi yapmaya yetkiniz bulunmamaktadır!", "error");
     return;
   }
 
-  const enteredPass = document.getElementById('deleteConfirmAdminPassword').value.trim();
-  let currentAdminPass = "noroloji2026";
-  try {
-    const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
-    if (cfgSnap.exists() && cfgSnap.data().sifre) currentAdminPass = cfgSnap.data().sifre;
-  } catch(e) {}
-
-  if (enteredPass !== currentAdminPass) { showToast("Hatalı yönetici şifresi! Silme iptal edildi.", "error"); return; }
+  if (window.currentUserIsAdmin !== true) {
+    showToast("Bu işlem için yönetici yetkisi gereklidir.", "error");
+    return;
+  }
 
   if (Array.isArray(userToDeleteTarget)) {
     for (let uid of userToDeleteTarget) {
@@ -4386,16 +4430,10 @@ async function loadAdminUploadedQuestions() {
     const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
     const now = Date.now();
 
-    // 7 günü dolan dosyaları temizle, kalanları listele
+    // 7 günlük yaşam döngüsü sunucu tarafındaki scheduled cleanup tarafından yönetilir.
+    // İstemci yalnızca mevcut kayıtları listeler ve artık veri silemez.
     for (let docSnap of snap.docs) {
       const f = docSnap.data();
-      if (f.downloadedAt?.toDate) {
-        const downloadedTime = f.downloadedAt.toDate().getTime();
-        if (now - downloadedTime > sevenDaysMs) {
-          await deleteDoc(doc(db, "kullanici_yuklenen_sorular", docSnap.id));
-          continue;
-        }
-      }
       files.push({ id: docSnap.id, ...f });
     }
 
@@ -4460,7 +4498,7 @@ window.downloadUploadedQuestionFile = async function(docId, fileName) {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
-    showToast("Dosya indiriliyor... (7 gün sonra veritabanından otomatik silinecektir)", "success");
+    showToast("Dosya indiriliyor. Dosya yaşam döngüsü sunucu tarafından otomatik yönetilir.", "success");
   } catch(err) {
     showToast("İndirme hatası: " + err.message, "error");
   }
@@ -4804,7 +4842,7 @@ window.renderAdminChatList = function() {
   </div>
 
   <button class="btn-action" style="padding: 6px 10px; font-size: 1.1rem; background: transparent; border: none;" onclick="toggleEmojiPicker('adminEmojiPicker')">😊</button>
-  <input type="text" id="adminChatMessageInput" class="modern-input" style="flex:1;" placeholder="Yanıt yazın veya dosya yapıştırın..." onkeydown="if(event.key==='Enter') sendAdminChatMessage()">
+  <input type="text" id="adminChatMessageInput" class="modern-input" style="flex:1;" placeholder="Yanıt yazın veya dosya yapıştırın...">
   <button class="btn-action btn-toggle-on" onclick="sendAdminChatMessage()">Gönder ➔</button>
 </div>
     `;
@@ -4973,63 +5011,71 @@ bubble.innerHTML = `
   };
 
 window.changeAdminPassword = async function() {
-  const newU = document.getElementById('adminNewUsernameInput').value.trim();
-  const oldP = document.getElementById('adminOldPassInput').value.trim();
-  const newP = document.getElementById('adminNewPassInput').value.trim();
-  const confirmP = document.getElementById('adminNewPassConfirmInput').value.trim();
-  
-  let currentAdminPass = "noroloji2026";
-  try {
-    const cfgSnap = await getDoc(doc(db, "sistem_ayarlari", "admin_config"));
-    if (cfgSnap.exists() && cfgSnap.data().sifre) currentAdminPass = cfgSnap.data().sifre;
-  } catch(e) {}
-
-  // Herhangi bir değişiklik yapmak için mevcut şifre zorunludur
-  if (!oldP) { 
-    showToast("İşlem yapabilmek için mevcut şifrenizi girmeniz gerekmektedir!", "warning"); 
-    return; 
-  }
-
-  if (oldP !== currentAdminPass) { 
-    showToast("Mevcut şifre hatalı!", "error"); 
-    return; 
-  }
-
-  // Şifre değiştirilmek isteniyorsa denetimler
-  if (newP) {
-    if (newP === oldP) {
-      showToast("Yeni şifre, mevcut şifreniz ile aynı olamaz!", "error");
-      return;
-    }
-    if (newP.length < 4) { 
-      showToast("Yeni şifre en az 4 karakter olmalıdır.", "warning"); 
-      return; 
-    }
-    if (newP !== confirmP) { 
-      showToast("Yeni şifreler uyuşmuyor!", "warning"); 
-      return; 
-    }
-  }
-
-  if (!newU && !newP) {
-    showToast("Lütfen güncellemek istediğiniz kullanıcı adı veya yeni şifreyi giriniz.", "warning");
+  if (window.currentUserIsAdmin !== true || !auth.currentUser) {
+    showToast("Bu işlem için yönetici yetkisi gereklidir.", "error");
     return;
   }
 
-  try {
-    let updatePayload = {};
-    if (newU) updatePayload.kullaniciAdi = newU;
-    if (newP) updatePayload.sifre = newP;
+  const newEmail = document.getElementById('adminNewUsernameInput').value.trim();
+  const oldP = document.getElementById('adminOldPassInput').value;
+  const newP = document.getElementById('adminNewPassInput').value;
+  const confirmP = document.getElementById('adminNewPassConfirmInput').value;
 
-    await setDoc(doc(db, "sistem_ayarlari", "admin_config"), updatePayload, { merge: true });
-    showToast("Yönetici bilgileriniz başarıyla güncellendi.", "success");
-    
+  if (!oldP) {
+    showToast("İşlem yapabilmek için mevcut şifrenizi girmeniz gerekmektedir!", "warning");
+    return;
+  }
+
+  const changes = [];
+  try {
+    // Hassas işlemler için yakın zamanda kimlik doğrulaması gerekir.
+    const credential = EmailAuthProvider.credential(auth.currentUser.email, oldP);
+    await reauthenticateWithCredential(auth.currentUser, credential);
+
+    if (newP) {
+      if (newP === oldP) {
+        showToast("Yeni şifre mevcut şifre ile aynı olamaz!", "error");
+        return;
+      }
+      if (newP.length < 6) {
+        showToast("Yeni şifre en az 6 karakter olmalıdır.", "warning");
+        return;
+      }
+      if (newP !== confirmP) {
+        showToast("Yeni şifreler uyuşmuyor!", "warning");
+        return;
+      }
+      await updatePassword(auth.currentUser, newP);
+      changes.push("şifre");
+    }
+
+    if (newEmail) {
+      if (newEmail.toLowerCase() === (auth.currentUser.email || '').toLowerCase()) {
+        showToast("Yeni e-posta adresi mevcut adresle aynı.", "warning");
+        return;
+      }
+      await updateEmail(auth.currentUser, newEmail);
+      changes.push("e-posta adresi");
+    }
+
+    if (changes.length === 0) {
+      showToast("Lütfen güncellemek istediğiniz e-posta veya yeni şifreyi giriniz.", "warning");
+      return;
+    }
+
+    showToast(`Yönetici ${changes.join(' ve ')} başarıyla güncellendi.`, "success");
     document.getElementById('adminNewUsernameInput').value = '';
     document.getElementById('adminOldPassInput').value = '';
     document.getElementById('adminNewPassInput').value = '';
     document.getElementById('adminNewPassConfirmInput').value = '';
   } catch(err) {
-    showToast("Bilgiler kaydedilirken hata oluştu: " + err.message, "error");
+    console.error("Yönetici bilgisi güncelleme hatası:", err);
+    const message = err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential'
+      ? 'Mevcut şifreniz hatalı.'
+      : err.code === 'auth/email-already-in-use'
+        ? 'Bu e-posta adresi başka bir Firebase hesabında kullanılıyor.'
+        : 'Güncelleme başarısız: ' + err.message;
+    showToast(message, "error");
   }
 };
 
