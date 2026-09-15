@@ -3450,6 +3450,12 @@ window.submitAdminAuth = async function() {
       return;
     }
 
+    // Giriş başlar başlamaz admin e-posta girişi olduğunu işaretle ve uygun mesajı göster
+    window.isAdminEmailLogin = true;
+    if (typeof showLoading === 'function') {
+      showLoading("Sisteme bağlanıyor...");
+    }
+
     try {
       const credential = await signInWithEmailAndPassword(auth, email, password);
       const tokenResult = await credential.user.getIdTokenResult(true);
@@ -3458,13 +3464,14 @@ window.submitAdminAuth = async function() {
         await signOut(auth);
         window.currentUserIsAdmin = false;
         window.isAdminSessionActive = false;
+        window.isAdminEmailLogin = false; // Yetkisizse sıfırla
+        if (typeof hideLoading === 'function') hideLoading();
         showToast("Bu hesap yönetici yetkisine sahip değil.", "error");
         return;
       }
 
       window.currentUserIsAdmin = true;
       window.isAdminSessionActive = true;
-      window.isAdminEmailLogin = true; // 👈 Yönetici e-posta girişi bayrağı aktif edildi
       window.currentUserEmail = credential.user.email;
       window.currentUserTier = 'VIP';
 
@@ -3473,7 +3480,9 @@ window.submitAdminAuth = async function() {
       document.getElementById('adminPasswordInput').value = '';
       window.closeAdminAuthModal();
 
-      // Yönetici girişinde soruları yüklemeden direkt Yönetici Paneli'ni aç
+      if (typeof hideLoading === 'function') hideLoading();
+
+      // Yönetici panelini aç
       setTimeout(() => {
         if (typeof window.openAdminModal === 'function') {
           window.openAdminModal();
@@ -3481,6 +3490,8 @@ window.submitAdminAuth = async function() {
       }, 300);
 
     } catch (error) {
+      window.isAdminEmailLogin = false; // Hata durumunda sıfırla
+      if (typeof hideLoading === 'function') hideLoading();
       console.error("Admin giriş hatası:", error);
       const messageMap = {
         'auth/invalid-credential': 'E-posta veya şifre hatalı.',
