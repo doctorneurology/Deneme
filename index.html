@@ -610,7 +610,15 @@
       text-transform: uppercase;
     }
 
-    .exam-header table { width: 100%; border-collapse: collapse; font-size: 10.5pt; }
+    
+    .exam-header-meta-item {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
+    }
+
+.exam-header table { width: 100%; border-collapse: collapse; font-size: 10.5pt; }
 
     .header-input {
       border: none;
@@ -1863,11 +1871,11 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
       </div>
     </td>
     <td style="vertical-align: top; text-align: right; width: 50%;">
-      <div id="hdrItemDate" style="margin-bottom: 6px; display: flex; justify-content: flex-end; align-items: center; gap: 4px;">
+      <div id="hdrItemDate" class="exam-header-meta-item" style="margin-bottom: 6px;">
         <strong>Tarih:</strong> 
         <input type="text" id="inputExamDate" class="header-input date-input" style="width: 150px; text-align: left;" placeholder="" autocomplete="off">
       </div>
-      <div id="hdrItemScore" style="display: none; margin-bottom: 6px; display: flex; justify-content: flex-end; align-items: center; gap: 4px;">
+      <div id="hdrItemScore" class="exam-header-meta-item" style="display: none; margin-bottom: 6px;">
         <strong>Aldığı Puan:</strong> 
         <input type="text" id="inputExamScore" class="header-input" style="width: 150px; text-align: left;" placeholder="" autocomplete="off">
       </div>
@@ -2386,10 +2394,10 @@ if (window.checkDailyLimitAndIncrement) {
     if (itemStudentNo) itemStudentNo.style.display = showStudentNo ? 'block' : 'none';
 
     const itemDate = document.getElementById('hdrItemDate');
-    if (itemDate) itemDate.style.display = showDate ? 'block' : 'none';
+    if (itemDate) itemDate.style.display = showDate ? 'flex' : 'none';
 
     const itemScore = document.getElementById('hdrItemScore');
-    if (itemScore) itemScore.style.display = showScore ? 'block' : 'none';
+    if (itemScore) itemScore.style.display = showScore ? 'flex' : 'none';
   }
   window.updateHeaderLayout = updateHeaderLayout;
 
@@ -2773,6 +2781,17 @@ if (window.checkDailyLimitAndIncrement) {
     }, false);
   }
 
+  const MAX_UPLOAD_BYTES = 700 * 1024;
+
+  function isFileWithinUploadLimit(file, context = 'Dosya') {
+    if (!file) return false;
+    if (file.size > MAX_UPLOAD_BYTES) {
+      showToast(`${context} boyutu 700 KB sınırını aşıyor. Lütfen dosyayı küçültüp tekrar deneyiniz.`, 'error');
+      return false;
+    }
+    return true;
+  }
+
   function handleFileSelect(files) {
     if (!files || files.length === 0) return;
     const file = files[0];
@@ -2781,10 +2800,7 @@ if (window.checkDailyLimitAndIncrement) {
       showToast("Lütfen sadece .doc veya .docx formatında dosya seçiniz.", "error");
       return;
     }
-    if (file.size > 700 * 1024) {
-  showToast("Dosya boyutu 700 KB sınırını aşıyor! Lütfen dosya içindeki resimleri küçülterek veya çıkararak tekrar deneyiniz.", "error");
-  return;
-}
+    if (!isFileWithinUploadLimit(file, 'Dosya')) return;
     currentSelectedUploadFile = file;
     document.getElementById('dropZoneContent').style.display = 'none';
     const fileInfo = document.getElementById('selectedFileInfo');
@@ -2968,7 +2984,12 @@ window.triggerChatFilePicker = function(role) {
 
 window.handleChatFileSelect = function(files, role) {
   if (!files || files.length === 0) return;
-  pendingChatFile = files[0];
+  const file = files[0];
+  if (!isFileWithinUploadLimit(file, 'Sohbet dosyası')) {
+    pendingChatFile = null;
+    return;
+  }
+  pendingChatFile = file;
   pendingChatSenderRole = role;
 
   if (role === 'user') {
@@ -2992,6 +3013,10 @@ async function executeUploadChatFile() {
   if (!pendingChatFile) return;
   const file = pendingChatFile;
   const role = pendingChatSenderRole;
+  if (!isFileWithinUploadLimit(file, 'Sohbet dosyası')) {
+    pendingChatFile = null;
+    return;
+  }
   showToast("Dosya karşıya yükleniyor...", "info");
 
   try {
@@ -3119,6 +3144,24 @@ const redeemLicenseCodeServer = httpsCallable(functions, "redeemLicenseCode");
   let warningUnsubscribe = null;
   let userReportsUnsubscribe = null;
   let adminReportsUnsubscribe = null;
+  let incomingChatNotificationsUnsubscribe = null;
+  let incomingReportNotificationsUnsubscribe = null;
+
+  function disposeSubscription(unsubscribeRef) {
+    if (typeof unsubscribeRef === 'function') {
+      try { unsubscribeRef(); } catch (err) { console.warn('Abonelik temizleme hatası:', err); }
+    }
+    return null;
+  }
+
+  function disposeAllLiveSubscriptions() {
+    warningUnsubscribe = disposeSubscription(warningUnsubscribe);
+    userReportsUnsubscribe = disposeSubscription(userReportsUnsubscribe);
+    adminReportsUnsubscribe = disposeSubscription(adminReportsUnsubscribe);
+    chatUnsubscribe = disposeSubscription(chatUnsubscribe);
+    incomingChatNotificationsUnsubscribe = disposeSubscription(incomingChatNotificationsUnsubscribe);
+    incomingReportNotificationsUnsubscribe = disposeSubscription(incomingReportNotificationsUnsubscribe);
+  }
   let selectedAdminChatUserUid = null;
 
   let currentWarnUserUid = null;
@@ -3204,7 +3247,7 @@ function updateMainUserStarsDisplay(warnCount) {
 }
 
   function listenUserWarnings(uid) {
-    if (warningUnsubscribe) warningUnsubscribe();
+    warningUnsubscribe = disposeSubscription(warningUnsubscribe);
     const userRef = doc(db, "kullanicilar", uid);
     warningUnsubscribe = onSnapshot(userRef, (snap) => {
       if (!snap.exists()) return;
@@ -3241,9 +3284,12 @@ window.acknowledgeUserWarning = async function() {
   };
 
 function listenIncomingAdminNotifications(uid) {
+  incomingChatNotificationsUnsubscribe = disposeSubscription(incomingChatNotificationsUnsubscribe);
+  incomingReportNotificationsUnsubscribe = disposeSubscription(incomingReportNotificationsUnsubscribe);
+
   // 1. Canlı Destek Mesaj Bildirimleri
   const chatQ = query(collection(db, "sohbetler", uid, "mesajlar"));
-  onSnapshot(chatQ, (snapshot) => {
+  incomingChatNotificationsUnsubscribe = onSnapshot(chatQ, (snapshot) => {
     snapshot.docChanges().forEach((change) => {
       if (change.type === "added") {
         const m = change.doc.data();
@@ -3259,7 +3305,7 @@ function listenIncomingAdminNotifications(uid) {
 
   // 2. Hatalı Soru Bildirimi Yanıtlandı Bildirimleri
   const reportQ = query(collection(db, "hatali_sorular"), where("userId", "==", uid));
-  onSnapshot(reportQ, (snapshot) => {
+  incomingReportNotificationsUnsubscribe = onSnapshot(reportQ, (snapshot) => {
     snapshot.docChanges().forEach((change) => {
       if (change.type === "modified") {
         const d = change.doc.data();
@@ -3271,7 +3317,15 @@ function listenIncomingAdminNotifications(uid) {
   });
 }
   
+  let activeAuthUid = null;
+
   onAuthStateChanged(auth, async (user) => {
+    const nextAuthUid = user?.uid || null;
+    if (activeAuthUid !== nextAuthUid) {
+      disposeAllLiveSubscriptions();
+      activeAuthUid = nextAuthUid;
+    }
+
     if (user) {
       const tokenResult = await user.getIdTokenResult();
       const isAdminClaim = tokenResult.claims.admin === true;
@@ -4035,7 +4089,7 @@ window.executeUserDeletion = async function() {
 
     const q = query(collection(db, "hatali_sorular"), where("userId", "==", auth.currentUser.uid));
 
-    if (userReportsUnsubscribe) userReportsUnsubscribe();
+    userReportsUnsubscribe = disposeSubscription(userReportsUnsubscribe);
 
     userReportsUnsubscribe = onSnapshot(q, (snap) => {
       if (snap.empty) {
@@ -4170,7 +4224,7 @@ window.executeUserDeletion = async function() {
 
   window.closeUserReportsModal = () => {
     document.getElementById('userReportsModal').style.display = 'none';
-    if (userReportsUnsubscribe) userReportsUnsubscribe();
+    userReportsUnsubscribe = disposeSubscription(userReportsUnsubscribe);
   };
 
   window.deleteUserReport = async function(docId) {
@@ -4237,7 +4291,7 @@ async function loadAdminQuestionReports() {
 
   const q = collection(db, "hatali_sorular");
 
-  if (adminReportsUnsubscribe) adminReportsUnsubscribe();
+  adminReportsUnsubscribe = disposeSubscription(adminReportsUnsubscribe);
 
   adminReportsUnsubscribe = onSnapshot(q, (snap) => {
     allFetchedReports = [];
@@ -4592,7 +4646,7 @@ window.downloadUploadedQuestionFile = async function(docId, fileName) {
 
   window.closeUserChatModal = function() {
     document.getElementById('userChatModal').style.display = 'none';
-    if (chatUnsubscribe) chatUnsubscribe();
+    chatUnsubscribe = disposeSubscription(chatUnsubscribe);
   };
 
   function listenUserChatMessages(userUid) {
@@ -4601,7 +4655,7 @@ window.downloadUploadedQuestionFile = async function(docId, fileName) {
 
     const q = query(collection(db, "sohbetler", userUid, "mesajlar"));
     
-    if (chatUnsubscribe) chatUnsubscribe();
+    chatUnsubscribe = disposeSubscription(chatUnsubscribe);
 
     chatUnsubscribe = onSnapshot(q, (snapshot) => {
       chatBox.innerHTML = '';
@@ -4849,7 +4903,7 @@ window.renderAdminChatList = function() {
 
     const q = query(collection(db, "sohbetler", userUid, "mesajlar"));
     
-    if (chatUnsubscribe) chatUnsubscribe();
+    chatUnsubscribe = disposeSubscription(chatUnsubscribe);
 
     chatUnsubscribe = onSnapshot(q, (snapshot) => {
       const msgContainer = document.getElementById('whatsappAdminMessages');
