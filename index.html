@@ -1048,11 +1048,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
     </div>
   </div>
 
-<!-- KULLANICI UYARI BİLDİRİM MODALİ (Örnek referans yer) -->
-  <div id="userWarningNoticeModal" class="modal-overlay no-print" style="display: none; z-index: 30000;">
-    ...
-  </div>
-
   <!-- YENİ EKLENECEK DUYURU MODALI BURAYA -->
   <div id="systemAnnouncementModal" class="modal-overlay no-print" style="display: none; z-index: 29500;">
     <div class="modal-card" style="max-width: 500px; width: 90%; border-top: 5px solid #8b5cf6;">
@@ -1189,10 +1184,6 @@ Açıklama: SSS'de oligodendrositler, PSS'de Schwann hücreleri miyelin üretir.
   <button class="btn-action btn-toggle-on" onclick="sendUserChatMessage()">Gönder ➔</button>
 </div>
 
-          <button class="btn-action" style="padding: 6px 10px; font-size: 1.1rem; background: transparent; border: none;" onclick="toggleEmojiPicker('userEmojiPicker')">😊</button>
-          <input type="text" id="userChatMessageInput" class="modern-input" style="flex:1;" placeholder="Mesajınızı yazın..." onkeydown="if(event.key==='Enter') sendUserChatMessage()">
-          <button class="btn-action btn-toggle-on" onclick="sendUserChatMessage()">Gönder ➔</button>
-        </div>
       </div>
     </div>
   </div>
@@ -2920,8 +2911,6 @@ async function loadAnnouncementUsersList() {
   } catch(e) {}
 }
 
-</script> <!-- Modül script etiketinin bittiği yer -->
-  
 </script>
 
 <!-- FIREBASE & GELİŞTİRİLMİŞ MODÜL KODLARI -->
@@ -3051,7 +3040,7 @@ window.filterAdminSearch = function() {
   if (activeTab === 'users') {
     renderUserRows();
   } else if (activeTab === 'reports') {
-    renderAdminReports();
+    window.renderAdminReports();
   } else if (activeTab === 'chat') {
     renderAdminChatList();
   }
@@ -3062,6 +3051,17 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 const provider = new GoogleAuthProvider();
+
+  // Klasik <script> bloğunda tanımlanan duyuru fonksiyonlarının Firebase
+  // modülündeki değişken ve yardımcı fonksiyonlara erişebilmesi için.
+  window.auth = auth;
+  window.db = db;
+  window.storage = storage;
+  window.provider = provider;
+  window.addDoc = addDoc;
+  window.collection = collection;
+  window.getDocs = getDocs;
+  window.serverTimestamp = serverTimestamp;
 
   let currentUserData = null;
   let allFetchedUsers = [];
@@ -3300,6 +3300,11 @@ function listenIncomingAdminNotifications(uid) {
 
       listenUserWarnings(user.uid);
 
+      // Giriş yapan kullanıcı için aktif sistem duyurularını kontrol et.
+      if (typeof checkSystemAnnouncements === 'function') {
+        await checkSystemAnnouncements(user.uid);
+      }
+
       if (typeof masterPool !== 'undefined' && masterPool.length === 0) window.loadDataAndInit();
 
     } else if (!window.isAdminSessionActive) {
@@ -3427,7 +3432,7 @@ window.checkDailyLimitAndIncrement = async function(type, count) {
   };
 
   window.acceptUploadRules = function() {
-    closeUserQuestionUploadRulesModal();
+    window.closeUserQuestionUploadRulesModal();
     if (window.clearSelectedUploadFile) window.clearSelectedUploadFile();
     document.getElementById('userQuestionFilePickerModal').style.display = 'flex';
   };
@@ -3470,7 +3475,7 @@ window.uploadQuestionFile = async function() {
     });
 
     showToast("Soru dosyanız başarıyla yükledi!", "success");
-    closeUserQuestionFilePickerModal();
+    window.closeUserQuestionFilePickerModal();
   } catch(err) {
     showToast("Dosya yüklenirken hata oluştu: " + err.message, "error");
   }
@@ -4200,7 +4205,7 @@ async function loadAdminQuestionReports() {
       return timeB - timeA;
     });
 
-    renderAdminReports();
+    window.renderAdminReports();
   });
 }
 
@@ -4318,56 +4323,6 @@ window.renderAdminReports = function() {
 
   box.innerHTML = html;
 };
-
-        const safeComment = (d.userComment || '').replace(/'/g, "\\'").replace(/"/g, '&quot;');
-        const safeName = (d.userName || d.userEmail || '').replace(/'/g, "\\'");
-
-        html += `
-          <div style="background:#ffffff; border:1px solid var(--border); border-left:4px solid ${isAnswered ? '#10b981' : '#ef4444'}; border-radius:8px; padding:12px; margin-bottom:12px;">
-            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-              <div style="display:flex; align-items:center; gap:8px;">
-                <input type="checkbox" class="report-row-checkbox" value="${d.id}">
-                <span style="font-weight:bold; color:#0f172a;">👤 ${d.userName} (${d.userEmail})</span>
-              </div>
-              <div style="display:flex; align-items:center; gap:8px;">
-                <span style="font-size:0.75rem; color:#64748b;">${dateStr}</span>
-                <button class="btn-action" style="font-size:0.72rem; padding:3px 8px; background:#fffbe6; color:#d97706; border-color:#fde68a;" onclick="openAdminWarnUserModal('${d.userId}', '${safeName}', '${safeComment}')" title="Kullanıcıya Uyarı Gönder">⚠️ Uyar</button>
-                <button class="msg-delete-btn" onclick="promptDeleteSingleAdminReport('${d.id}')" title="Bildirimi Sil">🗑️</button>
-              </div>
-            </div>
-            
-            <div style="font-size:0.85rem; color:#334155; margin-bottom:6px; background:#f8fafc; padding:8px; border-radius:6px;">
-              <strong>Soru [${d.questionTopic}]:</strong> ${d.questionText}<br>
-              <span style="color:#2563eb; font-weight:bold;">Sistemdeki Doğru Cevap: ${d.correctLetter}</span>
-            </div>
-
-            ${optionsHTML ? `
-              <div style="background:#f1f5f9; padding:8px; border-radius:6px; margin-bottom:8px;">
-                <strong style="font-size:0.8rem; color:#475569;">Sorunun Tüm Şıkları:</strong>
-                ${optionsHTML}
-              </div>
-            ` : ''}
-
-            <div class="whatsapp-container" style="height:auto; max-height:320px; margin:10px 0;">
-              <div class="whatsapp-header" style="font-size:0.8rem; padding:6px 12px;">
-                <span>💬 Kullanıcı ile Canlı Bildirim Sohbeti</span>
-              </div>
-              <div class="whatsapp-messages" style="padding:10px;">
-                ${chatBubblesHTML || '<p style="text-align:center; color:#64748b; font-size:0.8rem;">Mesaj yok.</p>'}
-              </div>
-              <div class="whatsapp-footer" style="padding:6px 10px;">
-                <input type="text" id="adminReportReplyInput_${d.id}" class="modern-input" style="padding:4px 8px; font-size:0.8rem; flex:1;" placeholder="Kullanıcıya mesaj yanıtı yazın..." onkeydown="if(event.key==='Enter') sendAdminReportChatMessage('${d.id}')">
-                <button class="btn-action btn-toggle-on" style="padding:4px 12px; font-size:0.8rem;" onclick="sendAdminReportChatMessage('${d.id}')">Gönder ➔</button>
-              </div>
-            </div>
-
-          </div>
-        `;
-      });
-
-      box.innerHTML = html;
-    });
-  }
 
   window.sendAdminReportChatMessage = async function(docId) {
     const input = document.getElementById(`adminReportReplyInput_${docId}`);
@@ -4560,7 +4515,7 @@ window.downloadUploadedQuestionFile = async function(docId, fileName) {
       });
     }
     showToast(`${selected.length} bildirime toplu yanıt gönderildi.`, "success");
-    closeAdminBulkReplyModal();
+    window.closeAdminBulkReplyModal();
   };
 
   window.promptDeleteSingleAdminReport = function(docId) {
@@ -4588,7 +4543,7 @@ window.downloadUploadedQuestionFile = async function(docId, fileName) {
       await deleteDoc(doc(db, "hatali_sorular", id));
     }
     showToast(`${reportsToDeleteTarget.length} bildirim kalıcı olarak silindi.`, "success");
-    closeAdminConfirmDeleteReportsModal();
+    window.closeAdminConfirmDeleteReportsModal();
   };
 
   window.openUserChatModal = function() {
@@ -4776,7 +4731,7 @@ window.renderAdminChatList = function() {
       </div>
       <div style="font-size:0.75rem; color:#64748b; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${chat.lastMessageText || ''}</div>
     `;
-    item.onclick = () => openAdminChatWithUser(chat.uid, chat.userName || chat.userEmail);
+    item.onclick = () => window.openAdminChatWithUser(chat.uid, chat.userName || chat.userEmail);
     userListBox.appendChild(item);
   });
 
