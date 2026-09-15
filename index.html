@@ -3399,7 +3399,15 @@ function listenIncomingAdminNotifications(uid) {
         await checkSystemAnnouncements(user.uid);
       }
 
-      if (typeof masterPool !== 'undefined' && masterPool.length === 0) window.loadDataAndInit();
+      // Sadece Google veya normal kullanıcı girişlerinde soru havuzunu yükle
+      // Yönetici e-posta/şifre girişlerinde soru yükleme işlemini atla
+      if (!window.isAdminEmailLogin) {
+        if (typeof masterPool !== 'undefined' && masterPool.length === 0) {
+          window.loadDataAndInit();
+        }
+      } else {
+        hideLoading(); // Yükleme ekranı varsa kapat
+      }
 
     } else {
       currentUserData = null;
@@ -3434,7 +3442,7 @@ window.checkDailyLimitAndIncrement = async function(type, count) {
     } catch (e) {}
   };
 
-  window.submitAdminAuth = async function() {
+window.submitAdminAuth = async function() {
     const email = document.getElementById('adminUsernameInput').value.trim();
     const password = document.getElementById('adminPasswordInput').value;
     if (!email || !password) {
@@ -3443,8 +3451,6 @@ window.checkDailyLimitAndIncrement = async function(type, count) {
     }
 
     try {
-      // Kimlik doğrulama artık Firebase Authentication tarafından yapılır.
-      // Şifre bu HTML dosyasına veya Firestore'a kaydedilmez.
       const credential = await signInWithEmailAndPassword(auth, email, password);
       const tokenResult = await credential.user.getIdTokenResult(true);
 
@@ -3458,6 +3464,7 @@ window.checkDailyLimitAndIncrement = async function(type, count) {
 
       window.currentUserIsAdmin = true;
       window.isAdminSessionActive = true;
+      window.isAdminEmailLogin = true; // 👈 Yönetici e-posta girişi bayrağı aktif edildi
       window.currentUserEmail = credential.user.email;
       window.currentUserTier = 'VIP';
 
@@ -3466,14 +3473,20 @@ window.checkDailyLimitAndIncrement = async function(type, count) {
       document.getElementById('adminPasswordInput').value = '';
       window.closeAdminAuthModal();
 
-      // onAuthStateChanged ekranı ve kullanıcı verisini zaten hazırlayacaktır.
+      // Yönetici girişinde soruları yüklemeden direkt Yönetici Paneli'ni aç
+      setTimeout(() => {
+        if (typeof window.openAdminModal === 'function') {
+          window.openAdminModal();
+        }
+      }, 300);
+
     } catch (error) {
       console.error("Admin giriş hatası:", error);
       const messageMap = {
         'auth/invalid-credential': 'E-posta veya şifre hatalı.',
         'auth/wrong-password': 'E-posta veya şifre hatalı.',
         'auth/user-not-found': 'E-posta veya şifre hatalı.',
-        'auth/too-many-requests': 'Çok fazla başarısız giriş denemesi yapıldı. Lütfen daha sonra tekrar deneyin.',
+        'auth/too-many-requests': 'Çok fazla başarısız giriş denemesi yapıldı.',
         'auth/invalid-email': 'Geçerli bir e-posta adresi giriniz.'
       };
       showToast(messageMap[error.code] || ("Yönetici girişi başarısız: " + error.message), "error");
